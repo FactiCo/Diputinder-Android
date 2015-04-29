@@ -1,8 +1,38 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
+
+        <!-- Fullscreen -->
+        <item name="android:windowNoTitle">true</item>
+        <item name="windowActionBar">false</item>
+        <item name="android:windowFullscreen">false</item>
+        <item name="android:windowContentOverlay">@null</item>
+
+        <!-- Set AppCompat’s color theming attrs -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+
+        <!-- colorPrimaryDark is used for the status bar -->
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+
+        <!--
+             colorAccent is used as the default value for colorControlActivated,
+         	which is used to tint widgets
+        -->
+        <item name="colorAccent">@color/colorAccent</item>
+
+        <!--
+         You can also set colorControlNormal, colorControlActivated
+         colorControlHighlight, and colorSwitchThumbNormal.
+        -->
+        <item name="colorControlNormal">@color/colorWhite</item>
+        <item name="colorControlActivated">@color/colorWhite</item>
+        <item name="colorControlHighlight">@color/colorWhite</item>
+        <item name="colorSwitchThumbNormal">@color/colorWhite</item>
+        <item name="actionMenuTextColor">@color/colorWhite</item>
+
+        <item name="SwipeFlingStyle">@style/SwipeFling</item>
     </style>
 
 </resources>
