@@ -26,6 +26,8 @@ public class HttpConnection {
 	public static final String URL = "https://candidatotransparente.mx/scripts/datos/";
     public static final String DIPUTADOS = "Diputados.json";
 
+	public static final String TWITTER_IMAGE_URL = "https://twitter.com/@%s/profile_image?size=original";
+
 	public static String GET(String url) {
 		HttpClient client = new DefaultHttpClient();
 		HttpGet request = new HttpGet(url);

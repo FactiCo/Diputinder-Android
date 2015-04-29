@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_gravity="center"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -20,7 +19,8 @@
             android:textSize="40sp"
             android:textColor="@color/colorTextTitle"
             android:gravity="center"
-            tools:text="Swipe"
+            android:minLines="2"
+            android:text=""
             android:textStyle="bold"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
@@ -29,7 +29,8 @@
             android:id="@+id/helloImage"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:src="@drawable/ic_launcher" />
+            android:background="@drawable/ic_profile_orange"
+            android:scaleType="centerCrop"/>
     </LinearLayout>
 
     <View

@@ -3,4 +3,6 @@
 
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+
+    <string name="no_gps_enabled">Debes encender los servicios de ubicación del dispositivo para obtener el contenido cercano a ti.</string>
 </resources>

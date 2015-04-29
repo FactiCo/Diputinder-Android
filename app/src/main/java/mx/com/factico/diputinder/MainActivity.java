@@ -1,6 +1,7 @@
 package mx.com.factico.diputinder;
 
 import android.app.ProgressDialog;
+import android.location.Location;
 import android.os.AsyncTask;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -12,15 +13,20 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.analytics.GoogleAnalytics;
+import com.google.android.gms.maps.model.LatLng;
 import com.lorentzos.flingswipe.SwipeFlingAdapterView;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import mx.com.factico.diputinder.adapters.MyArrayAdapter;
+import mx.com.factico.diputinder.beans.Address;
 import mx.com.factico.diputinder.beans.Diputado;
 import mx.com.factico.diputinder.dialogues.Dialogues;
 import mx.com.factico.diputinder.httpconnection.HttpConnection;
+import mx.com.factico.diputinder.location.LocationClientListener;
+import mx.com.factico.diputinder.location.LocationUtils;
 import mx.com.factico.diputinder.parser.GsonParser;
 
 public class MainActivity extends ActionBarActivity implements View.OnClickListener {
@@ -33,14 +39,72 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 
     private SwipeFlingAdapterView flingContainer;
 
+    private LocationClientListener clientListener;
+    private LatLng userLocation;
+    private Address address;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         setSupportActionBar();
-        loadDiputados();
+        initLocationClientListener();
         // initUI();
+    }
+
+    protected void initLocationClientListener() {
+        clientListener = new LocationClientListener(MainActivity.this);
+        clientListener.setOnLocationClientListener(new LocationClientListener.OnLocationClientListener() {
+            @Override
+            public void onLocationChanged(Location location) {
+                userLocation = LocationUtils.getLatLngFromLocation(location);
+                //Dialogues.Toast(getBaseContext(), "Find location: " + location.getLatitude() + ", " + location.getLongitude(), Toast.LENGTH_LONG);
+
+                address = LocationUtils.getAdressFromLatLong(getBaseContext(), location.getLatitude(), location.getLongitude());
+
+                if (address != null) {
+                    Dialogues.Log(TAG_CLASS, "Address: " + address.getAddress(), Log.ERROR);
+                    Dialogues.Log(TAG_CLASS, "City: " + address.getCity(), Log.ERROR);
+                    Dialogues.Log(TAG_CLASS, "State: " + address.getState(), Log.ERROR);
+                    Dialogues.Log(TAG_CLASS, "Country: " + address.getCountry(), Log.ERROR);
+                    Dialogues.Log(TAG_CLASS, "PostalCode: " + address.getPostalCode(), Log.ERROR);
+                    Dialogues.Log(TAG_CLASS, "KnownName: " + address.getKnownName(), Log.ERROR);
+
+                    loadDiputados();
+
+                    clientListener.stopLocationUpdates();
+                }
+            }
+        });
+    }
+
+    public void startLocationListener() {
+        if (clientListener != null)
+            clientListener.connect();
+    }
+
+    public void stopLocationListener() {
+        if (clientListener != null)
+            clientListener.disconnect();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        if (clientListener != null && userLocation == null) {
+            startLocationListener();
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        if (clientListener != null) {
+            clientListener.stopLocationUpdates();
+        }
     }
 
     protected void loadDiputados() {
@@ -114,8 +178,8 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
             }
         });
 
-        findViewById(R.id.main_btn_no).setOnClickListener(this);
-        findViewById(R.id.main_btn_yes).setOnClickListener(this);
+        findViewById(R.id.main_btn_swipe_left).setOnClickListener(this);
+        findViewById(R.id.main_btn_swipe_right).setOnClickListener(this);
     }
 
     protected void setSupportActionBar() {
@@ -133,10 +197,10 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.main_btn_no:
+            case R.id.main_btn_swipe_left:
                 swipeLeft();
                 break;
-            case R.id.main_btn_yes:
+            case R.id.main_btn_swipe_right:
                 swipeRight();
                 break;
         }
@@ -204,10 +268,14 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                     diputados = GsonParser.getListDiputadosFromJSON(result);
 
                     if (diputados != null && diputados.size() > 0) {
-                        auxDiputados = diputados.subList(1, 30);
-                        Dialogues.Log(TAG_CLASS, "/**************Entré INITUI: " + auxDiputados.size(), Log.ERROR);
+                        //auxDiputados = diputados.subList(1, 30);
+                        auxDiputados = getListDiputadosFromState(diputados, address.getState());
 
-                        initUI();
+                        if (auxDiputados != null && auxDiputados.size() > 0) {
+                            Dialogues.Log(TAG_CLASS, "/**************Entré INITUI: " + auxDiputados.size(), Log.ERROR);
+
+                            initUI();
+                        }
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -221,5 +289,16 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
             if (!this.isCancelled())
                 this.cancel(true);
         }
+    }
+
+    protected List<Diputado> getListDiputadosFromState(List<Diputado> listDiputados, String state) {
+        List<Diputado> auxListDiputados = new ArrayList<>();
+
+        for (Diputado diputado : listDiputados) {
+            if (diputado.entidadFederativa.equals(state))
+                auxListDiputados.add(diputado);
+        }
+
+        return auxListDiputados;
     }
 }

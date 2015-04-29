@@ -35,7 +35,7 @@
 
         <Button
             style="?android:attr/buttonBarButtonStyle"
-            android:id="@+id/main_btn_no"
+            android:id="@+id/main_btn_swipe_left"
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:layout_margin="10dp"
@@ -45,7 +45,7 @@
 
         <Button
             style="?android:attr/buttonBarButtonStyle"
-            android:id="@+id/main_btn_yes"
+            android:id="@+id/main_btn_swipe_right"
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:layout_margin="10dp"
