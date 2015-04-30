@@ -76,10 +76,12 @@ public class MyArrayAdapter extends ArrayAdapter<Diputado> {
         if (bean.twitter != null && !bean.twitter.equals("")) {
             ImageLoader.getInstance().displayImage(String.format(Locale.getDefault(), HttpConnection.TWITTER_IMAGE_URL, bean.twitter), holder.image, options);
         } else {
-            if (bean.gnero.equals("F"))
-                holder.image.setImageResource(R.drawable.ic_profile_women);
-            else if (bean.gnero.equals("M"))
-                holder.image.setImageResource(R.drawable.ic_profile_men);
+            if (bean.gnero != null) {
+                if (bean.gnero.equals("F"))
+                    holder.image.setImageResource(R.drawable.ic_profile_women);
+                else if (bean.gnero.equals("M"))
+                    holder.image.setImageResource(R.drawable.ic_profile_men);
+            }
         }
 
         return rowView;
