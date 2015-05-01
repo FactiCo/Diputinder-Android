@@ -1,6 +1,7 @@
 package mx.com.factico.diputinder;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.support.v7.app.ActionBarActivity;
@@ -51,6 +52,16 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         setSupportActionBar();
         initLocationClientListener();
         // initUI();
+    }
+
+    protected void setSupportActionBar() {
+        Toolbar mToolbar = (Toolbar) findViewById(R.id.actionbar);
+        mToolbar.setTitle("");
+        mToolbar.getBackground().setAlpha(255);
+        TextView actionbarTitle = (TextView) mToolbar.findViewById(R.id.actionbar_title);
+        actionbarTitle.setText(getResources().getString(R.string.app_name));
+
+        setSupportActionBar(mToolbar);
     }
 
     protected void initLocationClientListener() {
@@ -175,23 +186,12 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
             @Override
             public void onItemClicked(int itemPosition, Object dataObject) {
                 Dialogues.Toast(getBaseContext(), "Clicked!", Toast.LENGTH_SHORT);
+                startIntentDiputado((Diputado) dataObject);
             }
         });
 
         findViewById(R.id.main_btn_swipe_left).setOnClickListener(this);
         findViewById(R.id.main_btn_swipe_right).setOnClickListener(this);
-    }
-
-    protected void setSupportActionBar() {
-        Toolbar mToolbar = (Toolbar) findViewById(R.id.actionbar);
-        mToolbar.setTitle("");
-        mToolbar.getBackground().setAlpha(255);
-        TextView actionbarTitle = (TextView) mToolbar.findViewById(R.id.actionbar_title);
-        actionbarTitle.setText(getResources().getString(R.string.app_name));
-        actionbarTitle.setTextColor(getResources().getColor(R.color.colorWhite));
-
-        setSupportActionBar(mToolbar);
-        getSupportActionBar().setElevation(5);
     }
 
     @Override
@@ -204,6 +204,12 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                 swipeRight();
                 break;
         }
+    }
+
+    private void startIntentDiputado(Diputado diputado) {
+        Intent intent = new Intent(getBaseContext(), DiputadoActivity.class);
+        intent.putExtra(DiputadoActivity.TAG_DIPUTADO, diputado);
+        startActivity(intent);
     }
 
     private void swipeLeft() {

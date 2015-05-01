@@ -1,9 +1,11 @@
 package mx.com.factico.diputinder.beans;
 
+import java.io.Serializable;
+
 /**
  * Created by zace3d on 4/27/15.
  */
-public class Diputado {
+public class Diputado implements Serializable {
     public long id;
     public String nombres;
     public String apellidoPaterno;
