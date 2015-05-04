@@ -26,19 +26,20 @@
 
     <LinearLayout
         android:id="@+id/main_btn_container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:layout_marginBottom="20dp"
         android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_centerHorizontal="true">
 
         <Button
             style="?android:attr/buttonBarButtonStyle"
             android:id="@+id/main_btn_swipe_left"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:layout_margin="10dp"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="20dp"
             android:textColor="@color/colorTextContent"
             android:text="X"
             android:background="@drawable/drawable_bgr_circle" />
@@ -46,9 +47,10 @@
         <Button
             style="?android:attr/buttonBarButtonStyle"
             android:id="@+id/main_btn_swipe_right"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:layout_margin="10dp"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginLeft="20dp"
             android:textColor="@color/colorTextContent"
             android:text="Y"
             android:background="@drawable/drawable_bgr_circle" />

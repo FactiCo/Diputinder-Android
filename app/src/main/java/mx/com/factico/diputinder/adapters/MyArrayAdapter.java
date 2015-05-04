@@ -62,9 +62,8 @@ public class MyArrayAdapter extends ArrayAdapter<Diputado> {
             holder = new ViewHolder();
 
             // configure view holder
-            holder.name = (TextView) rowView.findViewById(R.id.helloText);
-
-            holder.image = (ImageView) rowView.findViewById(R.id.helloImage);
+            holder.name = (TextView) rowView.findViewById(R.id.item_diputado_tv_name);
+            holder.image = (ImageView) rowView.findViewById(R.id.item_diputado_iv_profile);
 
             rowView.setTag(holder);
         } else {
@@ -74,7 +73,8 @@ public class MyArrayAdapter extends ArrayAdapter<Diputado> {
         Diputado bean = getItem(position);
         holder.name.setText(String.format(Locale.getDefault(), "%s %s %s", bean.nombres, bean.apellidoPaterno, bean.apellidoMaterno));
         if (bean.twitter != null && !bean.twitter.equals("")) {
-            ImageLoader.getInstance().displayImage(String.format(Locale.getDefault(), HttpConnection.TWITTER_IMAGE_URL, bean.twitter), holder.image, options);
+            String twitter = bean.twitter.replaceAll("\\s+", "");
+            ImageLoader.getInstance().displayImage(String.format(Locale.getDefault(), HttpConnection.TWITTER_IMAGE_URL, twitter), holder.image, options);
         } else {
             if (bean.gnero != null) {
                 if (bean.gnero.equals("F"))

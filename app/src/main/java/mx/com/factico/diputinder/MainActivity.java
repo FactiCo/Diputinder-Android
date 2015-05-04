@@ -51,7 +51,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 
         setSupportActionBar();
         initLocationClientListener();
-        // initUI();
+        initUI();
     }
 
     protected void setSupportActionBar() {
@@ -70,7 +70,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
             @Override
             public void onLocationChanged(Location location) {
                 userLocation = LocationUtils.getLatLngFromLocation(location);
-                //Dialogues.Toast(getBaseContext(), "Find location: " + location.getLatitude() + ", " + location.getLongitude(), Toast.LENGTH_LONG);
+                Dialogues.Toast(getBaseContext(), "Find location: " + location.getLatitude() + ", " + location.getLongitude(), Toast.LENGTH_LONG);
 
                 address = LocationUtils.getAdressFromLatLong(getBaseContext(), location.getLatitude(), location.getLongitude());
 
