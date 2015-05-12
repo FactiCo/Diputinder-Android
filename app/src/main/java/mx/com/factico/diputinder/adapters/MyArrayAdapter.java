@@ -71,15 +71,15 @@ public class MyArrayAdapter extends ArrayAdapter<Diputado> {
         }
 
         Diputado bean = getItem(position);
-        holder.name.setText(String.format(Locale.getDefault(), "%s %s %s", bean.nombres, bean.apellidoPaterno, bean.apellidoMaterno));
-        if (bean.twitter != null && !bean.twitter.equals("")) {
-            String twitter = bean.twitter.replaceAll("\\s+", "");
+        holder.name.setText(String.format(Locale.getDefault(), "%s %s %s", bean.getNombres(), bean.getApellidoPaterno(), bean.getApellidoMaterno()));
+        if (bean.getTwitter() != null && !bean.getTwitter().equals("")) {
+            String twitter = bean.getTwitter().replaceAll("\\s+", "");
             ImageLoader.getInstance().displayImage(String.format(Locale.getDefault(), HttpConnection.TWITTER_IMAGE_URL, twitter), holder.image, options);
         } else {
-            if (bean.gnero != null) {
-                if (bean.gnero.equals("F"))
+            if (bean.getGnero() != null) {
+                if (bean.getGnero().equals("F"))
                     holder.image.setImageResource(R.drawable.ic_profile_women);
-                else if (bean.gnero.equals("M"))
+                else if (bean.getGnero().equals("M"))
                     holder.image.setImageResource(R.drawable.ic_profile_men);
             }
         }

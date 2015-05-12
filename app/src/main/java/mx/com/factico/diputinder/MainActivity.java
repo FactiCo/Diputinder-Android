@@ -281,6 +281,8 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                             Dialogues.Log(TAG_CLASS, "/**************Entré INITUI: " + auxDiputados.size(), Log.ERROR);
 
                             initUI();
+                        } else {
+                            Dialogues.Toast(getBaseContext(), "No se encontraron coincidencias en tu Entidad Federativa.", Toast.LENGTH_SHORT);
                         }
                     }
                 } catch (Exception e) {
@@ -301,7 +303,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         List<Diputado> auxListDiputados = new ArrayList<>();
 
         for (Diputado diputado : listDiputados) {
-            if (diputado.entidadFederativa.equals(state))
+            if (diputado.getEntidadFederativa().contains(state))
                 auxListDiputados.add(diputado);
         }
 

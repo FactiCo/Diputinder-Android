@@ -42,7 +42,7 @@ public class DiputadoActivity extends ActionBarActivity {
             diputado = (Diputado) bundle.getSerializable(TAG_DIPUTADO);
 
             if (diputado != null) {
-                Dialogues.Toast(getBaseContext(), "DIPUTADO: " + diputado.nombres, Toast.LENGTH_SHORT);
+                Dialogues.Toast(getBaseContext(), "DIPUTADO: " + diputado.getNombres(), Toast.LENGTH_SHORT);
                 fillDiputado();
             }
         }
@@ -65,28 +65,28 @@ public class DiputadoActivity extends ActionBarActivity {
                 .showImageForEmptyUri(R.drawable.ic_launcher)
                 .showImageOnFail(R.drawable.ic_launcher)
                 .resetViewBeforeLoading(true)
-                        //.cacheInMemory(false)
+                //.cacheInMemory(false)
                 .cacheOnDisk(true)
                 .imageScaleType(ImageScaleType.EXACTLY)
                 .bitmapConfig(Bitmap.Config.RGB_565)
                 .considerExifParams(true)
-                //.displayer(new FadeInBitmapDisplayer(300))
+                .displayer(new FadeInBitmapDisplayer(300))
                 .build();
     }
 
     protected void fillDiputado() {
         TextView tvName = (TextView) findViewById(R.id.diputado_tv_name);
-        tvName.setText(String.format(Locale.getDefault(), "%s %s %s", diputado.nombres, diputado.apellidoPaterno, diputado.apellidoMaterno));
+        tvName.setText(String.format(Locale.getDefault(), "%s %s %s", diputado.getNombres(), diputado.getApellidoPaterno(), diputado.getApellidoMaterno()));
 
         ImageView ivProfile = (ImageView) findViewById(R.id.diputado_iv_profile);
-        if (diputado.twitter != null && !diputado.twitter.equals("")) {
-            String twitter = diputado.twitter.replaceAll("\\s+", "");
+        if (diputado.getTwitter() != null && !diputado.getTwitter().equals("")) {
+            String twitter = diputado.getTwitter().replaceAll("\\s+", "");
             ImageLoader.getInstance().displayImage(String.format(Locale.getDefault(), HttpConnection.TWITTER_IMAGE_URL, twitter), ivProfile, options);
         } else {
-            if (diputado.gnero != null) {
-                if (diputado.gnero.equals("F"))
+            if (diputado.getGnero() != null) {
+                if (diputado.getGnero().equals("F"))
                     ivProfile.setImageResource(R.drawable.ic_profile_women);
-                else if (diputado.gnero.equals("M"))
+                else if (diputado.getGnero().equals("M"))
                     ivProfile.setImageResource(R.drawable.ic_profile_men);
             }
         }
