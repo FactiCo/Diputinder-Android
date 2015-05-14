@@ -21,6 +21,9 @@ public class Diputado implements Serializable {
     private String twitter;
     private String alianza;
     private String partidosEnAlianza;
+    private String patrimonial;
+    private String intereses;
+    private String fiscal;
 
     public long getId() {
         return id;
@@ -140,5 +143,29 @@ public class Diputado implements Serializable {
 
     public void setPartidosEnAlianza(String partidosEnAlianza) {
         this.partidosEnAlianza = partidosEnAlianza;
+    }
+
+    public String getPatrimonial() {
+        return patrimonial;
+    }
+
+    public void setPatrimonial(String patrimonial) {
+        this.patrimonial = patrimonial;
+    }
+
+    public String getIntereses() {
+        return intereses;
+    }
+
+    public void setIntereses(String intereses) {
+        this.intereses = intereses;
+    }
+
+    public String getFiscal() {
+        return fiscal;
+    }
+
+    public void setFiscal(String fiscal) {
+        this.fiscal = fiscal;
     }
 }

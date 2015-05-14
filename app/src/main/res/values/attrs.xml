@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <attr name="typeface">
+        <enum name="Gotham_Rounded_Bold" value="0" />
+        <enum name="Gotham_Rounded_Book" value="1" />
+    </attr>
+    
+    <declare-styleable name="CustomTextView">
+        <attr name="typeface" />
+    </declare-styleable>
+
+</resources>

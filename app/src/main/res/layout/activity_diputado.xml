@@ -15,65 +15,68 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:fillViewport="true"
-        android:layout_margin="10dp">
+        android:fillViewport="true">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:padding="10dp">
 
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
                 <RelativeLayout
+                    android:id="@+id/diputado_vg_info"
                     android:layout_width="match_parent"
-                    android:layout_height="120dp"
-                    android:layout_marginStart="60dp"
+                    android:layout_height="wrap_content"
+                    android:minHeight="120dp"
+                    android:paddingLeft="60dp"
                     android:layout_marginLeft="60dp"
-                    android:layout_marginEnd="0dp"
                     android:layout_marginRight="0dp"
                     android:background="@color/colorAccent"
                     android:layout_gravity="center_vertical">
 
-                    <TextView
+                    <mx.com.factico.diputinder.views.CustomTextView
                         android:id="@+id/diputado_tv_name"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:paddingTop="15dp"
-                        android:paddingLeft="75dp"
+                        android:paddingTop="10dp"
+                        android:paddingLeft="15dp"
                         android:paddingEnd="15dp"
                         android:paddingRight="15dp"
+                        android:textStyle="bold"
                         android:textAppearance="?android:attr/textAppearanceMedium"
                         android:textColor="@color/colorBackgroundWhite"
-                        android:text="Jorge Rosiñol Abréu" />
+                        android:text=""
+                        app:typeface="Gotham_Rounded_Bold" />
 
-                    <TextView
+                    <mx.com.factico.diputinder.views.CustomTextView
                         android:id="@+id/diputado_tv_cargo"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_below="@+id/diputado_tv_name"
-                        android:paddingTop="15dp"
-                        android:paddingLeft="75dp"
-                        android:paddingRight="15dp"
-                        android:textAppearance="?android:attr/textAppearanceSmall"
-                        android:textColor="@color/colorBackgroundWhite"
-                        android:text="Gobernatura" />
-
-                    <TextView
-                        android:id="@+id/diputado_tv_entidad"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@+id/diputado_tv_name"
-                        android:layout_toEndOf="@+id/diputado_tv_cargo"
-                        android:layout_toRightOf="@+id/diputado_tv_cargo"
-                        android:paddingTop="15dp"
+                        android:paddingTop="10dp"
                         android:paddingLeft="15dp"
                         android:paddingRight="15dp"
                         android:textAppearance="?android:attr/textAppearanceSmall"
                         android:textColor="@color/colorBackgroundWhite"
-                        android:text="Campeche" />
+                        android:text=""
+                        app:typeface="Gotham_Rounded_Book" />
+
+                    <mx.com.factico.diputinder.views.CustomTextView
+                        android:id="@+id/diputado_tv_entidad"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/diputado_tv_cargo"
+                        android:paddingTop="10dp"
+                        android:paddingLeft="15dp"
+                        android:paddingRight="15dp"
+                        android:textAppearance="?android:attr/textAppearanceSmall"
+                        android:textColor="@color/colorBackgroundWhite"
+                        android:text=""
+                        app:typeface="Gotham_Rounded_Book" />
                 </RelativeLayout>
 
                 <com.makeramen.roundedimageview.RoundedImageView
@@ -87,41 +90,81 @@
                     app:riv_oval="true" />
             </RelativeLayout>
 
-            <TextView
-                android:id="@+id/diputado_tv_alianzas"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingTop="15dp"
-                android:paddingLeft="15dp"
-                android:paddingRight="15dp"
-                android:paddingBottom="15dp"
-                android:gravity="center"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:textColor="@color/colorTextTitle"
-                android:text="Partidos Aliados" />
-
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
+                android:layout_gravity="center_horizontal"
                 android:orientation="horizontal">
 
-                <ImageView
-                    android:id="@+id/diputado_iv_partido"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:src="@drawable/ic_profile_orange"
-                    android:scaleType="centerCrop" />
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <mx.com.factico.diputinder.views.CustomTextView
+                        android:id="@+id/diputado_tv_partido"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:paddingTop="15dp"
+                        android:paddingLeft="15dp"
+                        android:paddingRight="15dp"
+                        android:paddingBottom="10dp"
+                        android:gravity="center"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:textColor="@color/colorTextTitle"
+                        android:text="Partido"
+                        app:typeface="Gotham_Rounded_Bold" />
+
+                    <ImageView
+                        android:id="@+id/diputado_iv_partido"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_gravity="center_horizontal"
+                        android:src="@drawable/drawable_bgr_circle"
+                        android:scaleType="centerCrop" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/diputado_vg_alianzas_container"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    android:orientation="vertical">
+
+                    <mx.com.factico.diputinder.views.CustomTextView
+                        android:id="@+id/diputado_tv_alianzas"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingTop="15dp"
+                        android:paddingLeft="15dp"
+                        android:paddingRight="15dp"
+                        android:paddingBottom="10dp"
+                        android:gravity="center"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:textColor="@color/colorTextTitle"
+                        android:text="Partidos Aliados"
+                        app:typeface="Gotham_Rounded_Bold" />
+
+                    <LinearLayout
+                        android:id="@+id/diputado_vg_partidos_container"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:orientation="horizontal" />
+                </LinearLayout>
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_marginTop="30dp"
                 android:orientation="vertical">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:baselineAligned="false"
                     android:orientation="horizontal">
 
                     <LinearLayout
@@ -139,13 +182,14 @@
                             android:src="@drawable/ic_patrimonial_off"
                             android:scaleType="fitCenter" />
 
-                        <TextView
+                        <mx.com.factico.diputinder.views.CustomTextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:text="Declaración\nPatrimonial"
                             android:padding="2dp"
                             android:gravity="center"
-                            android:textAppearance="?android:attr/textAppearanceMedium" />
+                            android:textAppearance="?android:attr/textAppearanceMedium"
+                            app:typeface="Gotham_Rounded_Bold" />
                     </LinearLayout>
 
                     <LinearLayout
@@ -163,18 +207,19 @@
                             android:src="@drawable/ic_intereses_off"
                             android:scaleType="fitCenter" />
 
-                        <TextView
+                        <mx.com.factico.diputinder.views.CustomTextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:text="Declaración de\nIntereses"
                             android:padding="2dp"
                             android:gravity="center"
-                            android:textAppearance="?android:attr/textAppearanceMedium" />
+                            android:textAppearance="?android:attr/textAppearanceMedium"
+                            app:typeface="Gotham_Rounded_Bold" />
                     </LinearLayout>
                 </LinearLayout>
 
                 <LinearLayout
-                    android:layout_width="100dp"
+                    android:layout_width="200dp"
                     android:layout_height="150dp"
                     android:orientation="vertical"
                     android:layout_gravity="center_horizontal">
@@ -188,13 +233,14 @@
                         android:src="@drawable/ic_fiscal_off"
                         android:scaleType="fitCenter" />
 
-                    <TextView
+                    <mx.com.factico.diputinder.views.CustomTextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="Declaración\nFiscal"
                         android:padding="2dp"
                         android:gravity="center"
-                        android:textAppearance="?android:attr/textAppearanceMedium" />
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        app:typeface="Gotham_Rounded_Bold" />
                 </LinearLayout>
             </LinearLayout>
         </LinearLayout>

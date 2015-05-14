@@ -19,6 +19,7 @@ import java.util.Locale;
 
 import mx.com.factico.diputinder.R;
 import mx.com.factico.diputinder.beans.Diputado;
+import mx.com.factico.diputinder.beans.PartidoType;
 import mx.com.factico.diputinder.httpconnection.HttpConnection;
 
 /**
@@ -36,10 +37,9 @@ public class MyArrayAdapter extends ArrayAdapter<Diputado> {
         this.values = values;
 
         options = new DisplayImageOptions.Builder()
-                //.showImageOnLoading(R.drawable.ic_profile_orange)
-                .showImageOnLoading(null)
-                .showImageForEmptyUri(R.drawable.ic_launcher)
-                .showImageOnFail(R.drawable.ic_launcher)
+                //.showImageOnLoading(null)
+                .showImageForEmptyUri(R.drawable.ic_avatar_no)
+                .showImageOnFail(R.drawable.ic_avatar_no)
                 .resetViewBeforeLoading(true)
                 //.cacheInMemory(false)
                 .cacheOnDisk(true)
@@ -63,26 +63,29 @@ public class MyArrayAdapter extends ArrayAdapter<Diputado> {
 
             // configure view holder
             holder.name = (TextView) rowView.findViewById(R.id.item_diputado_tv_name);
-            holder.image = (ImageView) rowView.findViewById(R.id.item_diputado_iv_profile);
+            holder.imageProfile = (ImageView) rowView.findViewById(R.id.item_diputado_iv_profile);
+            holder.imagePartido = (ImageView) rowView.findViewById(R.id.item_diputado_iv_partido);
 
             rowView.setTag(holder);
         } else {
             holder = (ViewHolder) rowView.getTag();
         }
 
-        Diputado bean = getItem(position);
-        holder.name.setText(String.format(Locale.getDefault(), "%s %s %s", bean.getNombres(), bean.getApellidoPaterno(), bean.getApellidoMaterno()));
-        if (bean.getTwitter() != null && !bean.getTwitter().equals("")) {
-            String twitter = bean.getTwitter().replaceAll("\\s+", "");
-            ImageLoader.getInstance().displayImage(String.format(Locale.getDefault(), HttpConnection.TWITTER_IMAGE_URL, twitter), holder.image, options);
+        Diputado diputado = getItem(position);
+        holder.name.setText(String.format(Locale.getDefault(), "%s %s %s", diputado.getNombres(), diputado.getApellidoPaterno(), diputado.getApellidoMaterno()));
+        if (diputado.getTwitter() != null && !diputado.getTwitter().equals("")) {
+            String twitter = diputado.getTwitter().replaceAll("\\s+", "");
+            ImageLoader.getInstance().displayImage(String.format(Locale.getDefault(), HttpConnection.TWITTER_IMAGE_URL, twitter), holder.imageProfile, options);
         } else {
-            if (bean.getGnero() != null) {
-                if (bean.getGnero().equals("F"))
-                    holder.image.setImageResource(R.drawable.ic_profile_women);
-                else if (bean.getGnero().equals("M"))
-                    holder.image.setImageResource(R.drawable.ic_profile_men);
+            if (diputado.getGnero() != null) {
+                if (diputado.getGnero().equals("F"))
+                    holder.imageProfile.setImageResource(R.drawable.ic_avatar_women_square);
+                else if (diputado.getGnero().equals("M"))
+                    holder.imageProfile.setImageResource(R.drawable.ic_avatar_men_square);
             }
         }
+
+        holder.imagePartido.setImageResource(PartidoType.getIconPartido(PartidoType.getPartidoType(diputado.getPartido())));
 
         return rowView;
     }
@@ -99,6 +102,7 @@ public class MyArrayAdapter extends ArrayAdapter<Diputado> {
 
     static class ViewHolder {
         public TextView name;
-        public ImageView image;
+        public ImageView imageProfile;
+        public ImageView imagePartido;
     }
 }

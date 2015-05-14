@@ -2,6 +2,7 @@ package mx.com.factico.diputinder;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.Point;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.support.v7.app.ActionBarActivity;
@@ -11,6 +12,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -29,6 +32,7 @@ import mx.com.factico.diputinder.httpconnection.HttpConnection;
 import mx.com.factico.diputinder.location.LocationClientListener;
 import mx.com.factico.diputinder.location.LocationUtils;
 import mx.com.factico.diputinder.parser.GsonParser;
+import mx.com.factico.diputinder.utils.ScreenUtils;
 
 public class MainActivity extends ActionBarActivity implements View.OnClickListener {
     public static final String TAG_CLASS = MainActivity.class.getSimpleName();
@@ -190,8 +194,20 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
             }
         });
 
-        findViewById(R.id.main_btn_swipe_left).setOnClickListener(this);
-        findViewById(R.id.main_btn_swipe_right).setOnClickListener(this);
+        Point point = ScreenUtils.getScreenSize(getBaseContext());
+        int width = point.x / 4;
+
+        View btnSwipeLeft = findViewById(R.id.main_btn_swipe_left);
+        LinearLayout.LayoutParams paramsLeft = new LinearLayout.LayoutParams(width, width);
+        paramsLeft.setMargins(0, 0, width / 3, 0);
+        btnSwipeLeft.setLayoutParams(paramsLeft);
+        btnSwipeLeft.setOnClickListener(this);
+
+        View btnSwipeRight = findViewById(R.id.main_btn_swipe_right);
+        LinearLayout.LayoutParams paramsRight = new LinearLayout.LayoutParams(width, width);
+        paramsRight.setMargins(width / 3, 0, 0, 0);
+        btnSwipeRight.setLayoutParams(paramsRight);
+        btnSwipeRight.setOnClickListener(this);
     }
 
     @Override
