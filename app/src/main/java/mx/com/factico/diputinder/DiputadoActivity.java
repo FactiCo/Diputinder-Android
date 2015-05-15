@@ -90,6 +90,7 @@ public class DiputadoActivity extends ActionBarActivity {
 
         Point point = ScreenUtils.getScreenSize(getBaseContext());
         int width = point.x / 3;
+        int height = point.y / 4;
 
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
         params.setMargins(width / 2, 0, 0, 0);
@@ -160,6 +161,17 @@ public class DiputadoActivity extends ActionBarActivity {
                 }
             }
         }
+
+        View vgPatrimonial = findViewById(R.id.diputado_vg_patrimonial);
+        vgPatrimonial.setLayoutParams(new LinearLayout.LayoutParams(0, height, 1));
+
+        View vgIntereses = findViewById(R.id.diputado_vg_intereses);
+        vgIntereses.setLayoutParams(new LinearLayout.LayoutParams(0, height, 1));
+
+        View vgFiscal = findViewById(R.id.diputado_vg_fiscal);
+        LinearLayout.LayoutParams paramsFiscal = new LinearLayout.LayoutParams(height, height, 1);
+        paramsFiscal.gravity = Gravity.CENTER_HORIZONTAL;
+        vgFiscal.setLayoutParams(paramsFiscal);
     }
 
     public static boolean isNumeric(String str) {

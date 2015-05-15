@@ -168,6 +168,7 @@
                     android:orientation="horizontal">
 
                     <LinearLayout
+                        android:id="@+id/diputado_vg_patrimonial"
                         android:layout_width="0dp"
                         android:layout_height="150dp"
                         android:layout_weight="1"
@@ -193,6 +194,7 @@
                     </LinearLayout>
 
                     <LinearLayout
+                        android:id="@+id/diputado_vg_intereses"
                         android:layout_width="0dp"
                         android:layout_height="150dp"
                         android:layout_weight="1"
@@ -219,6 +221,7 @@
                 </LinearLayout>
 
                 <LinearLayout
+                    android:id="@+id/diputado_vg_fiscal"
                     android:layout_width="200dp"
                     android:layout_height="150dp"
                     android:orientation="vertical"
