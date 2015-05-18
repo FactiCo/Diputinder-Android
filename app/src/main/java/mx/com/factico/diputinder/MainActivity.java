@@ -291,14 +291,16 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 
                     if (diputados != null && diputados.size() > 0) {
                         //auxDiputados = diputados.subList(1, 30);
-                        auxDiputados = getListDiputadosFromState(diputados, address.getState());
+                        List<Diputado> diputadosUnorder = getListDiputadosFromState(diputados, address.getState());
+
+                        auxDiputados = getOrderedListDiputados(diputadosUnorder);
 
                         if (auxDiputados != null && auxDiputados.size() > 0) {
                             Dialogues.Log(TAG_CLASS, "/**************Entré INITUI: " + auxDiputados.size(), Log.ERROR);
 
                             initUI();
                         } else {
-                            Dialogues.Toast(getBaseContext(), "No se encontraron coincidencias en tu Entidad Federativa.", Toast.LENGTH_SHORT);
+                            Dialogues.Toast(getBaseContext(), "No se encontraron coincidencias en tu Entidad Federativa. " + address.getState(), Toast.LENGTH_SHORT);
                         }
                     }
                 } catch (Exception e) {
@@ -315,11 +317,28 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         }
     }
 
+    protected List<Diputado> getOrderedListDiputados(List<Diputado> listDiputados) {
+        List<Diputado> auxTwitter = new ArrayList<>();
+        List<Diputado> auxNoTwitter = new ArrayList<>();
+
+        for (Diputado diputado : listDiputados) {
+            if (diputado.getTwitter() != null && !diputado.getTwitter().equals(""))
+                auxTwitter.add(diputado);
+            else
+                auxNoTwitter.add(diputado);
+        }
+
+        if (auxNoTwitter.size() > 0)
+            auxTwitter.addAll(auxNoTwitter);
+
+        return auxTwitter;
+    }
+
     protected List<Diputado> getListDiputadosFromState(List<Diputado> listDiputados, String state) {
         List<Diputado> auxListDiputados = new ArrayList<>();
 
         for (Diputado diputado : listDiputados) {
-            if (diputado.getEntidadFederativa().contains(state))
+            if (diputado.getEntidadFederativa().equalsIgnoreCase(state))
                 auxListDiputados.add(diputado);
         }
 
