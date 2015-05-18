@@ -17,8 +17,7 @@
         android:theme="@style/AppTheme">
 
         <activity
-            android:name=".MainActivity"
-            android:label="@string/app_name"
+            android:name=".TutorialActivity"
             android:launchMode="singleTask"
             android:screenOrientation="portrait">
             <intent-filter>
@@ -29,7 +28,7 @@
         </activity>
 
         <activity
-            android:name=".DiputadoActivity"
+            android:name="mx.com.factico.diputinder.DiputadoActivity"
             android:launchMode="singleTask"
             android:parentActivityName="mx.com.factico.diputinder.MainActivity"
             android:screenOrientation="portrait" />
@@ -38,6 +37,12 @@
             android:name="mx.com.factico.diputinder.WebViewActivity"
             android:launchMode="singleTask"
             android:parentActivityName="mx.com.factico.diputinder.DiputadoActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name="mx.com.factico.diputinder.MainActivity"
+            android:label="@string/app_name"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait" />
     </application>
 

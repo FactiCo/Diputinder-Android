@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:src="@drawable/bgr_tutorial_candados"
+        android:scaleType="centerCrop"/>
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/tutorial_pager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <mx.com.factico.diputinder.views.CustomTextView
+        android:id="@+id/tutorial_btn_skip"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/selector_white"
+        android:gravity="center"
+        android:padding="15dp"
+        android:text="INICIAR"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="@color/colorTextContent"
+        android:visibility="gone"
+        app:typeface="Gotham_Rounded_Bold" />
+</RelativeLayout>

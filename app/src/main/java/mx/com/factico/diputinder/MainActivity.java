@@ -1,13 +1,19 @@
 package mx.com.factico.diputinder;
 
 import android.app.ProgressDialog;
+import android.content.ComponentName;
 import android.content.Intent;
+import android.content.pm.LabeledIntent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
+import android.content.res.Resources;
 import android.graphics.Point;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.text.Html;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -155,6 +161,8 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
             @Override
             public void onRightCardExit(Object dataObject) {
                 Dialogues.Toast(getBaseContext(), "Right!", Toast.LENGTH_SHORT);
+
+                startShareIntent();
             }
 
             @Override
@@ -226,6 +234,37 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
          * Trigger the right event manually.
          */
         flingContainer.getTopCardListener().selectRight();
+    }
+
+    private void startShareIntent() {
+        Intent shareIntent = findTwitterClient();
+        shareIntent.putExtra(Intent.EXTRA_TEXT, "Este es el texto que se debe compartir en Twitter");
+        startActivity(Intent.createChooser(shareIntent, "Share"));
+    }
+
+    public Intent findTwitterClient() {
+        final String[] twitterApps = {
+                // package // name - nb installs (thousands)
+                "com.twitter.android", // official - 10 000
+                "com.twidroid", // twidroid - 5 000
+                "com.handmark.tweetcaster", // Tweecaster - 5 000
+                "com.thedeck.android"}; // TweetDeck - 5 000 };
+        Intent tweetIntent = new Intent();
+        tweetIntent.setType("text/plain");
+        final PackageManager packageManager = getPackageManager();
+        List<ResolveInfo> list = packageManager.queryIntentActivities(tweetIntent, PackageManager.MATCH_DEFAULT_ONLY);
+
+        for (int i = 0; i < twitterApps.length; i++) {
+            for (ResolveInfo resolveInfo : list) {
+                String p = resolveInfo.activityInfo.packageName;
+                if (p != null && p.startsWith(twitterApps[i])) {
+                    tweetIntent.setPackage(p);
+                    return tweetIntent;
+                }
+            }
+        }
+
+        return null;
     }
 
     @Override
