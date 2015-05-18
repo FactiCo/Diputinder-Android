@@ -13,11 +13,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.maps.model.LatLng;
 import com.lorentzos.flingswipe.SwipeFlingAdapterView;
 
@@ -26,6 +24,7 @@ import java.util.List;
 
 import mx.com.factico.diputinder.adapters.MyArrayAdapter;
 import mx.com.factico.diputinder.beans.Address;
+import mx.com.factico.diputinder.beans.Candidatos;
 import mx.com.factico.diputinder.beans.Diputado;
 import mx.com.factico.diputinder.dialogues.Dialogues;
 import mx.com.factico.diputinder.httpconnection.HttpConnection;
@@ -253,6 +252,11 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
+        if (id == android.R.id.home) {
+            finish();
+            return true;
+        }
+
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
@@ -263,6 +267,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 
     private class GetDiputadosPublicationsAsyncTask extends AsyncTask<String, String, String> {
         private ProgressDialog dialog;
+        private String json_PDF;
 
         public GetDiputadosPublicationsAsyncTask() {}
 
@@ -277,6 +282,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 
         @Override
         protected String doInBackground(String... params) {
+            json_PDF = HttpConnection.GET(HttpConnection.URL + HttpConnection.PDFS);
             return HttpConnection.GET(HttpConnection.URL + HttpConnection.DIPUTADOS);
         }
 
@@ -286,25 +292,42 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
             // Dialogues.Toast(getBaseContext(), "Result: " + result, Toast.LENGTH_LONG);
 
             if (result != null) {
-                try {
-                    diputados = GsonParser.getListDiputadosFromJSON(result);
+                if (json_PDF != null && !json_PDF.equals("")) {
+                    try {
+                        diputados = GsonParser.getListDiputadosFromJSON(result);
+                        Candidatos candidatos = GsonParser.getCandidatosFromJSON(json_PDF);
 
-                    if (diputados != null && diputados.size() > 0) {
-                        //auxDiputados = diputados.subList(1, 30);
-                        List<Diputado> diputadosUnorder = getListDiputadosFromState(diputados, address.getState());
-
-                        auxDiputados = getOrderedListDiputados(diputadosUnorder);
-
-                        if (auxDiputados != null && auxDiputados.size() > 0) {
-                            Dialogues.Log(TAG_CLASS, "/**************Entré INITUI: " + auxDiputados.size(), Log.ERROR);
-
-                            initUI();
-                        } else {
-                            Dialogues.Toast(getBaseContext(), "No se encontraron coincidencias en tu Entidad Federativa. " + address.getState(), Toast.LENGTH_SHORT);
+                        if (candidatos == null || diputados == null) {
+                            return;
                         }
+
+                        if (diputados.size() > 0) {
+                            List<Diputado> diputadosUnorder = getListDiputadosFromState(diputados, address.getState());
+
+                            auxDiputados = getOrderedListDiputados(diputadosUnorder);
+
+                            if (auxDiputados != null && auxDiputados.size() > 0) {
+                                List<Diputado> candidatosPDF = candidatos.getCandidatos();
+                                if (candidatosPDF != null && candidatosPDF.size() > 0) {
+                                    for (Diputado diputado : candidatosPDF) {
+                                        if (auxDiputados.contains(diputado)) {
+                                            Dialogues.Log(TAG_CLASS, "Lo contiene: " + diputado.getNombres() + diputado.getApellidoPaterno(), Log.ERROR);
+                                        } else {
+                                            Dialogues.Log(TAG_CLASS, "NO lo contiene: " + diputado.getNombres() + diputado.getApellidoPaterno(), Log.ERROR);
+                                        }
+                                    }
+                                }
+
+                                Dialogues.Log(TAG_CLASS, "/**************Entré INITUI: " + auxDiputados.size(), Log.ERROR);
+
+                                initUI();
+                            } else {
+                                Dialogues.Toast(getBaseContext(), "No se encontraron coincidencias en tu Entidad Federativa. " + address.getState(), Toast.LENGTH_SHORT);
+                            }
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
-                } catch (Exception e) {
-                    e.printStackTrace();
                 }
             }
 

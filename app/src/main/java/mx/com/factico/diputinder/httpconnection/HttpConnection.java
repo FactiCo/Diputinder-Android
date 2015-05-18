@@ -23,8 +23,10 @@ import mx.com.factico.diputinder.dialogues.Dialogues;
 public class HttpConnection {
 	public static final String TAG_CLASS = HttpConnection.class.getSimpleName();
 	
-	public static final String URL = "https://candidatotransparente.mx/scripts/datos/";
-    public static final String DIPUTADOS = "Diputados.json";
+	public static final String URL = "https://candidatotransparente.mx/";
+    public static final String DIPUTADOS = "scripts/datos/Diputados.json";
+
+	public static final String PDFS = "api/api/candidatos/transparentes";
 
 	public static final String TWITTER_IMAGE_URL = "https://twitter.com/@%s/profile_image?size=original";
 

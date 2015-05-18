@@ -22,8 +22,11 @@ public class Diputado implements Serializable {
     private String alianza;
     private String partidosEnAlianza;
     private String patrimonial;
+    private String patrimonialPDF;
     private String intereses;
+    private String interesesPDF;
     private String fiscal;
+    private String fiscalPDF;
 
     public long getId() {
         return id;
@@ -167,5 +170,46 @@ public class Diputado implements Serializable {
 
     public void setFiscal(String fiscal) {
         this.fiscal = fiscal;
+    }
+
+    public String getPatrimonialPDF() {
+        return patrimonialPDF;
+    }
+
+    public void setPatrimonialPDF(String patrimonialPDF) {
+        this.patrimonialPDF = patrimonialPDF;
+    }
+
+    public String getInteresesPDF() {
+        return interesesPDF;
+    }
+
+    public void setInteresesPDF(String interesesPDF) {
+        this.interesesPDF = interesesPDF;
+    }
+
+    public String getFiscalPDF() {
+        return fiscalPDF;
+    }
+
+    public void setFiscalPDF(String fiscalPDF) {
+        this.fiscalPDF = fiscalPDF;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        boolean isEqual = false;
+
+        if (o == null) return false;
+        if (o instanceof Diputado) {
+            Diputado diputado = (Diputado) o;
+            isEqual = (diputado.nombres.equals(this.nombres)
+                    && diputado.getApellidoPaterno().equals(this.getApellidoPaterno())
+                    && diputado.getApellidoMaterno().equals(this.getApellidoMaterno())
+                    && diputado.getEntidadFederativa().equals(this.getEntidadFederativa())
+                    && diputado.getDistritoElectoral().equals(this.getDistritoElectoral()));
+        }
+
+        return isEqual;
     }
 }

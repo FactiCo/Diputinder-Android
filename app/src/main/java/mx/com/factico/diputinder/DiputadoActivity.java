@@ -67,6 +67,7 @@ public class DiputadoActivity extends ActionBarActivity {
         actionbarTitle.setText(getResources().getString(R.string.app_name));
 
         setSupportActionBar(mToolbar);
+        getSupportActionBar().setDefaultDisplayHomeAsUpEnabled(true);
     }
 
     protected void initUI() {

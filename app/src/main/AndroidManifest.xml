@@ -28,7 +28,8 @@
 
         <activity
             android:name=".DiputadoActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait"
+            android:parentActivityName="mx.com.factico.diputinder.MainActivity"/>
     </application>
 
 </manifest>

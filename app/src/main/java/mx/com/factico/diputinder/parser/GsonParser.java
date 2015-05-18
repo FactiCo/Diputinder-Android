@@ -9,6 +9,7 @@ import com.google.gson.reflect.TypeToken;
 import java.lang.reflect.Type;
 import java.util.List;
 
+import mx.com.factico.diputinder.beans.Candidatos;
 import mx.com.factico.diputinder.beans.Diputado;
 import mx.com.factico.diputinder.dialogues.Dialogues;
 
@@ -17,18 +18,23 @@ public class GsonParser {
 
 	public static Diputado getDiputadoFromJSON(String json) throws Exception {
 		Gson gson = new Gson();
-		Diputado publication = gson.fromJson(json, Diputado.class);
-		return publication;
+
+		return gson.fromJson(json, Diputado.class);
 	}
 
     public static List<Diputado> getListDiputadosFromJSON(String json) {
         Gson gson = new Gson();
 
         Type listType = new TypeToken<List<Diputado>>(){}.getType();
-        List<Diputado> listPublications = gson.fromJson(json, listType);
 
-        return listPublications;
+        return gson.fromJson(json, listType);
     }
+
+	public static Candidatos getCandidatosFromJSON(String json) {
+		Gson gson = new Gson();
+
+		return gson.fromJson(json, Candidatos.class);
+	}
 
 	public static String createJsonFromObject(Object object) {
 		Gson gson = new Gson();

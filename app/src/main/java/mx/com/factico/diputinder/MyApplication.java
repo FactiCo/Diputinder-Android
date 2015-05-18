@@ -8,6 +8,10 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
 
+import io.fabric.sdk.android.Fabric;
+import com.twitter.sdk.android.Twitter;
+import com.twitter.sdk.android.core.TwitterAuthConfig;
+
 /**
  * Created by zace3d on 4/29/15.
  */
@@ -16,6 +20,9 @@ public class MyApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+
+        TwitterAuthConfig authConfig = new TwitterAuthConfig("38anELUfaCfMipkBUfa3FrQR1", "us0bWPst1Y4KelBCzpKwOsGo2K0ybCLkeHdjHGv1I2LtvA4S0b");
+        Fabric.with(this, new Twitter(authConfig));
 
         initImageLoader(getApplicationContext());
     }
