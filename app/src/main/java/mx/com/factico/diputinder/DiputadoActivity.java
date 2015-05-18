@@ -1,5 +1,6 @@
 package mx.com.factico.diputinder;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.os.Bundle;
@@ -67,7 +68,8 @@ public class DiputadoActivity extends ActionBarActivity {
         actionbarTitle.setText(getResources().getString(R.string.app_name));
 
         setSupportActionBar(mToolbar);
-        getSupportActionBar().setDefaultDisplayHomeAsUpEnabled(true);
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     protected void initUI() {
@@ -126,19 +128,25 @@ public class DiputadoActivity extends ActionBarActivity {
         ivIcon.setLayoutParams(paramsPartido);
         ivIcon.setImageResource(PartidoType.getIconPartido(PartidoType.getPartidoType(diputado.getPartido())));
 
-        if (diputado.getPatrimonial() != null && !diputado.getPatrimonial().equals("")) {
+        if (diputado.getPatrimonialPDF() != null && !diputado.getPatrimonialPDF().equals("")) {
             ImageView ivPatrimonial = (ImageView) findViewById(R.id.diputado_iv_patrimonial);
+            ivPatrimonial.setTag(diputado.getPatrimonialPDF());
             ivPatrimonial.setImageResource(PartidoType.getIconPartidoPatrimonial(PartidoType.getPartidoType(diputado.getPartido())));
+            ivPatrimonial.setOnClickListener(WebViewOnClickListener);
         }
 
-        if (diputado.getIntereses() != null && !diputado.getIntereses().equals("")) {
+        if (diputado.getInteresesPDF() != null && !diputado.getInteresesPDF().equals("")) {
             ImageView ivIntereses = (ImageView) findViewById(R.id.diputado_iv_intereses);
+            ivIntereses.setTag(diputado.getInteresesPDF());
             ivIntereses.setImageResource(PartidoType.getIconPartidoIntereses(PartidoType.getPartidoType(diputado.getPartido())));
+            ivIntereses.setOnClickListener(WebViewOnClickListener);
         }
 
-        if (diputado.getFiscal() != null && !diputado.getFiscal().equals("")) {
+        if (diputado.getFiscalPDF() != null && !diputado.getFiscalPDF().equals("")) {
             ImageView ivFiscal = (ImageView) findViewById(R.id.diputado_iv_fiscal);
+            ivFiscal.setTag(diputado.getFiscalPDF());
             ivFiscal.setImageResource(PartidoType.getIconPartidoFiscal(PartidoType.getPartidoType(diputado.getPartido())));
+            ivFiscal.setOnClickListener(WebViewOnClickListener);
         }
 
         LinearLayout partidosContainer = (LinearLayout) findViewById(R.id.diputado_vg_partidos_container);
@@ -173,6 +181,20 @@ public class DiputadoActivity extends ActionBarActivity {
         LinearLayout.LayoutParams paramsFiscal = new LinearLayout.LayoutParams(height, height, 1);
         paramsFiscal.gravity = Gravity.CENTER_HORIZONTAL;
         vgFiscal.setLayoutParams(paramsFiscal);
+    }
+
+    private View.OnClickListener WebViewOnClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            String url = v.getTag().toString();
+            startWebViewIntent(url);
+        }
+    };
+
+    private void startWebViewIntent(String url) {
+        Intent intent = new Intent(getBaseContext(), WebViewActivity.class);
+        intent.putExtra("url", url);
+        startActivity(intent);
     }
 
     public static boolean isNumeric(String str) {

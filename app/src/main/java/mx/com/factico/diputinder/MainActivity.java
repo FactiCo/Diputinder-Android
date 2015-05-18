@@ -129,16 +129,6 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     protected void initUI() {
         flingContainer = (SwipeFlingAdapterView) findViewById(R.id.main_swipe_tinder);
 
-        /*diputados = new ArrayList<>();
-        diputados.add(new Diputado("php"));
-        diputados.add(new Diputado("c"));
-        diputados.add(new Diputado("python"));
-        diputados.add(new Diputado("java"));
-        diputados.add(new Diputado("html"));
-        diputados.add(new Diputado("c++"));
-        diputados.add(new Diputado("css"));
-        diputados.add(new Diputado("javascript"));*/
-
         // arrayAdapter = new ArrayAdapter<>(this, R.layout.item, R.id.helloText, diputados);
         arrayAdapter = new MyArrayAdapter(this, auxDiputados);
 
@@ -311,6 +301,12 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                                 if (candidatosPDF != null && candidatosPDF.size() > 0) {
                                     for (Diputado diputado : candidatosPDF) {
                                         if (auxDiputados.contains(diputado)) {
+                                            int indexOf = auxDiputados.indexOf(diputado);
+                                            if (indexOf != -1) {
+                                                auxDiputados.get(indexOf).setPatrimonialPDF(diputado.getPatrimonialPDF());
+                                                auxDiputados.get(indexOf).setFiscalPDF(diputado.getFiscalPDF());
+                                                auxDiputados.get(indexOf).setInteresesPDF(diputado.getInteresesPDF());
+                                            }
                                             Dialogues.Log(TAG_CLASS, "Lo contiene: " + diputado.getNombres() + diputado.getApellidoPaterno(), Log.ERROR);
                                         } else {
                                             Dialogues.Log(TAG_CLASS, "NO lo contiene: " + diputado.getNombres() + diputado.getApellidoPaterno(), Log.ERROR);
