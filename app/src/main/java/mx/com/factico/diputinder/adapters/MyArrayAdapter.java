@@ -2,11 +2,13 @@ package mx.com.factico.diputinder.adapters;
 
 import android.app.Activity;
 import android.graphics.Bitmap;
+import android.graphics.Point;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -21,6 +23,7 @@ import mx.com.factico.diputinder.R;
 import mx.com.factico.diputinder.beans.Diputado;
 import mx.com.factico.diputinder.beans.PartidoType;
 import mx.com.factico.diputinder.httpconnection.HttpConnection;
+import mx.com.factico.diputinder.utils.ScreenUtils;
 
 /**
  * Created by zace3d on 4/27/15.
@@ -65,6 +68,16 @@ public class MyArrayAdapter extends ArrayAdapter<Diputado> {
             holder.name = (TextView) rowView.findViewById(R.id.item_diputado_tv_name);
             holder.imageProfile = (ImageView) rowView.findViewById(R.id.item_diputado_iv_profile);
             holder.imagePartido = (ImageView) rowView.findViewById(R.id.item_diputado_iv_partido);
+
+            Point point = ScreenUtils.getScreenSize(getContext());
+            int sizeIcon = point.x / 5;
+            int margin = (int) ScreenUtils.convertDpToPixel(10, getContext());
+
+            RelativeLayout.LayoutParams paramsIcon = new RelativeLayout.LayoutParams(sizeIcon, sizeIcon);
+            paramsIcon.setMargins(0, 0, margin, 0);
+            paramsIcon.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+            paramsIcon.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+            holder.imagePartido.setLayoutParams(paramsIcon);
 
             rowView.setTag(holder);
         } else {

@@ -8,6 +8,7 @@ import android.content.pm.LabeledIntent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.location.Location;
 import android.os.AsyncTask;
@@ -21,14 +22,19 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.lorentzos.flingswipe.SwipeFlingAdapterView;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import mx.com.factico.diputinder.adapters.MyArrayAdapter;
 import mx.com.factico.diputinder.beans.Address;
@@ -55,6 +61,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     private LocationClientListener clientListener;
     private LatLng userLocation;
     private Address address;
+    private DisplayImageOptions options;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +71,18 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         setSupportActionBar();
         initLocationClientListener();
         initUI();
+
+        options = new DisplayImageOptions.Builder()
+                //.showImageOnLoading(null)
+                .showImageForEmptyUri(R.drawable.ic_avatar_no)
+                .showImageOnFail(R.drawable.ic_avatar_no)
+                .resetViewBeforeLoading(true)
+                .cacheOnDisk(true)
+                .imageScaleType(ImageScaleType.EXACTLY)
+                .bitmapConfig(Bitmap.Config.RGB_565)
+                .considerExifParams(true)
+                //.displayer(new FadeInBitmapDisplayer(300))
+                .build();
     }
 
     protected void setSupportActionBar() {
@@ -260,13 +279,29 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
             tvSubMessage.setText(getResources().getString(R.string.tweet_submessage_bad));
         }
 
+        CustomTextView tvName = (CustomTextView) view.findViewById(R.id.dialog_tweet_tv_name);
+        tvName.setText(String.format(Locale.getDefault(), "%s %s %s", diputado.getNombres(), diputado.getApellidoPaterno(), diputado.getApellidoMaterno()));
+
+        ImageView ivProfile = (ImageView) view.findViewById(R.id.dialog_tweet_iv_profile);
+        if (diputado.getTwitter() != null && !diputado.getTwitter().equals("")) {
+            String twitter = diputado.getTwitter().replaceAll("\\s+", "");
+            ImageLoader.getInstance().displayImage(String.format(Locale.getDefault(), HttpConnection.TWITTER_IMAGE_URL, twitter), ivProfile, options);
+        } else {
+            if (diputado.getGnero() != null) {
+                if (diputado.getGnero().equals("F"))
+                    ivProfile.setImageResource(R.drawable.ic_avatar_women);
+                else if (diputado.getGnero().equals("M"))
+                    ivProfile.setImageResource(R.drawable.ic_avatar_men);
+            }
+        }
+
         view.findViewById(R.id.dialog_tweet_btn_tweet).setOnClickListener(TweetOnClickListener);
 
         builder.setView(view);
 
         dialog = builder.create();
         dialog.setCancelable(true);
-        dialog.setCanceledOnTouchOutside(true);
+        dialog.setCanceledOnTouchOutside(false);
         dialog.show();
     }
 

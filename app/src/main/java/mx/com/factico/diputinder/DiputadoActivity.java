@@ -104,8 +104,9 @@ public class DiputadoActivity extends ActionBarActivity {
 
         int sizeIcons = point.x / 5;
 
-        RelativeLayout.LayoutParams paramsIconsStatus = new RelativeLayout.LayoutParams(sizeIcons, sizeIcons);
+        RelativeLayout.LayoutParams paramsIconsStatus = new RelativeLayout.LayoutParams(sizeIcons / 2, sizeIcons / 2);
         paramsIconsStatus.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+        paramsIconsStatus.addRule(RelativeLayout.CENTER_VERTICAL);
 
         RelativeLayout.LayoutParams paramsIcons = new RelativeLayout.LayoutParams(sizeIcons, sizeIcons);
         paramsIcons.addRule(RelativeLayout.ALIGN_PARENT_LEFT);

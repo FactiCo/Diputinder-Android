@@ -3,7 +3,38 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/colorLine"
     android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp">
+
+        <com.makeramen.roundedimageview.RoundedImageView
+            android:id="@+id/dialog_tweet_iv_profile"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_gravity="center_horizontal"
+            android:padding="1dp"
+            android:src="@drawable/ic_avatar_men"
+            android:background="@drawable/drawable_bgr_circle"
+            android:scaleType="centerCrop"
+            app:riv_mutate_background="true"
+            app:riv_oval="true"/>
+
+        <mx.com.factico.diputinder.views.CustomTextView
+            android:id="@+id/dialog_tweet_tv_name"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text=""
+            android:textColor="@color/colorBackgroundWhite"
+            android:gravity="center_vertical"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            app:typeface="Gotham_Rounded_Bold"/>
+    </LinearLayout>
 
     <mx.com.factico.diputinder.views.CustomTextView
         android:id="@+id/dialog_tweet_tv_message"
@@ -27,23 +58,23 @@
             android:id="@+id/dialog_tweet_iv_tweet"
             android:layout_width="100dp"
             android:layout_height="100dp"
-            android:padding="10dp"
             android:layout_gravity="center_horizontal"
-            android:src="@drawable/ic_twitter"
-            android:scaleType="centerCrop"/>
+            android:padding="10dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/ic_twitter" />
 
         <mx.com.factico.diputinder.views.CustomTextView
             android:id="@+id/dialog_tweet_tv_submessage"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/dialog_tweet_iv_tweet"
+            android:layout_alignTop="@+id/dialog_tweet_iv_tweet"
+            android:layout_toRightOf="@+id/dialog_tweet_iv_tweet"
             android:gravity="center_vertical"
             android:padding="10dp"
-            android:layout_toRightOf="@+id/dialog_tweet_iv_tweet"
-            android:layout_alignTop="@+id/dialog_tweet_iv_tweet"
-            android:layout_alignBottom="@+id/dialog_tweet_iv_tweet"
             android:text=""
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:textColor="@color/colorBackgroundWhite"
-            app:typeface="Gotham_Rounded_Bold" />
+            app:typeface="Gotham_Rounded_Book" />
     </RelativeLayout>
 </LinearLayout>

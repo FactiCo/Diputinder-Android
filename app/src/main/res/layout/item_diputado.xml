@@ -22,29 +22,20 @@
             android:id="@+id/item_diputado_name_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
             android:layout_alignParentBottom="true">
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_centerVertical="true"
-                android:layout_alignTop="@+id/item_diputado_tv_name"
-                android:layout_alignBottom="@+id/item_diputado_tv_name"
-                android:background="@color/colorAccent"/>
 
             <mx.com.factico.diputinder.views.CustomTextView
                 android:id="@+id/item_diputado_tv_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textColor="@color/colorBackgroundWhite"
+                android:background="@color/colorAccent"
                 android:paddingLeft="10dp"
-                android:paddingRight="10dp"
+                android:paddingRight="100dp"
                 android:paddingTop="5dp"
                 android:paddingBottom="5dp"
-                android:layout_centerVertical="true"
-                android:layout_toStartOf="@+id/item_diputado_iv_partido"
-                android:layout_toLeftOf="@+id/item_diputado_iv_partido"
+                android:text="Hola mundo soy Edgar CKE y cjnal sncna scnslan clksn alkc"
+                android:layout_alignParentBottom="true"
                 android:gravity="center_vertical"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:minLines="2"
@@ -56,7 +47,7 @@
                 android:layout_height="80dp"
                 android:layout_marginRight="10dp"
                 android:layout_marginEnd="10dp"
-                android:layout_alignTop="@+id/item_diputado_tv_name"
+                android:layout_alignParentBottom="true"
                 android:layout_alignParentRight="true"
                 android:layout_alignParentEnd="true"
                 android:src="@drawable/ic_launcher"
@@ -70,7 +61,8 @@
         android:layout_width="20dp"
         android:layout_height="20dp"
         android:layout_margin="10dp"
-        android:background="#A5F" />
+        android:background="#A5F"
+        android:visibility="gone"/>
 
     <View
         android:id="@+id/item_swipe_right_indicator"
@@ -79,6 +71,7 @@
         android:layout_height="20dp"
         android:layout_margin="10dp"
         android:layout_gravity="right"
-        android:background="#5AF" />
+        android:background="#5AF"
+        android:visibility="gone"/>
 
 </FrameLayout>

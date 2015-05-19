@@ -21,8 +21,8 @@ public class MyApplication extends Application {
     public void onCreate() {
         super.onCreate();
 
-        TwitterAuthConfig authConfig = new TwitterAuthConfig("38anELUfaCfMipkBUfa3FrQR1", "us0bWPst1Y4KelBCzpKwOsGo2K0ybCLkeHdjHGv1I2LtvA4S0b");
-        Fabric.with(this, new Twitter(authConfig));
+        //TwitterAuthConfig authConfig = new TwitterAuthConfig("38anELUfaCfMipkBUfa3FrQR1", "us0bWPst1Y4KelBCzpKwOsGo2K0ybCLkeHdjHGv1I2LtvA4S0b");
+        //Fabric.with(this, new Twitter(authConfig));
 
         initImageLoader(getApplicationContext());
     }

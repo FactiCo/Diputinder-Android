@@ -20,6 +20,8 @@
     <color name="colorTextInfo">#AFACA8</color>
     <color name="colorTextContent">#333333</color>
 
+    <color name="colorTransparent">#00000000</color>
+
     <color name="colorLine">#494848</color>
 
     <color name="colorCyan">#00BCD4</color>
