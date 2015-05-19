@@ -79,17 +79,17 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
             @Override
             public void onLocationChanged(Location location) {
                 userLocation = LocationUtils.getLatLngFromLocation(location);
-                Dialogues.Toast(getBaseContext(), "Find location: " + location.getLatitude() + ", " + location.getLongitude(), Toast.LENGTH_LONG);
+                //Dialogues.Toast(getBaseContext(), "Find location: " + location.getLatitude() + ", " + location.getLongitude(), Toast.LENGTH_LONG);
 
                 address = LocationUtils.getAdressFromLatLong(getBaseContext(), location.getLatitude(), location.getLongitude());
 
                 if (address != null) {
-                    Dialogues.Log(TAG_CLASS, "Address: " + address.getAddress(), Log.ERROR);
+                    /*Dialogues.Log(TAG_CLASS, "Address: " + address.getAddress(), Log.ERROR);
                     Dialogues.Log(TAG_CLASS, "City: " + address.getCity(), Log.ERROR);
                     Dialogues.Log(TAG_CLASS, "State: " + address.getState(), Log.ERROR);
                     Dialogues.Log(TAG_CLASS, "Country: " + address.getCountry(), Log.ERROR);
                     Dialogues.Log(TAG_CLASS, "PostalCode: " + address.getPostalCode(), Log.ERROR);
-                    Dialogues.Log(TAG_CLASS, "KnownName: " + address.getKnownName(), Log.ERROR);
+                    Dialogues.Log(TAG_CLASS, "KnownName: " + address.getKnownName(), Log.ERROR);*/
 
                     loadDiputados();
 
@@ -145,7 +145,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
             @Override
             public void removeFirstObjectInAdapter() {
                 // this is the simplest way to delete an object from the Adapter (/AdapterView)
-                Log.d("LIST", "removed object!");
+                //Log.d("LIST", "removed object!");
                 auxDiputados.remove(0);
                 arrayAdapter.notifyDataSetChanged();
             }
@@ -155,12 +155,12 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                 //Do something on the left!
                 //You also have access to the original object.
                 //If you want to use it just cast it (String) dataObject
-                Dialogues.Toast(getBaseContext(), "Left!", Toast.LENGTH_SHORT);
+                //Dialogues.Toast(getBaseContext(), "Left!", Toast.LENGTH_SHORT);
             }
 
             @Override
             public void onRightCardExit(Object dataObject) {
-                Dialogues.Toast(getBaseContext(), "Right!", Toast.LENGTH_SHORT);
+                //Dialogues.Toast(getBaseContext(), "Right!", Toast.LENGTH_SHORT);
 
                 startShareIntent();
             }
@@ -186,7 +186,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         flingContainer.setOnItemClickListener(new SwipeFlingAdapterView.OnItemClickListener() {
             @Override
             public void onItemClicked(int itemPosition, Object dataObject) {
-                Dialogues.Toast(getBaseContext(), "Clicked!", Toast.LENGTH_SHORT);
+                //Dialogues.Toast(getBaseContext(), "Clicked!", Toast.LENGTH_SHORT);
                 startIntentDiputado((Diputado) dataObject);
             }
         });
@@ -317,7 +317,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 
         @Override
         protected void onPostExecute(String result) {
-            Dialogues.Log(TAG_CLASS, "Result: " + result, Log.INFO);
+            //Dialogues.Log(TAG_CLASS, "Result: " + result, Log.INFO);
             // Dialogues.Toast(getBaseContext(), "Result: " + result, Toast.LENGTH_LONG);
 
             if (result != null) {
@@ -346,14 +346,12 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                                                 auxDiputados.get(indexOf).setFiscalPDF(diputado.getFiscalPDF());
                                                 auxDiputados.get(indexOf).setInteresesPDF(diputado.getInteresesPDF());
                                             }
-                                            Dialogues.Log(TAG_CLASS, "Lo contiene: " + diputado.getNombres() + diputado.getApellidoPaterno(), Log.ERROR);
+                                            //Dialogues.Log(TAG_CLASS, "Lo contiene: " + diputado.getNombres() + diputado.getApellidoPaterno(), Log.ERROR);
                                         } else {
-                                            Dialogues.Log(TAG_CLASS, "NO lo contiene: " + diputado.getNombres() + diputado.getApellidoPaterno(), Log.ERROR);
+                                            //Dialogues.Log(TAG_CLASS, "NO lo contiene: " + diputado.getNombres() + diputado.getApellidoPaterno(), Log.ERROR);
                                         }
                                     }
                                 }
-
-                                Dialogues.Log(TAG_CLASS, "/**************Entré INITUI: " + auxDiputados.size(), Log.ERROR);
 
                                 initUI();
                             } else {

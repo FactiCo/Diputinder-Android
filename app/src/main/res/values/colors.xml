@@ -19,4 +19,6 @@
     <color name="colorTextTitle">#2B2D2C</color>
     <color name="colorTextInfo">#AFACA8</color>
     <color name="colorTextContent">#333333</color>
+
+    <color name="colorLine">#494848</color>
 </resources>

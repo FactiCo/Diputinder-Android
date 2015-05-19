@@ -54,7 +54,7 @@ public class DiputadoActivity extends ActionBarActivity {
             diputado = (Diputado) bundle.getSerializable(TAG_DIPUTADO);
 
             if (diputado != null) {
-                Dialogues.Toast(getBaseContext(), "DIPUTADO: " + diputado.getNombres(), Toast.LENGTH_SHORT);
+                //Dialogues.Toast(getBaseContext(), "DIPUTADO: " + diputado.getNombres(), Toast.LENGTH_SHORT);
                 fillDiputado();
             }
         }
@@ -102,6 +102,14 @@ public class DiputadoActivity extends ActionBarActivity {
         vgInfo.setPadding(width / 2, 0, 0, 0);
         vgInfo.setLayoutParams(params);
 
+        int sizeIcons = point.x / 5;
+
+        RelativeLayout.LayoutParams paramsIconsStatus = new RelativeLayout.LayoutParams(sizeIcons, sizeIcons);
+        paramsIconsStatus.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+
+        RelativeLayout.LayoutParams paramsIcons = new RelativeLayout.LayoutParams(sizeIcons, sizeIcons);
+        paramsIcons.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+
         ImageView ivProfile = (ImageView) findViewById(R.id.diputado_iv_profile);
         ivProfile.setLayoutParams(new RelativeLayout.LayoutParams(width, width));
         if (diputado.getTwitter() != null && !diputado.getTwitter().equals("")) {
@@ -122,31 +130,54 @@ public class DiputadoActivity extends ActionBarActivity {
         CustomTextView tvEntidad = (CustomTextView) findViewById(R.id.diputado_tv_entidad);
         tvEntidad.setText(diputado.getEntidadFederativa());
 
+        // Partido
         ImageView ivIcon = (ImageView) findViewById(R.id.diputado_iv_partido);
         LinearLayout.LayoutParams paramsPartido = new LinearLayout.LayoutParams(width / 2, width / 2);
         paramsPartido.gravity = Gravity.CENTER_HORIZONTAL;
         ivIcon.setLayoutParams(paramsPartido);
         ivIcon.setImageResource(PartidoType.getIconPartido(PartidoType.getPartidoType(diputado.getPartido())));
 
+        // Tiene 3 de 3
+        ImageView ivPatrimonial = (ImageView) findViewById(R.id.diputado_iv_patrimonial);
+        ivPatrimonial.setLayoutParams(paramsIcons);
+        ivPatrimonial.setOnClickListener(WebViewOnClickListener);
+
+        ImageView ivIntereses = (ImageView) findViewById(R.id.diputado_iv_intereses);
+        ivIntereses.setLayoutParams(paramsIcons);
+        ivIntereses.setOnClickListener(WebViewOnClickListener);
+
+        ImageView ivFiscal = (ImageView) findViewById(R.id.diputado_iv_fiscal);
+        ivFiscal.setLayoutParams(paramsIcons);
+        ivFiscal.setOnClickListener(WebViewOnClickListener);
+
+        ImageView ivPatrimonialStatus = (ImageView) findViewById(R.id.diputado_iv_patrimonial_status);
+        ivPatrimonialStatus.setLayoutParams(paramsIconsStatus);
+
+        ImageView ivInteresesStatus = (ImageView) findViewById(R.id.diputado_iv_intereses_status);
+        ivInteresesStatus.setLayoutParams(paramsIconsStatus);
+
+        ImageView ivFiscalStatus = (ImageView) findViewById(R.id.diputado_iv_fiscal_status);
+        ivFiscalStatus.setLayoutParams(paramsIconsStatus);
+
         if (diputado.getPatrimonialPDF() != null && !diputado.getPatrimonialPDF().equals("")) {
-            ImageView ivPatrimonial = (ImageView) findViewById(R.id.diputado_iv_patrimonial);
             ivPatrimonial.setTag(diputado.getPatrimonialPDF());
             ivPatrimonial.setImageResource(PartidoType.getIconPartidoPatrimonial(PartidoType.getPartidoType(diputado.getPartido())));
-            ivPatrimonial.setOnClickListener(WebViewOnClickListener);
+
+            ivPatrimonialStatus.setImageResource(R.drawable.ic_btn_declaro);
         }
 
         if (diputado.getInteresesPDF() != null && !diputado.getInteresesPDF().equals("")) {
-            ImageView ivIntereses = (ImageView) findViewById(R.id.diputado_iv_intereses);
             ivIntereses.setTag(diputado.getInteresesPDF());
             ivIntereses.setImageResource(PartidoType.getIconPartidoIntereses(PartidoType.getPartidoType(diputado.getPartido())));
-            ivIntereses.setOnClickListener(WebViewOnClickListener);
+
+            ivInteresesStatus.setImageResource(R.drawable.ic_btn_declaro);
         }
 
         if (diputado.getFiscalPDF() != null && !diputado.getFiscalPDF().equals("")) {
-            ImageView ivFiscal = (ImageView) findViewById(R.id.diputado_iv_fiscal);
             ivFiscal.setTag(diputado.getFiscalPDF());
             ivFiscal.setImageResource(PartidoType.getIconPartidoFiscal(PartidoType.getPartidoType(diputado.getPartido())));
-            ivFiscal.setOnClickListener(WebViewOnClickListener);
+
+            ivFiscalStatus.setImageResource(R.drawable.ic_btn_declaro);
         }
 
         LinearLayout partidosContainer = (LinearLayout) findViewById(R.id.diputado_vg_partidos_container);
@@ -170,24 +201,21 @@ public class DiputadoActivity extends ActionBarActivity {
                 }
             }
         }
-
-        /*View vgPatrimonial = findViewById(R.id.diputado_vg_patrimonial);
-        vgPatrimonial.setLayoutParams(new LinearLayout.LayoutParams(0, height, 1));
-
-        View vgIntereses = findViewById(R.id.diputado_vg_intereses);
-        vgIntereses.setLayoutParams(new LinearLayout.LayoutParams(0, height, 1));
-
-        View vgFiscal = findViewById(R.id.diputado_vg_fiscal);
-        LinearLayout.LayoutParams paramsFiscal = new LinearLayout.LayoutParams(height, height, 1);
-        paramsFiscal.gravity = Gravity.CENTER_HORIZONTAL;
-        vgFiscal.setLayoutParams(paramsFiscal);*/
     }
 
     private View.OnClickListener WebViewOnClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            String url = v.getTag().toString();
-            startWebViewIntent(url);
+            if (v.getTag() != null) {
+                String url = v.getTag().toString();
+
+                if (url != null && !url.equals(""))
+                    startWebViewIntent(url);
+                else
+                    Dialogues.Toast(getBaseContext(), "No ha presentado documento.", Toast.LENGTH_SHORT);
+            } else {
+                Dialogues.Toast(getBaseContext(), "No ha presentado documento.", Toast.LENGTH_SHORT);
+            }
         }
     };
 

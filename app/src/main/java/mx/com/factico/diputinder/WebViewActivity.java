@@ -38,7 +38,7 @@ public class WebViewActivity extends ActionBarActivity {
             title = bundle.getString("actionbarTitle", "");
 
             if (!url.equals("")) {
-                Dialogues.Toast(getBaseContext(), "URL: " + url, Toast.LENGTH_LONG);
+                //Dialogues.Toast(getBaseContext(), "URL: " + url, Toast.LENGTH_LONG);
                 loadWebView(url);
             } else {
                 finish();

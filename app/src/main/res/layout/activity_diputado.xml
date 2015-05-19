@@ -161,116 +161,128 @@
                 android:layout_marginTop="10dp"
                 android:orientation="vertical">
 
-                <LinearLayout
+                <RelativeLayout
                     android:id="@+id/diputado_vg_patrimonial"
                     android:layout_width="match_parent"
-                    android:layout_height="80dp"
-                    android:orientation="horizontal"
-                    android:layout_weight="10">
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:orientation="horizontal">
+
+                    <mx.com.factico.diputinder.views.CustomTextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_toRightOf="@+id/diputado_iv_patrimonial"
+                        android:layout_toLeftOf="@+id/diputado_iv_patrimonial_status"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="-20dp"
+                        android:layout_marginRight="-20dp"
+                        android:gravity="center"
+                        android:padding="10dp"
+                        android:text="Declaración Patrimonial"
+                        android:background="@color/colorLine"
+                        android:textColor="@color/colorBackgroundWhite"
+                        android:textAppearance="?android:attr/textAppearanceSmall"
+                        app:typeface="Gotham_Rounded_Bold" />
 
                     <ImageView
                         android:id="@+id/diputado_iv_patrimonial"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="2"
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:layout_alignParentLeft="true"
                         android:scaleType="fitCenter"
                         android:src="@drawable/ic_patrimonial_off" />
 
+                    <ImageView
+                        android:id="@+id/diputado_iv_patrimonial_status"
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:layout_alignParentRight="true"
+                        android:background="@drawable/drawable_bgr_circle_dark"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/ic_btn_no_declaro" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/diputado_vg_intereses"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:orientation="horizontal">
+
                     <mx.com.factico.diputinder.views.CustomTextView
-                        android:layout_width="0dp"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="6"
+                        android:layout_toRightOf="@+id/diputado_iv_intereses"
+                        android:layout_toLeftOf="@+id/diputado_iv_intereses_status"
+                        android:layout_marginLeft="-20dp"
+                        android:layout_marginRight="-20dp"
+                        android:layout_centerVertical="true"
                         android:gravity="center"
-                        android:layout_gravity="center_vertical"
-                        android:padding="5dp"
-                        android:text="Declaración Patrimonial"
-                        android:background="@color/colorTextContent"
+                        android:padding="10dp"
+                        android:text="Declaración de Intereses"
+                        android:background="@color/colorLine"
                         android:textColor="@color/colorBackgroundWhite"
                         android:textAppearance="?android:attr/textAppearanceSmall"
                         app:typeface="Gotham_Rounded_Bold" />
-
-                    <ImageView
-                        android:id="@+id/diputado_iv_patrimonial_status"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="2"
-                        android:scaleType="fitCenter"
-                        android:src="@drawable/ic_btn_no" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/diputado_vg_intereses"
-                    android:layout_width="match_parent"
-                    android:layout_height="80dp"
-                    android:orientation="horizontal"
-                    android:layout_weight="10">
 
                     <ImageView
                         android:id="@+id/diputado_iv_intereses"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="2"
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:layout_alignParentLeft="true"
                         android:scaleType="fitCenter"
                         android:src="@drawable/ic_intereses_off" />
 
+                    <ImageView
+                        android:id="@+id/diputado_iv_intereses_status"
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:layout_alignParentRight="true"
+                        android:background="@drawable/drawable_bgr_circle_dark"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/ic_btn_no_declaro" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/diputado_vg_fiscal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:orientation="horizontal">
+
                     <mx.com.factico.diputinder.views.CustomTextView
-                        android:layout_width="0dp"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="6"
+                        android:layout_toRightOf="@+id/diputado_iv_fiscal"
+                        android:layout_toLeftOf="@+id/diputado_iv_fiscal_status"
+                        android:layout_marginLeft="-20dp"
+                        android:layout_marginRight="-20dp"
+                        android:layout_centerVertical="true"
                         android:gravity="center"
-                        android:layout_gravity="center_vertical"
-                        android:padding="5dp"
-                        android:text="Declaración de Intereses"
-                        android:background="@color/colorTextContent"
+                        android:padding="10dp"
+                        android:text="Declaración Fiscal"
+                        android:background="@color/colorLine"
                         android:textColor="@color/colorBackgroundWhite"
                         android:textAppearance="?android:attr/textAppearanceSmall"
                         app:typeface="Gotham_Rounded_Bold" />
-
-                    <ImageView
-                        android:id="@+id/diputado_iv_intereses_status"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="2"
-                        android:scaleType="fitCenter"
-                        android:src="@drawable/ic_btn_no" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/diputado_vg_fiscal"
-                    android:layout_width="match_parent"
-                    android:layout_height="80dp"
-                    android:orientation="horizontal"
-                    android:layout_weight="10">
 
                     <ImageView
                         android:id="@+id/diputado_iv_fiscal"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="2"
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:layout_alignParentLeft="true"
                         android:scaleType="fitCenter"
                         android:src="@drawable/ic_fiscal_off" />
 
-                    <mx.com.factico.diputinder.views.CustomTextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="6"
-                        android:gravity="center"
-                        android:layout_gravity="center_vertical"
-                        android:padding="5dp"
-                        android:text="Declaración Fiscal"
-                        android:background="@color/colorTextContent"
-                        android:textColor="@color/colorBackgroundWhite"
-                        android:textAppearance="?android:attr/textAppearanceSmall"
-                        app:typeface="Gotham_Rounded_Bold" />
-
                     <ImageView
                         android:id="@+id/diputado_iv_fiscal_status"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="2"
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:layout_alignParentRight="true"
+                        android:background="@drawable/drawable_bgr_circle_dark"
                         android:scaleType="fitCenter"
-                        android:src="@drawable/ic_btn_no" />
-                </LinearLayout>
+                        android:src="@drawable/ic_btn_no_declaro" />
+                </RelativeLayout>
             </LinearLayout>
         </LinearLayout>
     </ScrollView>
