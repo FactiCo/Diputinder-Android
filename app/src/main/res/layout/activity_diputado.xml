@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorBackgroundWhite">
+    android:background="@color/colorBackgroundWhite"
+    android:orientation="vertical">
 
     <include
         android:id="@+id/actionbar"
@@ -31,25 +31,25 @@
                     android:id="@+id/diputado_vg_info"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:minHeight="120dp"
-                    android:paddingLeft="60dp"
+                    android:layout_gravity="center_vertical"
                     android:layout_marginLeft="60dp"
                     android:layout_marginRight="0dp"
                     android:background="@color/colorAccent"
-                    android:layout_gravity="center_vertical">
+                    android:minHeight="120dp"
+                    android:paddingLeft="60dp">
 
                     <mx.com.factico.diputinder.views.CustomTextView
                         android:id="@+id/diputado_tv_name"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:paddingTop="10dp"
-                        android:paddingLeft="15dp"
                         android:paddingEnd="15dp"
+                        android:paddingLeft="15dp"
                         android:paddingRight="15dp"
-                        android:textStyle="bold"
+                        android:paddingTop="10dp"
+                        android:text=""
                         android:textAppearance="?android:attr/textAppearanceMedium"
                         android:textColor="@color/colorBackgroundWhite"
-                        android:text=""
+                        android:textStyle="bold"
                         app:typeface="Gotham_Rounded_Bold" />
 
                     <mx.com.factico.diputinder.views.CustomTextView
@@ -57,12 +57,12 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_below="@+id/diputado_tv_name"
-                        android:paddingTop="10dp"
                         android:paddingLeft="15dp"
                         android:paddingRight="15dp"
+                        android:paddingTop="10dp"
+                        android:text=""
                         android:textAppearance="?android:attr/textAppearanceSmall"
                         android:textColor="@color/colorBackgroundWhite"
-                        android:text=""
                         app:typeface="Gotham_Rounded_Book" />
 
                     <mx.com.factico.diputinder.views.CustomTextView
@@ -70,12 +70,12 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_below="@+id/diputado_tv_cargo"
-                        android:paddingTop="10dp"
                         android:paddingLeft="15dp"
                         android:paddingRight="15dp"
+                        android:paddingTop="10dp"
+                        android:text=""
                         android:textAppearance="?android:attr/textAppearanceSmall"
                         android:textColor="@color/colorBackgroundWhite"
-                        android:text=""
                         app:typeface="Gotham_Rounded_Book" />
                 </RelativeLayout>
 
@@ -106,14 +106,14 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
-                        android:paddingTop="15dp"
+                        android:gravity="center"
+                        android:paddingBottom="10dp"
                         android:paddingLeft="15dp"
                         android:paddingRight="15dp"
-                        android:paddingBottom="10dp"
-                        android:gravity="center"
+                        android:paddingTop="15dp"
+                        android:text="Partido"
                         android:textAppearance="?android:attr/textAppearanceLarge"
                         android:textColor="@color/colorTextTitle"
-                        android:text="Partido"
                         app:typeface="Gotham_Rounded_Bold" />
 
                     <ImageView
@@ -121,29 +121,29 @@
                         android:layout_width="50dp"
                         android:layout_height="50dp"
                         android:layout_gravity="center_horizontal"
-                        android:src="@drawable/drawable_bgr_circle"
-                        android:scaleType="centerCrop" />
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/drawable_bgr_circle" />
                 </LinearLayout>
 
                 <LinearLayout
                     android:id="@+id/diputado_vg_alianzas_container"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:visibility="gone"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:visibility="gone">
 
                     <mx.com.factico.diputinder.views.CustomTextView
                         android:id="@+id/diputado_tv_alianzas"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:paddingTop="15dp"
+                        android:gravity="center"
+                        android:paddingBottom="10dp"
                         android:paddingLeft="15dp"
                         android:paddingRight="15dp"
-                        android:paddingBottom="10dp"
-                        android:gravity="center"
+                        android:paddingTop="15dp"
+                        android:text="Partidos Aliados"
                         android:textAppearance="?android:attr/textAppearanceLarge"
                         android:textColor="@color/colorTextTitle"
-                        android:text="Partidos Aliados"
                         app:typeface="Gotham_Rounded_Bold" />
 
                     <LinearLayout
@@ -158,92 +158,118 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginTop="30dp"
+                android:layout_marginTop="10dp"
                 android:orientation="vertical">
 
                 <LinearLayout
+                    android:id="@+id/diputado_vg_patrimonial"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:baselineAligned="false"
-                    android:orientation="horizontal">
+                    android:layout_height="80dp"
+                    android:orientation="horizontal"
+                    android:layout_weight="10">
 
-                    <LinearLayout
-                        android:id="@+id/diputado_vg_patrimonial"
+                    <ImageView
+                        android:id="@+id/diputado_iv_patrimonial"
                         android:layout_width="0dp"
-                        android:layout_height="150dp"
-                        android:layout_weight="1"
-                        android:orientation="vertical">
+                        android:layout_height="match_parent"
+                        android:layout_weight="2"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/ic_patrimonial_off" />
 
-                        <ImageView
-                            android:id="@+id/diputado_iv_patrimonial"
-                            android:layout_width="match_parent"
-                            android:layout_height="0dp"
-                            android:layout_weight="1"
-                            android:padding="10dp"
-                            android:src="@drawable/ic_patrimonial_off"
-                            android:scaleType="fitCenter" />
-
-                        <mx.com.factico.diputinder.views.CustomTextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="Declaración\nPatrimonial"
-                            android:padding="2dp"
-                            android:gravity="center"
-                            android:textAppearance="?android:attr/textAppearanceMedium"
-                            app:typeface="Gotham_Rounded_Bold" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:id="@+id/diputado_vg_intereses"
+                    <mx.com.factico.diputinder.views.CustomTextView
                         android:layout_width="0dp"
-                        android:layout_height="150dp"
-                        android:layout_weight="1"
-                        android:orientation="vertical">
+                        android:layout_height="wrap_content"
+                        android:layout_weight="6"
+                        android:gravity="center"
+                        android:layout_gravity="center_vertical"
+                        android:padding="5dp"
+                        android:text="Declaración Patrimonial"
+                        android:background="@color/colorTextContent"
+                        android:textColor="@color/colorBackgroundWhite"
+                        android:textAppearance="?android:attr/textAppearanceSmall"
+                        app:typeface="Gotham_Rounded_Bold" />
 
-                        <ImageView
-                            android:id="@+id/diputado_iv_intereses"
-                            android:layout_width="match_parent"
-                            android:layout_height="0dp"
-                            android:layout_weight="1"
-                            android:padding="10dp"
-                            android:src="@drawable/ic_intereses_off"
-                            android:scaleType="fitCenter" />
+                    <ImageView
+                        android:id="@+id/diputado_iv_patrimonial_status"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="2"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/ic_btn_no" />
+                </LinearLayout>
 
-                        <mx.com.factico.diputinder.views.CustomTextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="Declaración de\nIntereses"
-                            android:padding="2dp"
-                            android:gravity="center"
-                            android:textAppearance="?android:attr/textAppearanceMedium"
-                            app:typeface="Gotham_Rounded_Bold" />
-                    </LinearLayout>
+                <LinearLayout
+                    android:id="@+id/diputado_vg_intereses"
+                    android:layout_width="match_parent"
+                    android:layout_height="80dp"
+                    android:orientation="horizontal"
+                    android:layout_weight="10">
+
+                    <ImageView
+                        android:id="@+id/diputado_iv_intereses"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="2"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/ic_intereses_off" />
+
+                    <mx.com.factico.diputinder.views.CustomTextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="6"
+                        android:gravity="center"
+                        android:layout_gravity="center_vertical"
+                        android:padding="5dp"
+                        android:text="Declaración de Intereses"
+                        android:background="@color/colorTextContent"
+                        android:textColor="@color/colorBackgroundWhite"
+                        android:textAppearance="?android:attr/textAppearanceSmall"
+                        app:typeface="Gotham_Rounded_Bold" />
+
+                    <ImageView
+                        android:id="@+id/diputado_iv_intereses_status"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="2"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/ic_btn_no" />
                 </LinearLayout>
 
                 <LinearLayout
                     android:id="@+id/diputado_vg_fiscal"
-                    android:layout_width="200dp"
-                    android:layout_height="150dp"
-                    android:orientation="vertical"
-                    android:layout_gravity="center_horizontal">
+                    android:layout_width="match_parent"
+                    android:layout_height="80dp"
+                    android:orientation="horizontal"
+                    android:layout_weight="10">
 
                     <ImageView
                         android:id="@+id/diputado_iv_fiscal"
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_weight="1"
-                        android:padding="10dp"
-                        android:src="@drawable/ic_fiscal_off"
-                        android:scaleType="fitCenter" />
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="2"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/ic_fiscal_off" />
 
                     <mx.com.factico.diputinder.views.CustomTextView
-                        android:layout_width="match_parent"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:text="Declaración\nFiscal"
-                        android:padding="2dp"
+                        android:layout_weight="6"
                         android:gravity="center"
-                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:layout_gravity="center_vertical"
+                        android:padding="5dp"
+                        android:text="Declaración Fiscal"
+                        android:background="@color/colorTextContent"
+                        android:textColor="@color/colorBackgroundWhite"
+                        android:textAppearance="?android:attr/textAppearanceSmall"
                         app:typeface="Gotham_Rounded_Bold" />
+
+                    <ImageView
+                        android:id="@+id/diputado_iv_fiscal_status"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="2"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/ic_btn_no" />
                 </LinearLayout>
             </LinearLayout>
         </LinearLayout>
