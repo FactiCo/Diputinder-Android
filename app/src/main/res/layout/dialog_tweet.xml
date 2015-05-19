@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <mx.com.factico.diputinder.views.CustomTextView
+        android:id="@+id/dialog_tweet_tv_message"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorLine"
+        android:gravity="center_vertical"
+        android:padding="20dp"
+        android:text=""
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="@color/colorBackgroundWhite"
+        app:typeface="Gotham_Rounded_Bold" />
+
+    <RelativeLayout
+        android:id="@+id/dialog_tweet_btn_tweet"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorCyan">
+
+        <ImageView
+            android:id="@+id/dialog_tweet_iv_tweet"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:padding="10dp"
+            android:layout_gravity="center_horizontal"
+            android:src="@drawable/ic_twitter"
+            android:scaleType="centerCrop"/>
+
+        <mx.com.factico.diputinder.views.CustomTextView
+            android:id="@+id/dialog_tweet_tv_submessage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:padding="10dp"
+            android:layout_toRightOf="@+id/dialog_tweet_iv_tweet"
+            android:layout_alignTop="@+id/dialog_tweet_iv_tweet"
+            android:layout_alignBottom="@+id/dialog_tweet_iv_tweet"
+            android:text=""
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textColor="@color/colorBackgroundWhite"
+            app:typeface="Gotham_Rounded_Bold" />
+    </RelativeLayout>
+</LinearLayout>

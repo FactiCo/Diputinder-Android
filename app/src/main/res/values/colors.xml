@@ -21,4 +21,6 @@
     <color name="colorTextContent">#333333</color>
 
     <color name="colorLine">#494848</color>
+
+    <color name="colorCyan">#00BCD4</color>
 </resources>

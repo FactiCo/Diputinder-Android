@@ -1,5 +1,6 @@
 package mx.com.factico.diputinder;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.ComponentName;
 import android.content.Intent;
@@ -18,6 +19,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -38,6 +40,7 @@ import mx.com.factico.diputinder.location.LocationClientListener;
 import mx.com.factico.diputinder.location.LocationUtils;
 import mx.com.factico.diputinder.parser.GsonParser;
 import mx.com.factico.diputinder.utils.ScreenUtils;
+import mx.com.factico.diputinder.views.CustomTextView;
 
 public class MainActivity extends ActionBarActivity implements View.OnClickListener {
     public static final String TAG_CLASS = MainActivity.class.getSimpleName();
@@ -162,7 +165,9 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
             public void onRightCardExit(Object dataObject) {
                 //Dialogues.Toast(getBaseContext(), "Right!", Toast.LENGTH_SHORT);
 
-                startShareIntent();
+                Diputado diputado = (Diputado) dataObject;
+                showDialogSwipe(diputado);
+                //startShareIntent();
             }
 
             @Override
@@ -235,6 +240,45 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
          */
         flingContainer.getTopCardListener().selectRight();
     }
+
+    private AlertDialog dialog;
+    private void showDialogSwipe(Diputado diputado) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        View view = getLayoutInflater().inflate(R.layout.dialog_tweet, null, false);
+
+        CustomTextView tvMessage = (CustomTextView) view.findViewById(R.id.dialog_tweet_tv_message);
+        CustomTextView tvSubMessage = (CustomTextView) view.findViewById(R.id.dialog_tweet_tv_submessage);
+
+        if ((diputado.getPatrimonialPDF() != null && !diputado.getPatrimonialPDF().equals(""))
+                && (diputado.getInteresesPDF() != null && !diputado.getInteresesPDF().equals(""))
+                && (diputado.getFiscalPDF() != null && !diputado.getFiscalPDF().equals(""))) {
+            tvMessage.setText(getResources().getString(R.string.tweet_message_good));
+            tvSubMessage.setText(getResources().getString(R.string.tweet_submessage_good));
+        } else {
+            tvMessage.setText(getResources().getString(R.string.tweet_message_bad));
+            tvSubMessage.setText(getResources().getString(R.string.tweet_submessage_bad));
+        }
+
+        view.findViewById(R.id.dialog_tweet_btn_tweet).setOnClickListener(TweetOnClickListener);
+
+        builder.setView(view);
+
+        dialog = builder.create();
+        dialog.setCancelable(true);
+        dialog.setCanceledOnTouchOutside(true);
+        dialog.show();
+    }
+
+    View.OnClickListener TweetOnClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            if (dialog != null && dialog.isShowing())
+                dialog.dismiss();
+
+            startShareIntent();
+        }
+    };
 
     private void startShareIntent() {
         Intent shareIntent = findTwitterClient();
