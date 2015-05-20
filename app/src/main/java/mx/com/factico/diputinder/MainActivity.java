@@ -89,7 +89,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         Toolbar mToolbar = (Toolbar) findViewById(R.id.actionbar);
         mToolbar.setTitle("");
         mToolbar.getBackground().setAlpha(255);
-        TextView actionbarTitle = (TextView) mToolbar.findViewById(R.id.actionbar_title);
+        CustomTextView actionbarTitle = (CustomTextView) mToolbar.findViewById(R.id.actionbar_title);
         actionbarTitle.setText(getResources().getString(R.string.app_name));
 
         setSupportActionBar(mToolbar);
@@ -373,7 +373,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 
             Intent shareIntent = findTwitterClient();
             shareIntent.putExtra(Intent.EXTRA_TEXT, messageTweet);
-            startActivity(Intent.createChooser(shareIntent, "Share"));
+            startActivity(Intent.createChooser(shareIntent, "Compartir"));
         } else {
             Dialogues.Toast(getBaseContext(), "Necesitas tener instalada la app de Twitter para poder compartir", Toast.LENGTH_LONG);
         }

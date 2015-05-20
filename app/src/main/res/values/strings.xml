@@ -10,8 +10,8 @@
     <string name="no_gps_enabled">Debes encender los servicios de ubicación del dispositivo para obtener el contenido cercano a ti.</string>
 
     <!-- Twitter -->
-    <string name="tweet_message_good">Este candidato sí te correspondió porque ya presentó sus declaraciones patrimonial, fiscal y de intereses.</string>
-    <string name="tweet_message_bad">Lo sentimos, este candidato no te correspondió porque no ha presentado sus declaraciones patrimonial, fiscal y de intereses</string>
+    <string name="tweet_message_good">A este candidato sí le interesas porque ya presentó sus declaraciones patrimonial, fiscal y de intereses.</string>
+    <string name="tweet_message_bad">Lo sentimos, a este candidato no le interesas porque no ha presentado sus declaraciones patrimonial, fiscal y de intereses</string>
 
     <string name="tweet_submessage_good">¡Mándale un mensaje de felicitación!</string>
     <string name="tweet_submessage_bad">¡Mándale un mensaje para que presente sus declaraciones!</string>
