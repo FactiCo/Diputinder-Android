@@ -12,6 +12,7 @@ import android.os.AsyncTask;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -37,6 +38,7 @@ import mx.com.factico.diputinder.beans.Candidatos;
 import mx.com.factico.diputinder.beans.Diputado;
 import mx.com.factico.diputinder.dialogues.Dialogues;
 import mx.com.factico.diputinder.httpconnection.HttpConnection;
+import mx.com.factico.diputinder.httpconnection.NetworkUtils;
 import mx.com.factico.diputinder.location.LocationClientListener;
 import mx.com.factico.diputinder.location.LocationUtils;
 import mx.com.factico.diputinder.parser.GsonParser;
@@ -67,6 +69,8 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 
         setSupportActionBar();
         initLocationClientListener();
+        showDialog("Obteniendo información de candidatos");
+        initUI();
 
         options = new DisplayImageOptions.Builder()
                 //.showImageOnLoading(null)
@@ -146,6 +150,8 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     }
 
     protected void loadCandidatos(CandidatoType candidatoType) {
+        showDialog("Obteniendo información de candidatos");
+
         String url = null;
 
         if (candidatoType.equals(CandidatoType.DIPUTADO)) {
@@ -156,71 +162,38 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         }
 
         if (url != null) {
-            GetDiputadosPublicationsAsyncTask task = new GetDiputadosPublicationsAsyncTask(url);
-            task.execute();
+            if (NetworkUtils.isNetworkConnectionAvailable(getBaseContext())) {
+                GetDiputadosPublicationsAsyncTask task = new GetDiputadosPublicationsAsyncTask(url);
+                task.execute();
+
+                if (arrayAdapter != null) {
+                    arrayAdapter.clear();
+                    arrayAdapter.notifyDataSetChanged();
+                }
+            } else {
+                setTextMessageError(getResources().getString(R.string.no_internet_connection));
+            }
         }
+    }
+
+    private void setTextMessageError(String messageError) {
+        if (dialog != null && dialog.isShowing()) {
+            dialog.dismiss();
+        }
+
+        View view = findViewById(R.id.main_btn_refresh);
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                loadCandidatos(candidatoType);
+            }
+        });
+        view.setVisibility(View.VISIBLE);
+        ((CustomTextView) findViewById(R.id.main_tv_error_message)).setText(messageError);
     }
 
     protected void initUI() {
         flingContainer = (SwipeFlingAdapterView) findViewById(R.id.main_swipe_tinder);
-
-        // arrayAdapter = new ArrayAdapter<>(this, R.layout.item, R.id.helloText, diputados);
-        arrayAdapter = new MyArrayAdapter(this, auxDiputados);
-
-        flingContainer.setAdapter(arrayAdapter);
-        arrayAdapter.notifyDataSetChanged();
-
-        flingContainer.setFlingListener(new SwipeFlingAdapterView.onFlingListener() {
-            @Override
-            public void removeFirstObjectInAdapter() {
-                // this is the simplest way to delete an object from the Adapter (/AdapterView)
-                //Log.d("LIST", "removed object!");
-                auxDiputados.remove(0);
-                arrayAdapter.notifyDataSetChanged();
-            }
-
-            @Override
-            public void onLeftCardExit(Object dataObject) {
-                //Do something on the left!
-                //You also have access to the original object.
-                //If you want to use it just cast it (String) dataObject
-                //Dialogues.Toast(getBaseContext(), "Left!", Toast.LENGTH_SHORT);
-            }
-
-            @Override
-            public void onRightCardExit(Object dataObject) {
-                //Dialogues.Toast(getBaseContext(), "Right!", Toast.LENGTH_SHORT);
-
-                Diputado diputado = (Diputado) dataObject;
-                showDialogSwipe(diputado);
-                //startShareIntent();
-            }
-
-            @Override
-            public void onAdapterAboutToEmpty(int itemsInAdapter) {
-                // Ask for more data here
-                //diputados.add(new Diputado("XML ".concat(String.valueOf(i))));
-                //arrayAdapter.notifyDataSetChanged();
-                //Log.d("LIST", "notified");
-                //i++;
-            }
-
-            @Override
-            public void onScroll(float scrollProgressPercent) {
-                View view = flingContainer.getSelectedView();
-                view.findViewById(R.id.item_swipe_right_indicator).setAlpha(scrollProgressPercent < 0 ? -scrollProgressPercent : 0);
-                view.findViewById(R.id.item_swipe_left_indicator).setAlpha(scrollProgressPercent > 0 ? scrollProgressPercent : 0);
-            }
-        });
-
-        // Optionally add an OnItemClickListener
-        flingContainer.setOnItemClickListener(new SwipeFlingAdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClicked(int itemPosition, Object dataObject) {
-                //Dialogues.Toast(getBaseContext(), "Clicked!", Toast.LENGTH_SHORT);
-                startIntentDiputado((Diputado) dataObject);
-            }
-        });
 
         Point point = ScreenUtils.getScreenSize(getBaseContext());
         int width = point.x / 4;
@@ -236,6 +209,57 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         paramsRight.setMargins(width / 3, 0, 0, 0);
         btnSwipeRight.setLayoutParams(paramsRight);
         btnSwipeRight.setOnClickListener(this);
+
+        if (auxDiputados != null && auxDiputados.size() > 0) {
+            // arrayAdapter = new ArrayAdapter<>(this, R.layout.item, R.id.helloText, diputados);
+            arrayAdapter = new MyArrayAdapter(this, auxDiputados);
+
+            flingContainer.setAdapter(arrayAdapter);
+            arrayAdapter.notifyDataSetChanged();
+
+            flingContainer.setFlingListener(new SwipeFlingAdapterView.onFlingListener() {
+                @Override
+                public void removeFirstObjectInAdapter() {
+                    // this is the simplest way to delete an object from the Adapter (/AdapterView)
+                    //Log.d("LIST", "removed object!");
+                    auxDiputados.remove(0);
+                    arrayAdapter.notifyDataSetChanged();
+                }
+
+                @Override
+                public void onLeftCardExit(Object dataObject) {}
+
+                @Override
+                public void onRightCardExit(Object dataObject) {
+                    Diputado diputado = (Diputado) dataObject;
+                    if (diputado != null)
+                        showDialogSwipe(diputado);
+                }
+
+                @Override
+                public void onAdapterAboutToEmpty(int itemsInAdapter) {
+                    // Ask for more data here
+                    //diputados.add(new Diputado("XML ".concat(String.valueOf(i))));
+                    //arrayAdapter.notifyDataSetChanged();
+                    //Log.d("LIST", "notified");
+                    //i++;
+                }
+
+                @Override
+                public void onScroll(float scrollProgressPercent) {
+                    View view = flingContainer.getSelectedView();
+                    view.findViewById(R.id.item_swipe_right_indicator).setAlpha(scrollProgressPercent < 0 ? -scrollProgressPercent : 0);
+                    view.findViewById(R.id.item_swipe_left_indicator).setAlpha(scrollProgressPercent > 0 ? scrollProgressPercent : 0);
+                }
+            });
+
+            flingContainer.setOnItemClickListener(new SwipeFlingAdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClicked(int itemPosition, Object dataObject) {
+                    startIntentDiputado((Diputado) dataObject);
+                }
+            });
+        }
     }
 
     @Override
@@ -257,17 +281,22 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     }
 
     private void swipeLeft() {
-        flingContainer.getTopCardListener().selectLeft();
+        /**
+         * Trigger the left event manually.
+         */
+        if (flingContainer != null && flingContainer.getChildCount() > 0)
+            flingContainer.getTopCardListener().selectLeft();
     }
 
     private void swipeRight() {
         /**
          * Trigger the right event manually.
          */
-        flingContainer.getTopCardListener().selectRight();
+        if (flingContainer != null && flingContainer.getChildCount() > 0)
+            flingContainer.getTopCardListener().selectRight();
     }
 
-    private AlertDialog dialog;
+    private AlertDialog alertDialog;
     private void showDialogSwipe(Diputado diputado) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
@@ -321,10 +350,10 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 
         builder.setView(view);
 
-        dialog = builder.create();
-        dialog.setCancelable(true);
-        dialog.setCanceledOnTouchOutside(false);
-        dialog.show();
+        alertDialog = builder.create();
+        alertDialog.setCancelable(true);
+        alertDialog.setCanceledOnTouchOutside(true);
+        alertDialog.show();
     }
 
     View.OnClickListener TweetOnClickListener = new View.OnClickListener() {
@@ -408,24 +437,39 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         }
 
         if (id == R.id.action_diputados) {
-            candidatoType = CandidatoType.DIPUTADO;
+            if (candidatoType != CandidatoType.DIPUTADO) {
+                candidatoType = CandidatoType.DIPUTADO;
 
-            loadCandidatos(candidatoType);
+                loadCandidatos(candidatoType);
+            }
             return true;
         }
 
         if (id == R.id.action_gobernadores) {
-            candidatoType = CandidatoType.GOBERNADOR;
+            if (candidatoType != CandidatoType.GOBERNADOR) {
+                candidatoType = CandidatoType.GOBERNADOR;
 
-            loadCandidatos(candidatoType);
+                loadCandidatos(candidatoType);
+            }
             return true;
         }
 
         return super.onOptionsItemSelected(item);
     }
 
+    private ProgressDialog dialog;
+    private void showDialog(String message) {
+        if (dialog != null && dialog.isShowing())
+            dialog.dismiss();
+
+        dialog = new ProgressDialog(MainActivity.this);
+        dialog.setMessage(message);
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.setCancelable(false);
+        dialog.show();
+    }
+
     private class GetDiputadosPublicationsAsyncTask extends AsyncTask<String, String, String> {
-        private ProgressDialog dialog;
         private String json_PDF;
         private String url;
 
@@ -434,13 +478,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         }
 
         @Override
-        protected void onPreExecute() {
-            dialog = new ProgressDialog(MainActivity.this);
-            dialog.setMessage("Obteniendo json de diputados");
-            dialog.setCanceledOnTouchOutside(false);
-            dialog.setCancelable(false);
-            dialog.show();
-        }
+        protected void onPreExecute() {}
 
         @Override
         protected String doInBackground(String... params) {
@@ -451,7 +489,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         @Override
         protected void onPostExecute(String result) {
             //Dialogues.Log(TAG_CLASS, "Result: " + result, Log.INFO);
-            // Dialogues.Toast(getBaseContext(), "Result: " + result, Toast.LENGTH_LONG);
+            //Dialogues.Toast(getBaseContext(), "Result: " + result, Toast.LENGTH_LONG);
 
             if (result != null) {
                 if (json_PDF != null && !json_PDF.equals("")) {
@@ -499,6 +537,8 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                         e.printStackTrace();
                     }
                 }
+            } else {
+                setTextMessageError(getResources().getString(R.string.error_message_default));
             }
 
             if (dialog != null && dialog.isShowing()) {

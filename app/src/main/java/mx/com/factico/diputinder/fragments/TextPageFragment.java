@@ -76,7 +76,8 @@ public class TextPageFragment extends Fragment {
         if (view != null) {
             Point point = ScreenUtils.getScreenSize(getActivity());
             int width = point.x / 7 * 6;
-            int height = (int) ScreenUtils.convertDpToPixel(100, getActivity());
+            //int height = (int) ScreenUtils.convertDpToPixel(200, getActivity());
+            int height = point.y / 3;
 
             int marginTop = (int) ScreenUtils.convertDpToPixel(50, getActivity());
 
@@ -88,15 +89,15 @@ public class TextPageFragment extends Fragment {
             imageLogo.setLayoutParams(params);
 
             if (index == 0)
-                imageLogo.setImageResource(R.drawable.ic_liguepolitico);
+                imageLogo.setImageResource(R.drawable.ic_tutorial_1);
             else if (index == 1)
-                imageLogo.setImageResource(R.drawable.ic_mexicoquemerecemos);
+                imageLogo.setImageResource(R.drawable.ic_tutorial_2);
             else if (index == 2)
-                imageLogo.setImageResource(R.drawable.ic_3_de_3);
+                imageLogo.setImageResource(R.drawable.ic_tutorial_3);
             else if (index == 3)
-                imageLogo.setImageResource(R.drawable.ic_factico);
+                imageLogo.setImageResource(R.drawable.ic_tutorial_4);
             else if (index == 4)
-                imageLogo.setImageResource(R.drawable.ic_corazonroto);
+                imageLogo.setImageResource(R.drawable.ic_tutorial_5);
 
             CustomTextView tvTitle = (CustomTextView) view.findViewById(R.id.text_tv_title);
             if (text.getTitle() != null && !text.getTitle().equals(""))

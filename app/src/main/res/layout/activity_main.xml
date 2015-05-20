@@ -1,10 +1,9 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorGray"
-    android:orientation="vertical">
+    android:background="@color/colorGray">
 
     <include
         android:id="@+id/actionbar"
@@ -15,6 +14,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_below="@+id/actionbar"
         android:layout_marginLeft="@dimen/activity_horizontal_margin"
         android:layout_marginRight="@dimen/activity_horizontal_margin"
         android:layout_marginTop="@dimen/activity_vertical_margin"
@@ -44,10 +44,12 @@
                 android:id="@+id/main_btn_swipe_left"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
+                android:padding="10dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="20dp"
-                android:background="@drawable/drawable_bgr_circle"
+                android:background="@drawable/selector_circle_gray"
                 android:textColor="@color/colorTextContent"
+                android:scaleType="centerInside"
                 android:src="@drawable/ic_btn_no" />
 
             <ImageView
@@ -55,11 +57,38 @@
                 android:id="@+id/main_btn_swipe_right"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
+                android:padding="10dp"
                 android:layout_marginRight="10dp"
                 android:layout_marginLeft="20dp"
-                android:background="@drawable/drawable_bgr_circle"
+                android:background="@drawable/selector_circle_gray"
                 android:textColor="@color/colorTextContent"
+                android:scaleType="centerInside"
                 android:src="@drawable/ic_btn_yes" />
         </LinearLayout>
     </RelativeLayout>
-</LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/main_btn_refresh"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/actionbar"
+        android:background="@color/colorBackgroundWhite"
+        android:visibility="gone">
+
+        <ImageView
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_above="@+id/main_tv_error_message"
+            android:layout_centerHorizontal="true"
+            android:src="@drawable/ic_btn_refresh"/>
+
+        <mx.com.factico.diputinder.views.CustomTextView
+            android:id="@+id/main_tv_error_message"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="20dp"
+            android:text=""
+            android:layout_centerInParent="true"
+            android:textAppearance="?android:attr/textAppearanceSmall"/>
+    </RelativeLayout>
+</RelativeLayout>

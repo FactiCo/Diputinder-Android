@@ -22,4 +22,8 @@
     <string name="tweet_second_submessage_invite">Invítale a firmar la Agenda Mínima Ciudadana de Por el México que Merecemos</string>
 
     <string name="tweet_second_message_invite">Oye %1$s, ¿ya firmaste la Agenda Mínima Ciudadana de Por el México que Merecemos? #LiguePolítico http://www.mexicoquemerecemos.com/agenda.php</string>
+
+    <string name="no_internet_connection">Sin conexión a Internet. Inténtalo de nuevo.</string>
+
+    <string name="error_message_default">Algo salió mal. Inténtalo de nuevo.</string>
 </resources>

@@ -32,9 +32,9 @@ public class ParallaxTutorialPagerTransformer implements ViewPager.PageTransform
 
         if (parallaxView != null && Build.VERSION.SDK_INT > Build.VERSION_CODES.HONEYCOMB) {
             if (position > -1 && position < 1) {
-                float height = parallaxView.getHeight();
+                float width = parallaxView.getWidth();
                 //parallaxView.setTranslationY(-(position * height * speed));
-                float sc = ((float) view.getHeight() - border) / view.getHeight();
+                float sc = ((float) view.getWidth() - border) / view.getWidth();
                 if (position == 0) {
                     view.setScaleX(1);
                     view.setScaleY(1);
@@ -44,11 +44,11 @@ public class ParallaxTutorialPagerTransformer implements ViewPager.PageTransform
                 }
 
                 if (tvTitle != null && tvContent != null) {
-                    ivImage.setTranslationY(position * (pageWidth / 2));
+                    ivImage.setTranslationX(position * (pageWidth / 1));
 
-                    tvTitle.setTranslationY(position * (pageWidth / 3));
+                    tvTitle.setTranslationX(position * (pageWidth / 2));
 
-                    tvContent.setTranslationY(position * (pageWidth / 2));
+                    tvContent.setTranslationX(position * (pageWidth / 3));
 
                     // The 0.5, 1.5, 1.7 values you see here are what makes the view move in a different speed.
                     // The bigger the number, the faster the view will translate.
