@@ -49,7 +49,7 @@ public class MyArrayAdapter extends ArrayAdapter<Diputado> {
                 .imageScaleType(ImageScaleType.EXACTLY)
                 .bitmapConfig(Bitmap.Config.RGB_565)
                 .considerExifParams(true)
-                .displayer(new FadeInBitmapDisplayer(100))
+                //.displayer(new FadeInBitmapDisplayer(100))
                 .build();
     }
 

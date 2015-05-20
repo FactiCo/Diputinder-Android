@@ -25,6 +25,7 @@ public class HttpConnection {
 	
 	public static final String URL = "https://candidatotransparente.mx/";
     public static final String DIPUTADOS = "scripts/datos/Diputados.json";
+	public static final String GOBERNADORES = "scripts/datos/Gobernadores.json";
 
 	public static final String PDFS = "api/api/candidatos/transparentes";
 

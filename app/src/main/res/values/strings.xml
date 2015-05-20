@@ -4,6 +4,9 @@
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
 
+    <string name="action_diputados">Diputados</string>
+    <string name="action_gobernadores">Gobernadores</string>
+
     <string name="no_gps_enabled">Debes encender los servicios de ubicación del dispositivo para obtener el contenido cercano a ti.</string>
 
     <!-- Twitter -->
@@ -11,5 +14,12 @@
     <string name="tweet_message_bad">Lo sentimos, este candidato no te correspondió porque no ha presentado sus declaraciones patrimonial, fiscal y de intereses</string>
 
     <string name="tweet_submessage_good">¡Mándale un mensaje de felicitación!</string>
-    <string name="tweet_submessage_bad">¡Mándale un mensaje para que las presente!</string>
+    <string name="tweet_submessage_bad">¡Mándale un mensaje para que presente sus declaraciones!</string>
+
+    <string name="tweet_first_message_good">Oye %1$s, te encontré en #LiguePolitico y vi que ya presentaste tu #3de3. ¡Bien hecho!</string>
+    <string name="tweet_first_message_bad">Oye %1$s, te encontré en #LiguePolitico y no has presentado tu #3de3, ¿qué esperas? http://candidatotransparente.mx</string>
+
+    <string name="tweet_second_submessage_invite">Invítale a firmar la Agenda Mínima Ciudadana de Por el México que Merecemos</string>
+
+    <string name="tweet_second_message_invite">Oye %1$s, ¿ya firmaste la Agenda Mínima Ciudadana de Por el México que Merecemos? #LiguePolítico http://www.mexicoquemerecemos.com/agenda.php</string>
 </resources>

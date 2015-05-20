@@ -2,12 +2,9 @@ package mx.com.factico.diputinder;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.content.ComponentName;
 import android.content.Intent;
-import android.content.pm.LabeledIntent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.location.Location;
@@ -15,14 +12,11 @@ import android.os.AsyncTask;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.text.Html;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -38,6 +32,7 @@ import java.util.Locale;
 
 import mx.com.factico.diputinder.adapters.MyArrayAdapter;
 import mx.com.factico.diputinder.beans.Address;
+import mx.com.factico.diputinder.beans.CandidatoType;
 import mx.com.factico.diputinder.beans.Candidatos;
 import mx.com.factico.diputinder.beans.Diputado;
 import mx.com.factico.diputinder.dialogues.Dialogues;
@@ -63,6 +58,8 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     private Address address;
     private DisplayImageOptions options;
 
+    private CandidatoType candidatoType = CandidatoType.DIPUTADO;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,7 +67,6 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 
         setSupportActionBar();
         initLocationClientListener();
-        initUI();
 
         options = new DisplayImageOptions.Builder()
                 //.showImageOnLoading(null)
@@ -113,7 +109,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                     Dialogues.Log(TAG_CLASS, "PostalCode: " + address.getPostalCode(), Log.ERROR);
                     Dialogues.Log(TAG_CLASS, "KnownName: " + address.getKnownName(), Log.ERROR);*/
 
-                    loadDiputados();
+                    loadCandidatos(candidatoType);
 
                     clientListener.stopLocationUpdates();
                 }
@@ -149,9 +145,20 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         }
     }
 
-    protected void loadDiputados() {
-        GetDiputadosPublicationsAsyncTask task = new GetDiputadosPublicationsAsyncTask();
-        task.execute();
+    protected void loadCandidatos(CandidatoType candidatoType) {
+        String url = null;
+
+        if (candidatoType.equals(CandidatoType.DIPUTADO)) {
+            url = HttpConnection.URL + HttpConnection.DIPUTADOS;
+
+        } else if (candidatoType.equals(CandidatoType.GOBERNADOR)) {
+            url = HttpConnection.URL + HttpConnection.GOBERNADORES;
+        }
+
+        if (url != null) {
+            GetDiputadosPublicationsAsyncTask task = new GetDiputadosPublicationsAsyncTask(url);
+            task.execute();
+        }
     }
 
     protected void initUI() {
@@ -269,14 +276,31 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         CustomTextView tvMessage = (CustomTextView) view.findViewById(R.id.dialog_tweet_tv_message);
         CustomTextView tvSubMessage = (CustomTextView) view.findViewById(R.id.dialog_tweet_tv_submessage);
 
+        String userName = (diputado.getTwitter() != null && !diputado.getTwitter().equals(""))
+                ? "@" + diputado.getTwitter()
+                : "#" + diputado.getNombres().replaceAll("\\s+", "")
+                + diputado.getApellidoPaterno().replaceAll("\\s+", "")
+                + diputado.getApellidoMaterno().replaceAll("\\s+", "");
+
+        View btnTweet = view.findViewById(R.id.dialog_tweet_btn_tweet);
+        btnTweet.setOnClickListener(TweetOnClickListener);
+
+        View btnTweetInvite = view.findViewById(R.id.dialog_tweet_btn_tweet_invite);
+        btnTweetInvite.setTag(String.format(Locale.getDefault(), getResources().getString(R.string.tweet_second_message_invite), userName));
+        btnTweetInvite.setOnClickListener(TweetOnClickListener);
+
         if ((diputado.getPatrimonialPDF() != null && !diputado.getPatrimonialPDF().equals(""))
                 && (diputado.getInteresesPDF() != null && !diputado.getInteresesPDF().equals(""))
                 && (diputado.getFiscalPDF() != null && !diputado.getFiscalPDF().equals(""))) {
             tvMessage.setText(getResources().getString(R.string.tweet_message_good));
             tvSubMessage.setText(getResources().getString(R.string.tweet_submessage_good));
+            btnTweet.setTag(String.format(Locale.getDefault(), getResources().getString(R.string.tweet_first_message_good), userName));
+
+            btnTweetInvite.setVisibility(View.GONE);
         } else {
             tvMessage.setText(getResources().getString(R.string.tweet_message_bad));
             tvSubMessage.setText(getResources().getString(R.string.tweet_submessage_bad));
+            btnTweet.setTag(String.format(Locale.getDefault(), getResources().getString(R.string.tweet_first_message_bad), userName));
         }
 
         CustomTextView tvName = (CustomTextView) view.findViewById(R.id.dialog_tweet_tv_name);
@@ -295,8 +319,6 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
             }
         }
 
-        view.findViewById(R.id.dialog_tweet_btn_tweet).setOnClickListener(TweetOnClickListener);
-
         builder.setView(view);
 
         dialog = builder.create();
@@ -308,26 +330,34 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     View.OnClickListener TweetOnClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            if (dialog != null && dialog.isShowing())
-                dialog.dismiss();
+            String messageTweet = v.getTag() != null ? v.getTag().toString() : null;
 
-            startShareIntent();
+            if (messageTweet != null && !messageTweet.equals(""))
+                startShareIntent(messageTweet);
         }
     };
 
-    private void startShareIntent() {
-        Intent shareIntent = findTwitterClient();
-        shareIntent.putExtra(Intent.EXTRA_TEXT, "Este es el texto que se debe compartir en Twitter");
-        startActivity(Intent.createChooser(shareIntent, "Share"));
+    private void startShareIntent(String messageTweet) {
+        if (appInstalledOrNot("com.twitter.android")) {
+            /*if (dialog != null && dialog.isShowing())
+                dialog.dismiss();*/
+
+            Intent shareIntent = findTwitterClient();
+            shareIntent.putExtra(Intent.EXTRA_TEXT, messageTweet);
+            startActivity(Intent.createChooser(shareIntent, "Share"));
+        } else {
+            Dialogues.Toast(getBaseContext(), "Necesitas tener instalada la app de Twitter para poder compartir", Toast.LENGTH_LONG);
+        }
     }
 
     public Intent findTwitterClient() {
         final String[] twitterApps = {
                 // package // name - nb installs (thousands)
                 "com.twitter.android", // official - 10 000
-                "com.twidroid", // twidroid - 5 000
-                "com.handmark.tweetcaster", // Tweecaster - 5 000
-                "com.thedeck.android"}; // TweetDeck - 5 000 };
+                //"com.twidroid", // twidroid - 5 000
+                //"com.handmark.tweetcaster", // Tweecaster - 5 000
+                //"com.thedeck.android"
+                }; // TweetDeck - 5 000 };
         Intent tweetIntent = new Intent();
         tweetIntent.setType("text/plain");
         final PackageManager packageManager = getPackageManager();
@@ -344,6 +374,18 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         }
 
         return null;
+    }
+
+    private boolean appInstalledOrNot(String uri) {
+        PackageManager pm = getPackageManager();
+        boolean app_installed;
+        try {
+            pm.getPackageInfo(uri, PackageManager.GET_ACTIVITIES);
+            app_installed = true;
+        } catch (PackageManager.NameNotFoundException e) {
+            app_installed = false;
+        }
+        return app_installed;
     }
 
     @Override
@@ -365,8 +407,17 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
             return true;
         }
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_diputados) {
+            candidatoType = CandidatoType.DIPUTADO;
+
+            loadCandidatos(candidatoType);
+            return true;
+        }
+
+        if (id == R.id.action_gobernadores) {
+            candidatoType = CandidatoType.GOBERNADOR;
+
+            loadCandidatos(candidatoType);
             return true;
         }
 
@@ -376,8 +427,11 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     private class GetDiputadosPublicationsAsyncTask extends AsyncTask<String, String, String> {
         private ProgressDialog dialog;
         private String json_PDF;
+        private String url;
 
-        public GetDiputadosPublicationsAsyncTask() {}
+        public GetDiputadosPublicationsAsyncTask(String url) {
+            this.url = url;
+        }
 
         @Override
         protected void onPreExecute() {
@@ -391,7 +445,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         @Override
         protected String doInBackground(String... params) {
             json_PDF = HttpConnection.GET(HttpConnection.URL + HttpConnection.PDFS);
-            return HttpConnection.GET(HttpConnection.URL + HttpConnection.DIPUTADOS);
+            return HttpConnection.GET(url);
         }
 
         @Override
@@ -402,28 +456,30 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
             if (result != null) {
                 if (json_PDF != null && !json_PDF.equals("")) {
                     try {
-                        diputados = GsonParser.getListDiputadosFromJSON(result);
+                        List<Diputado> diputadosAux = GsonParser.getListDiputadosFromJSON(result);
                         Candidatos candidatos = GsonParser.getCandidatosFromJSON(json_PDF);
 
-                        if (candidatos == null || diputados == null) {
+                        if (candidatos == null || diputadosAux == null) {
                             return;
                         }
 
-                        if (diputados.size() > 0) {
-                            List<Diputado> diputadosUnorder = getListDiputadosFromState(diputados, address.getState());
+                        if (diputadosAux.size() > 0) {
+                            diputados = diputadosAux;
 
-                            auxDiputados = getOrderedListDiputados(diputadosUnorder);
+                            List<Diputado> diputadosUnorder = getListDiputadosFromState(diputadosAux, address.getState());
 
-                            if (auxDiputados != null && auxDiputados.size() > 0) {
+                            List<Diputado> auxDiputadosOrdered = getOrderedListDiputados(diputadosUnorder);
+
+                            if (auxDiputadosOrdered != null && auxDiputadosOrdered.size() > 0) {
                                 List<Diputado> candidatosPDF = candidatos.getCandidatos();
                                 if (candidatosPDF != null && candidatosPDF.size() > 0) {
                                     for (Diputado diputado : candidatosPDF) {
-                                        if (auxDiputados.contains(diputado)) {
-                                            int indexOf = auxDiputados.indexOf(diputado);
+                                        if (auxDiputadosOrdered.contains(diputado)) {
+                                            int indexOf = auxDiputadosOrdered.indexOf(diputado);
                                             if (indexOf != -1) {
-                                                auxDiputados.get(indexOf).setPatrimonialPDF(diputado.getPatrimonialPDF());
-                                                auxDiputados.get(indexOf).setFiscalPDF(diputado.getFiscalPDF());
-                                                auxDiputados.get(indexOf).setInteresesPDF(diputado.getInteresesPDF());
+                                                auxDiputadosOrdered.get(indexOf).setPatrimonialPDF(diputado.getPatrimonialPDF());
+                                                auxDiputadosOrdered.get(indexOf).setFiscalPDF(diputado.getFiscalPDF());
+                                                auxDiputadosOrdered.get(indexOf).setInteresesPDF(diputado.getInteresesPDF());
                                             }
                                             //Dialogues.Log(TAG_CLASS, "Lo contiene: " + diputado.getNombres() + diputado.getApellidoPaterno(), Log.ERROR);
                                         } else {
@@ -431,6 +487,8 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                                         }
                                     }
                                 }
+
+                                auxDiputados = auxDiputadosOrdered;
 
                                 initUI();
                             } else {
