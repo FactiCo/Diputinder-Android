@@ -8,8 +8,10 @@ import java.io.File;
 
 public class PreferencesUtils {
     public static final String TUTORIAL = "tutorial";
+    public static final String LOCATION = "location";
+    public static final String STATE = "state";
 
-    public static void putPreference(Context context, String key, String value) {
+    public static void putStringPreference(Context context, String key, String value) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         SharedPreferences.Editor editor = prefs.edit();
         editor.putString(key, value);
@@ -30,7 +32,7 @@ public class PreferencesUtils {
         editor.apply();
     }
 
-    public static String getPreference(Context context, String key) {
+    public static String getStringPreference(Context context, String key) {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
         return preferences.getString(key, null);
     }

@@ -6,6 +6,7 @@
 
     <string name="action_diputados">Diputados</string>
     <string name="action_gobernadores">Gobernadores</string>
+    <string name="action_refresh">Actualizar ubicación</string>
 
     <string name="no_gps_enabled">Servicios de ubicación apagados. Inténtalo de nuevo.</string>
 

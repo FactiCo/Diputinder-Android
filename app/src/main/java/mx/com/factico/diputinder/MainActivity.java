@@ -43,6 +43,7 @@ import mx.com.factico.diputinder.httpconnection.NetworkUtils;
 import mx.com.factico.diputinder.location.LocationClientListener;
 import mx.com.factico.diputinder.location.LocationUtils;
 import mx.com.factico.diputinder.parser.GsonParser;
+import mx.com.factico.diputinder.utils.PreferencesUtils;
 import mx.com.factico.diputinder.utils.ScreenUtils;
 import mx.com.factico.diputinder.views.CustomTextView;
 
@@ -58,7 +59,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 
     private LocationClientListener clientListener;
     private LatLng userLocation;
-    private Address address;
+    private String state;
     private DisplayImageOptions options;
 
     private CandidatoType candidatoType = CandidatoType.DIPUTADO;
@@ -69,10 +70,12 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
 
         setSupportActionBar();
+        initLocationClientListener();
 
-        if (LocationUtils.isGpsOrNetworkProviderEnabled(getBaseContext())) {
-            initLocationClientListener();
-
+        state = PreferencesUtils.getStringPreference(getApplication(), PreferencesUtils.STATE);
+        if (state != null && !state.equals("")) {
+            loadCandidatos(candidatoType);
+        } else if (LocationUtils.isGpsOrNetworkProviderEnabled(getBaseContext())) {
             if (NetworkUtils.isNetworkConnectionAvailable(getBaseContext())) {
                 showDialog("Obteniendo ciudad donde te encuentras...");
                 initUI();
@@ -114,7 +117,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                 userLocation = LocationUtils.getLatLngFromLocation(location);
                 // Dialogues.Toast(getBaseContext(), "Find location: " + location.getLatitude() + ", " + location.getLongitude(), Toast.LENGTH_LONG);
 
-                address = LocationUtils.getAdressFromLatLong(getBaseContext(), location.getLatitude(), location.getLongitude());
+                Address address = LocationUtils.getAdressFromLatLong(getBaseContext(), location.getLatitude(), location.getLongitude());
 
                 if (address != null) {
                     /*Dialogues.Log(TAG_CLASS, "Address: " + address.getAddress(), Log.ERROR);
@@ -124,7 +127,14 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                     Dialogues.Log(TAG_CLASS, "PostalCode: " + address.getPostalCode(), Log.ERROR);
                     Dialogues.Log(TAG_CLASS, "KnownName: " + address.getKnownName(), Log.ERROR);*/
 
-                    loadCandidatos(candidatoType);
+                    if (address.getState() != null && !address.getState().equals("")) {
+                        PreferencesUtils.putStringPreference(getApplication(), PreferencesUtils.STATE, address.getState());
+
+                        if (state == null)
+                            loadCandidatos(candidatoType);
+
+                        state = address.getState();
+                    }
 
                     clientListener.stopLocationUpdates();
                 }
@@ -196,13 +206,12 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (address != null) {
+                if (state != null) {
                     loadCandidatos(candidatoType);
                 } else {
                     showDialog("Obteniendo ciudad donde te encuentras...");
                     clientListener.startLocationUpdates();
                 }
-                //loadCandidatos(candidatoType);
             }
         });
         view.setVisibility(View.VISIBLE);
@@ -471,6 +480,12 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
             return true;
         }
 
+        if (id == R.id.action_refresh) {
+            showDialog("Obteniendo ciudad donde te encuentras...");
+            clientListener.startLocationUpdates();
+            return true;
+        }
+
         return super.onOptionsItemSelected(item);
     }
 
@@ -527,7 +542,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                         if (diputadosAux.size() > 0) {
                             diputados = diputadosAux;
 
-                            List<Diputado> diputadosUnorder = getListDiputadosFromState(diputadosAux, address.getState());
+                            List<Diputado> diputadosUnorder = getListDiputadosFromState(diputadosAux, state);
 
                             List<Diputado> auxDiputadosOrdered = getOrderedListDiputados(diputadosUnorder);
 
@@ -553,7 +568,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 
                                 initUI();
                             } else {
-                                Dialogues.Toast(getBaseContext(), "No se encontraron coincidencias en tu Entidad Federativa. " + address.getState(), Toast.LENGTH_SHORT);
+                                Dialogues.Toast(getBaseContext(), "No se encontraron coincidencias en tu Entidad Federativa.", Toast.LENGTH_SHORT);
                             }
                         }
                     } catch (Exception e) {
