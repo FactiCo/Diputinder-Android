@@ -70,12 +70,14 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
 
         setSupportActionBar();
-        initLocationClientListener();
+        clientListener = new LocationClientListener(MainActivity.this);
 
         state = PreferencesUtils.getStringPreference(getApplication(), PreferencesUtils.STATE);
         if (state != null && !state.equals("")) {
             loadCandidatos(candidatoType);
         } else if (LocationUtils.isGpsOrNetworkProviderEnabled(getBaseContext())) {
+            initLocationClientListener();
+
             if (NetworkUtils.isNetworkConnectionAvailable(getBaseContext())) {
                 showDialog("Obteniendo ciudad donde te encuentras...");
                 initUI();
@@ -110,7 +112,6 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     }
 
     protected void initLocationClientListener() {
-        clientListener = new LocationClientListener(MainActivity.this);
         clientListener.setOnLocationClientListener(new LocationClientListener.OnLocationClientListener() {
             @Override
             public void onLocationChanged(Location location) {
@@ -130,10 +131,10 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                     if (address.getState() != null && !address.getState().equals("")) {
                         PreferencesUtils.putStringPreference(getApplication(), PreferencesUtils.STATE, address.getState());
 
-                        if (state == null)
-                            loadCandidatos(candidatoType);
-
                         state = address.getState();
+
+                        //if (state == null)
+                        loadCandidatos(candidatoType);
                     }
 
                     clientListener.stopLocationUpdates();
@@ -501,7 +502,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         dialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
             @Override
             public void onCancel(DialogInterface dialog) {
-                finish();
+                dialog.dismiss();
             }
         });
         dialog.show();

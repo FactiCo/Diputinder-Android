@@ -105,7 +105,8 @@ public class LocationClientListener implements GoogleApiClient.ConnectionCallbac
     }
 
     public void startLocationUpdates() {
-        LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
+        if (!mGoogleApiClient.isConnected())
+            LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
     }
 
     public void stopLocationUpdates() {
