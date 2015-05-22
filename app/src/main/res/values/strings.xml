@@ -7,7 +7,7 @@
     <string name="action_diputados">Diputados</string>
     <string name="action_gobernadores">Gobernadores</string>
 
-    <string name="no_gps_enabled">Debes encender los servicios de ubicación del dispositivo para obtener el contenido cercano a ti.</string>
+    <string name="no_gps_enabled">Servicios de ubicación apagados. Inténtalo de nuevo.</string>
 
     <!-- Twitter -->
     <string name="tweet_message_good">A este candidato sí le interesas porque ya presentó sus declaraciones patrimonial, fiscal y de intereses.</string>
@@ -23,7 +23,7 @@
 
     <string name="tweet_second_message_invite">Oye %1$s, ¿ya firmaste la Agenda Mínima Ciudadana de Por el México que Merecemos? #LiguePolítico http://www.mexicoquemerecemos.com/agenda.php</string>
 
-    <string name="no_internet_connection">Sin conexión a Internet. Inténtalo de nuevo.</string>
+    <string name="no_internet_connection">Sin conexión a Internet.\nInténtalo de nuevo.</string>
 
     <string name="error_message_default">Algo salió mal. Inténtalo de nuevo.</string>
 </resources>

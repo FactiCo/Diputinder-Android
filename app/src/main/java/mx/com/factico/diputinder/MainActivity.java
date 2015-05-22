@@ -2,6 +2,7 @@ package mx.com.factico.diputinder;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
@@ -68,9 +69,19 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
 
         setSupportActionBar();
-        initLocationClientListener();
-        showDialog("Obteniendo información de candidatos");
-        initUI();
+
+        if (LocationUtils.isGpsOrNetworkProviderEnabled(getBaseContext())) {
+            initLocationClientListener();
+
+            if (NetworkUtils.isNetworkConnectionAvailable(getBaseContext())) {
+                showDialog("Obteniendo ciudad donde te encuentras...");
+                initUI();
+            } else {
+                setTextMessageError(getResources().getString(R.string.no_internet_connection));
+            }
+        } else {
+            setTextMessageError(getResources().getString(R.string.no_gps_enabled));
+        }
 
         options = new DisplayImageOptions.Builder()
                 //.showImageOnLoading(null)
@@ -101,7 +112,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
             @Override
             public void onLocationChanged(Location location) {
                 userLocation = LocationUtils.getLatLngFromLocation(location);
-                //Dialogues.Toast(getBaseContext(), "Find location: " + location.getLatitude() + ", " + location.getLongitude(), Toast.LENGTH_LONG);
+                // Dialogues.Toast(getBaseContext(), "Find location: " + location.getLatitude() + ", " + location.getLongitude(), Toast.LENGTH_LONG);
 
                 address = LocationUtils.getAdressFromLatLong(getBaseContext(), location.getLatitude(), location.getLongitude());
 
@@ -185,7 +196,13 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                loadCandidatos(candidatoType);
+                if (address != null) {
+                    loadCandidatos(candidatoType);
+                } else {
+                    showDialog("Obteniendo ciudad donde te encuentras...");
+                    clientListener.startLocationUpdates();
+                }
+                //loadCandidatos(candidatoType);
             }
         });
         view.setVisibility(View.VISIBLE);
@@ -465,7 +482,13 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         dialog = new ProgressDialog(MainActivity.this);
         dialog.setMessage(message);
         dialog.setCanceledOnTouchOutside(false);
-        dialog.setCancelable(false);
+        dialog.setCancelable(true);
+        dialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialog) {
+                finish();
+            }
+        });
         dialog.show();
     }
 

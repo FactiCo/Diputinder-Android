@@ -76,8 +76,8 @@
         android:visibility="gone">
 
         <ImageView
-            android:layout_width="150dp"
-            android:layout_height="150dp"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
             android:layout_above="@+id/main_tv_error_message"
             android:layout_centerHorizontal="true"
             android:src="@drawable/ic_btn_refresh"/>
@@ -87,8 +87,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="20dp"
-            android:text=""
+            android:text="@string/no_internet_connection"
+            android:gravity="center"
             android:layout_centerInParent="true"
-            android:textAppearance="?android:attr/textAppearanceSmall"/>
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            app:typeface="Gotham_Rounded_Bold"/>
     </RelativeLayout>
 </RelativeLayout>
