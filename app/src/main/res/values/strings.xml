@@ -17,8 +17,8 @@
     <string name="tweet_submessage_good">¡Mándale un mensaje de felicitación!</string>
     <string name="tweet_submessage_bad">¡Mándale un mensaje para que presente sus declaraciones!</string>
 
-    <string name="tweet_first_message_good">Oye %1$s, te encontré en #LiguePolitico y vi que ya presentaste tu #3de3. ¡Bien hecho!</string>
-    <string name="tweet_first_message_bad">Oye %1$s, te encontré en #LiguePolitico y no has presentado tu #3de3, ¿qué esperas? http://candidatotransparente.mx</string>
+    <string name="tweet_first_message_good">Oye %1$s, te encontré en @LiguePolitico y vi que ya presentaste tu #3de3. ¡Bien hecho!</string>
+    <string name="tweet_first_message_bad">Oye %1$s, te encontré en @LiguePolitico y no has presentado tu #3de3, ¿qué esperas? http://candidatotransparente.mx</string>
 
     <string name="tweet_second_submessage_invite">Invítale a firmar la Agenda Mínima Ciudadana de Por el México que Merecemos</string>
 
@@ -27,4 +27,19 @@
     <string name="no_internet_connection">Sin conexión a Internet.\nInténtalo de nuevo.</string>
 
     <string name="error_message_default">Algo salió mal. Inténtalo de nuevo.</string>
+
+    <!-- Tutorial -->
+    <string name="tutorial_title_1">¡HOLA! Bienvenido</string>
+
+    <string name="tutorial_message_1">Con Ligue Político podrás conocer quiénes son tus candidatos a diputados federales de acuerdo a tu ubicación geográfica, y saber si están genuinamente comprometidos con la transparencia y la rendición de cuentas.</string>
+    <string name="tutorial_message_2">Ligue Político reúne datos e indicadores de “Por el México que merecemos” y “Candidato Transparente”, iniciativas de la sociedad civil que buscan visualizar compromiso de los candidatos en torno a la transparencia y la rendición de cuentas.</string>
+    <string name="tutorial_message_3">Si tus candidatos no han presentado su declaración fiscal (si han pagado o no sus impuestos), su declaración de intereses (si han realizado actividades o tienen relaciones que podrían interferir con el ejercicio de sus funciones) y su declaración patrimonial (el valor de los bienes que posee), en Ligue Político podrás exigírselas.</string>
+    <string name="tutorial_message_4">Ligue Político es una iniciativa ciudadana promovida por:\n
+Sociedad en Movimiento\n
+Transparencia Mexicana\n
+Coparmex\n
+Fáctico\n
+IMCO
+</string>
+    <string name="tutorial_message_5">Si un candidato te late, desliza a la derecha. ¡Pero aguas! Si no ha presentado su 3de3, ¡pídeselos!</string>
 </resources>

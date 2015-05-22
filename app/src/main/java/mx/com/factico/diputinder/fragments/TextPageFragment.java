@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import java.util.Locale;
@@ -75,18 +76,17 @@ public class TextPageFragment extends Fragment {
     private View createView(View view) {
         if (view != null) {
             Point point = ScreenUtils.getScreenSize(getActivity());
-            int width = point.x / 7 * 6;
+            int width = point.x / 8 * 7;
             //int height = (int) ScreenUtils.convertDpToPixel(200, getActivity());
-            int height = point.y / 3;
+            int height = point.y / 10 * 4;
 
             int marginTop = (int) ScreenUtils.convertDpToPixel(50, getActivity());
 
             ImageView imageLogo = (ImageView) view.findViewById(R.id.text_image_logo);
-            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(width, height);
-            params.addRule(RelativeLayout.CENTER_HORIZONTAL);
-            params.addRule(RelativeLayout.ABOVE, R.id.text_tv_title);
-            params.setMargins(0, marginTop, 0, 0);
-            imageLogo.setLayoutParams(params);
+            LinearLayout.LayoutParams paramsLogo = new LinearLayout.LayoutParams(width, height);
+            //paramsLogo.addRule(RelativeLayout.CENTER_IN_PARENT);
+            paramsLogo.setMargins(0, marginTop, 0, 0);
+            imageLogo.setLayoutParams(paramsLogo);
 
             if (index == 0)
                 imageLogo.setImageResource(R.drawable.ic_tutorial_1);
@@ -102,34 +102,14 @@ public class TextPageFragment extends Fragment {
             CustomTextView tvTitle = (CustomTextView) view.findViewById(R.id.text_tv_title);
             if (text.getTitle() != null && !text.getTitle().equals(""))
                 tvTitle.setText(text.getTitle().toUpperCase(Locale.getDefault()));
-            /*else
-                tvTitle.setVisibility(View.GONE);*/
+            else
+                tvTitle.setVisibility(View.GONE);
 
             CustomTextView tvContent = (CustomTextView) view.findViewById(R.id.text_tv_content);
             if (text.getContent() != null && !text.getContent().equals(""))
                 tvContent.setText(text.getContent());
-            /*else
-                tvContent.setVisibility(View.GONE);*/
 
             ImageView ivBgr = (ImageView) view.findViewById(R.id.text_iv_bgr);
-            //ivBgr.setImageResource(R.drawable.bgr_tutorial_candados);
-            Bitmap bitmap = null;
-
-            if (index == 0) {
-                //bitmap = ImageUtils.decodeSampledBitmapFromResource(getResources(), R.drawable.tour_img_1, 100, 200);
-            } else if (index == 1) {
-                //bitmap = ImageUtils.decodeSampledBitmapFromResource(getResources(), R.drawable.tour_img_2, 100, 200);
-            } else if (index == 2) {
-                //bitmap = ImageUtils.decodeSampledBitmapFromResource(getResources(), R.drawable.tour_img_3, 100, 200);
-            }
-
-            if (bitmap != null) {
-                /*Bitmap bitmapBlured = BlurFilter.fastblur(bitmap, 15);
-
-                if (bitmapBlured != null)
-                    ivBgr.setImageBitmap(bitmapBlured);*/
-            }
-
         }
 
         return view;

@@ -1,6 +1,7 @@
 package mx.com.factico.diputinder;
 
 import android.content.Intent;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBarActivity;
@@ -50,20 +51,18 @@ public class TutorialActivity extends ActionBarActivity implements OnClickListen
         // Creating an instance of PagerAdapter
         FragmentPagerAdapter mPagerAdapter = new FragmentPagerAdapter(getSupportFragmentManager());
 
+        Resources res = getResources();
+
         mPagerAdapter.addFragment(TextPageFragment.newInstance(0,
-                new Text("¡HOLA! Bienvenido a Ligue Político.", "Con Ligue Político podrás conocer quiénes son tus candidatos a diputados federales de acuerdo a tu ubicación geográfica, y saber si están genuinamente comprometidos con la transparencia y la rendición de cuentas.")));
+                new Text(res.getString(R.string.tutorial_title_1), res.getString(R.string.tutorial_message_1))));
         mPagerAdapter.addFragment(TextPageFragment.newInstance(1,
-                new Text("", "Ligue Político reúne datos e indicadores de “Por el México que merecemos” y “Candidato Transparente”, iniciativas de la sociedad civil que buscan visualizar compromiso de los candidatos en torno a la transparencia y la rendición de cuentas.")));
+                new Text("", res.getString(R.string.tutorial_message_2))));
         mPagerAdapter.addFragment(TextPageFragment.newInstance(2,
-                new Text("", "Si tus candidatos no han presentado su declaración fiscal (si han pagado o no sus impuestos), su declaración de intereses (si han realizado actividades o tienen relaciones que podrían interferir con el ejercicio de sus funciones) y su declaración patrimonial (el valor de los bienes que posee), en Ligue Político podrás exigírselas. ")));
+                new Text("", res.getString(R.string.tutorial_message_3))));
         mPagerAdapter.addFragment(TextPageFragment.newInstance(3,
-                new Text("", "Ligue Político es una iniciativa ciudadana promovida por: \n" +
-                        "Sociedad en Movimiento\n" +
-                        "Fáctico\n" +
-                        "Coparmex\n" +
-                        "IMCO\n")));
+                new Text("", res.getString(R.string.tutorial_message_4))));
         mPagerAdapter.addFragment(TextPageFragment.newInstance(4,
-                new Text("", "Si un candidato te late, desliza a la derecha. ¡Pero aguas! Si no ha presentado su 3de3, ¡pídeselos!")));
+                new Text("", res.getString(R.string.tutorial_message_5))));
 
         // Setting the PagerAdapter object to the viewPager object
         mViewPager.setAdapter(mPagerAdapter);

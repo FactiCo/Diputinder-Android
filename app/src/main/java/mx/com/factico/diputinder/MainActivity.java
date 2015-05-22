@@ -352,7 +352,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
             tvSubMessage.setText(getResources().getString(R.string.tweet_submessage_good));
             btnTweet.setTag(String.format(Locale.getDefault(), getResources().getString(R.string.tweet_first_message_good), userName));
 
-            btnTweetInvite.setVisibility(View.GONE);
+            //btnTweetInvite.setVisibility(View.GONE);
         } else {
             tvMessage.setText(getResources().getString(R.string.tweet_message_bad));
             tvSubMessage.setText(getResources().getString(R.string.tweet_submessage_bad));

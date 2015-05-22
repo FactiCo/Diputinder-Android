@@ -12,44 +12,47 @@
         android:layout_height="match_parent"
         android:scaleType="centerCrop" />
 
-    <ImageView
-        android:id="@+id/text_image_logo"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:layout_above="@+id/text_tv_title"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="30dp"
-        android:scaleType="fitCenter"
-        android:padding="10dp"
-        android:src="@drawable/ic_factico" />
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-    <mx.com.factico.diputinder.views.CustomTextView
-        android:id="@+id/text_tv_title"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:gravity="center"
-        android:paddingBottom="10dp"
-        android:paddingLeft="15dp"
-        android:paddingRight="15dp"
-        android:paddingTop="15dp"
-        android:text=""
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:textColor="@color/colorBackgroundWhite"
-        app:typeface="Gotham_Rounded_Bold" />
+        <ImageView
+            android:id="@+id/text_image_logo"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_marginBottom="30dp"
+            android:layout_marginTop="50dp"
+            android:padding="10dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_factico" />
 
-    <mx.com.factico.diputinder.views.CustomTextView
-        android:id="@+id/text_tv_content"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/text_tv_title"
-        android:gravity="center"
-        android:paddingBottom="15dp"
-        android:paddingLeft="15dp"
-        android:paddingRight="15dp"
-        android:paddingTop="10dp"
-        android:text=""
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:textColor="@color/colorBackgroundWhite"
-        app:typeface="Gotham_Rounded_Book" />
+        <mx.com.factico.diputinder.views.CustomTextView
+            android:id="@+id/text_tv_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:paddingBottom="10dp"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"
+            android:paddingTop="15dp"
+            android:text=""
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="@color/colorBackgroundWhite"
+            app:typeface="Gotham_Rounded_Bold" />
+
+        <mx.com.factico.diputinder.views.CustomTextView
+            android:id="@+id/text_tv_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:paddingBottom="15dp"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"
+            android:paddingTop="10dp"
+            android:text=""
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="@color/colorBackgroundWhite"
+            app:typeface="Gotham_Rounded_Book" />
+    </LinearLayout>
 </RelativeLayout>
