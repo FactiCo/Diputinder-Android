@@ -543,6 +543,8 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                         if (diputadosAux.size() > 0) {
                             diputados = diputadosAux;
 
+                            Dialogues.Log(TAG_CLASS, "Estado: " + state, Log.ERROR);
+
                             List<Diputado> diputadosUnorder = getListDiputadosFromState(diputadosAux, state);
 
                             List<Diputado> auxDiputadosOrdered = getOrderedListDiputados(diputadosUnorder);
