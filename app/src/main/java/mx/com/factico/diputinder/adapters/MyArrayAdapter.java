@@ -1,6 +1,7 @@
 package mx.com.factico.diputinder.adapters;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.view.LayoutInflater;
@@ -19,6 +20,7 @@ import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 import java.util.List;
 import java.util.Locale;
 
+import mx.com.factico.diputinder.DiputadoActivity;
 import mx.com.factico.diputinder.R;
 import mx.com.factico.diputinder.beans.Diputado;
 import mx.com.factico.diputinder.beans.PartidoType;
@@ -68,6 +70,7 @@ public class MyArrayAdapter extends ArrayAdapter<Diputado> {
             holder.name = (TextView) rowView.findViewById(R.id.item_diputado_tv_name);
             holder.imageProfile = (ImageView) rowView.findViewById(R.id.item_diputado_iv_profile);
             holder.imagePartido = (ImageView) rowView.findViewById(R.id.item_diputado_iv_partido);
+            holder.imageInfo = (ImageView) rowView.findViewById(R.id.item_diputado_iv_profile_info);
 
             Point point = ScreenUtils.getScreenSize(getContext());
             int sizeIcon = point.x / 5;
@@ -83,6 +86,9 @@ public class MyArrayAdapter extends ArrayAdapter<Diputado> {
         } else {
             holder = (ViewHolder) rowView.getTag();
         }
+
+        holder.imageInfo.setTag(getItem(position));
+        holder.imageInfo.setOnClickListener(InfoOnClickListener);
 
         Diputado diputado = getItem(position);
         holder.name.setText(String.format(Locale.getDefault(), "%s %s %s", diputado.getNombres(), diputado.getApellidoPaterno(), diputado.getApellidoMaterno()));
@@ -113,9 +119,26 @@ public class MyArrayAdapter extends ArrayAdapter<Diputado> {
         return values.get(position);
     }
 
+    View.OnClickListener InfoOnClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            Diputado diputado = v.getTag() != null ? (Diputado) v.getTag() : null;
+
+            if (diputado != null)
+                startIntentDiputado(diputado);
+        }
+    };
+
+    private void startIntentDiputado(Diputado diputado) {
+        Intent intent = new Intent(getContext(), DiputadoActivity.class);
+        intent.putExtra(DiputadoActivity.TAG_DIPUTADO, diputado);
+        getContext().startActivity(intent);
+    }
+
     static class ViewHolder {
         public TextView name;
         public ImageView imageProfile;
         public ImageView imagePartido;
+        public ImageView imageInfo;
     }
 }

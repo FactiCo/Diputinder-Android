@@ -124,6 +124,6 @@ public class LocationClientListener implements GoogleApiClient.ConnectionCallbac
     }
 
     public interface OnLocationClientListener {
-        public abstract void onLocationChanged(Location location);
+        void onLocationChanged(Location location);
     }
 }

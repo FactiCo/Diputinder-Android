@@ -174,7 +174,7 @@ public class FlingCardListener implements View.OnTouchListener {
             mFlingListener.onScroll(-1.0f);
         }else if(movedBeyondRightBorder()) {
             // Right Swipe
-            onSelected(false, getExitPoint(parentWidth), 100 );
+            onSelected(false, getExitPoint(parentWidth), 100);
             mFlingListener.onScroll(1.0f);
         }else {
             float abslMoveDistance = Math.abs(aPosX-objectX);

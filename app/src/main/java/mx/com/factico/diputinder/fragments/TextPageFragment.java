@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -86,6 +87,7 @@ public class TextPageFragment extends Fragment {
             LinearLayout.LayoutParams paramsLogo = new LinearLayout.LayoutParams(width, height);
             //paramsLogo.addRule(RelativeLayout.CENTER_IN_PARENT);
             paramsLogo.setMargins(0, marginTop, 0, 0);
+            paramsLogo.gravity = Gravity.CENTER_HORIZONTAL;
             imageLogo.setLayoutParams(paramsLogo);
 
             if (index == 0)

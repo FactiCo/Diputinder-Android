@@ -116,7 +116,7 @@ public class SwipeFlingAdapterView extends BaseFlingAdapterView {
     }
 
 
-    private void layoutChildren(int startingIndex, int adapterCount){
+    private void layoutChildren(int startingIndex, int adapterCount) {
         while (startingIndex < Math.min(adapterCount, MAX_VISIBLE) ) {
             View newUnderChild = mAdapter.getView(startingIndex, null, this);
             if (newUnderChild.getVisibility() != GONE) {

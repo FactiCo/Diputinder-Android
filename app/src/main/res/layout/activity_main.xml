@@ -52,6 +52,19 @@
                 android:scaleType="centerInside"
                 android:src="@drawable/ic_btn_no" />
 
+            <!--<ImageView
+                style="?android:attr/buttonBarButtonStyle"
+                android:id="@+id/main_btn_info"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:padding="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="20dp"
+                android:background="@drawable/selector_circle_gray"
+                android:textColor="@color/colorTextContent"
+                android:scaleType="centerInside"
+                android:src="@drawable/ic_btn_no" />-->
+
             <ImageView
                 style="?android:attr/buttonBarButtonStyle"
                 android:id="@+id/main_btn_swipe_right"
