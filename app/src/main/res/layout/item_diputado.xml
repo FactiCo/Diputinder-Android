@@ -12,6 +12,14 @@
         android:orientation="vertical">
 
         <ImageView
+            android:id="@+id/item_diputado_iv_profile"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/drawable_bgr_gray"
+            android:layout_marginBottom="30dp"
+            android:scaleType="centerCrop" />
+
+        <ImageView
             android:id="@+id/item_diputado_iv_profile_info"
             android:layout_width="50dp"
             android:layout_height="50dp"
@@ -19,13 +27,6 @@
             android:layout_alignParentRight="true"
             android:scaleType="centerCrop"
             android:src="@drawable/ic_info"/>
-
-        <ImageView
-            android:id="@+id/item_diputado_iv_profile"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginBottom="30dp"
-            android:scaleType="centerCrop" />
 
         <RelativeLayout
             android:id="@+id/item_diputado_name_container"

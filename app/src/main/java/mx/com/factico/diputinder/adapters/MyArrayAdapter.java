@@ -42,7 +42,7 @@ public class MyArrayAdapter extends ArrayAdapter<Diputado> {
         this.values = values;
 
         options = new DisplayImageOptions.Builder()
-                //.showImageOnLoading(null)
+                //.showImageOnLoading(R.drawable.drawable_bgr_gray)
                 .showImageForEmptyUri(R.drawable.ic_avatar_no)
                 .showImageOnFail(R.drawable.ic_avatar_no)
                 .resetViewBeforeLoading(true)
