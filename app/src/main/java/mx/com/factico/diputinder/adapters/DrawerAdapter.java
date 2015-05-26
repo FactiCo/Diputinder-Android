@@ -6,11 +6,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.List;
 
 import mx.com.factico.diputinder.R;
 import mx.com.factico.diputinder.beans.DrawerOption;
+import mx.com.factico.diputinder.dialogues.Dialogues;
 
 /**
  * Created by zace3d on 26/05/15.
@@ -36,6 +38,7 @@ public class DrawerAdapter extends RecyclerView.Adapter<DrawerAdapter.DrawerView
 
             if (viewType == TYPE_ITEM) {
                 title = (TextView) view.findViewById(R.id.drawer_item_option);
+                view.setOnClickListener(this);
                 holderId = 1;
             } else {
                 description = (TextView) view.findViewById(R.id.drawer_header_description);
@@ -47,7 +50,10 @@ public class DrawerAdapter extends RecyclerView.Adapter<DrawerAdapter.DrawerView
 
         @Override
         public void onClick(View v) {
-            onItemClickListener.onItemClick(v, getPosition());
+            Dialogues.Toast(v.getContext(), "Click in position: " + getPosition(), Toast.LENGTH_LONG);
+
+            if (onItemClickListener != null)
+                onItemClickListener.onItemClick(v, getPosition());
         }
     }
 

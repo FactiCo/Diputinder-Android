@@ -13,16 +13,12 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import mx.com.factico.diputinder.adapters.DrawerAdapter;
-import mx.com.factico.diputinder.beans.CandidatoType;
 import mx.com.factico.diputinder.beans.DrawerOption;
 import mx.com.factico.diputinder.dialogues.Dialogues;
 import mx.com.factico.diputinder.fragments.MainFragment;
@@ -67,18 +63,15 @@ public class MainActivity extends ActionBarActivity {
             @Override
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
-                // code here will execute once the drawer is opened( As I dont want anything happened whe drawer is
-                // open I am not going to put anything here)
             }
 
             @Override
             public void onDrawerClosed(View drawerView) {
                 super.onDrawerClosed(drawerView);
-                // Code here will execute once drawer is closed
             }
-        }; // Drawer Toggle Object Made
-        mDrawerLayout.setDrawerListener(mDrawerToggle); // Drawer Listener set to the Drawer toggle
-        mDrawerToggle.syncState();               // Finally we set the drawer toggle sync State
+        };
+        mDrawerLayout.setDrawerListener(mDrawerToggle);
+        mDrawerToggle.syncState();
 
         /****/
         mDrawerOptions = new ArrayList<>();
