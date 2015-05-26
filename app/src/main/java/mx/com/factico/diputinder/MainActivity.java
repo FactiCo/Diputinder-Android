@@ -103,15 +103,12 @@ public class MainActivity extends ActionBarActivity {
         }
     }
 
-    /** Swaps fragments in the main content view */
     private void selectItem(int position) {
-        // Create a new fragment and specify the planet to show based on position
         Fragment fragment = new MainFragment();
         Bundle args = new Bundle();
         args.putInt(MainFragment.INDEX, position);
         fragment.setArguments(args);
 
-        // Insert the fragment by replacing any existing fragment
         FragmentManager fragmentManager = getFragmentManager();
         fragmentManager.beginTransaction()
                 .replace(R.id.content_frame, fragment)
@@ -140,11 +137,6 @@ public class MainActivity extends ActionBarActivity {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
-        if (id == android.R.id.home) {
-            finish();
-            return true;
-        }
 
         /*if (id == R.id.action_diputados) {
             if (candidatoType != CandidatoType.DIPUTADO) {

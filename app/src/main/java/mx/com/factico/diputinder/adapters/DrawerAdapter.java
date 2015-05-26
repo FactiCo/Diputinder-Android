@@ -24,6 +24,13 @@ public class DrawerAdapter extends RecyclerView.Adapter<DrawerAdapter.DrawerView
     private static final int TYPE_HEADER = 0;
     private static final int TYPE_ITEM = 1;
 
+    /*
+Ver diputados
+Ver gobernadores
+¿Qué es Por el México que merecemos? http://www.mexicoquemerecemos.com/agenda.php
+¿Qué es Candidato Transparente? https://candidatotransparente.mx/#/acerca_de
+¿Qué es Fáctico? http://www.factico.com.mx/
+     */
     public class DrawerViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         public int holderId;
 
@@ -41,8 +48,8 @@ public class DrawerAdapter extends RecyclerView.Adapter<DrawerAdapter.DrawerView
                 view.setOnClickListener(this);
                 holderId = 1;
             } else {
-                description = (TextView) view.findViewById(R.id.drawer_header_description);
-                website = (TextView) view.findViewById(R.id.drawer_header_website);
+                description = (TextView) view.findViewById(R.id.drawer_header_description_factico);
+                website = (TextView) view.findViewById(R.id.drawer_header_website_factico);
                 profileImage = (ImageView) view.findViewById(R.id.drawer_header_icon);
                 holderId = 0;
             }

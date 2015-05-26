@@ -2,47 +2,113 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="200dp"
+    android:layout_height="wrap_content"
     android:orientation="vertical">
 
     <ImageView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:src="@drawable/bgr_factico"
-        android:scaleType="centerCrop"/>
+        android:layout_height="wrap_content"
+        android:scaleType="centerCrop"
+        android:src="@drawable/drawable_bgr_gray" />
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="70dp"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
+        android:layout_height="wrap_content"
+        android:paddingTop="20dp"
         android:orientation="vertical">
 
-        <mx.com.factico.diputinder.views.CustomTextView
-            android:id="@+id/drawer_header_description"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
-            android:gravity="center"
-            android:text="Primer medio móvil que geolocaliza información"
-            android:textColor="@color/colorTextContent"
-            android:textSize="14sp"
-            android:textStyle="bold"
-            app:typeface="Gotham_Rounded_Bold"/>
+            android:layout_height="70dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:orientation="vertical">
 
-        <mx.com.factico.diputinder.views.CustomTextView
-            android:id="@+id/drawer_header_website"
+            <mx.com.factico.diputinder.views.CustomTextView
+                android:id="@+id/drawer_header_description_mexicomerecemos"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:text="¿Qué es Por el México que merecemos?"
+                android:textColor="@color/colorTextContent"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                app:typeface="Gotham_Rounded_Bold" />
+
+            <mx.com.factico.diputinder.views.CustomTextView
+                android:id="@+id/drawer_header_website_mexicomerecemos"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="5dp"
+                android:text="http://www.mexicoquemerecemos.com/agenda.php"
+                android:textColor="@color/colorTextContent"
+                android:textSize="14sp"
+                android:textStyle="normal"
+                app:typeface="Gotham_Rounded_Book" />
+        </LinearLayout>
+
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
-            android:layout_marginTop="5dp"
-            android:gravity="center"
-            android:text="http://www.factico.com.mx"
-            android:textColor="@color/colorTextContent"
-            android:textSize="14sp"
-            android:textStyle="normal"
-            app:typeface="Gotham_Rounded_Book"/>
+            android:layout_height="70dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:orientation="vertical">
+
+            <mx.com.factico.diputinder.views.CustomTextView
+                android:id="@+id/drawer_header_description_candidatotransparente"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:text="¿Qué es Candidato Transparente?"
+                android:textColor="@color/colorTextContent"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                app:typeface="Gotham_Rounded_Bold" />
+
+            <mx.com.factico.diputinder.views.CustomTextView
+                android:id="@+id/drawer_header_website_candidatotransparente"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="5dp"
+                android:text="https://candidatotransparente.mx/#/acerca_de"
+                android:textColor="@color/colorTextContent"
+                android:textSize="14sp"
+                android:textStyle="normal"
+                app:typeface="Gotham_Rounded_Book" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:orientation="vertical">
+
+            <mx.com.factico.diputinder.views.CustomTextView
+                android:id="@+id/drawer_header_description_factico"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:text="¿Qué es Fáctico? Primer medio móvil que geolocaliza información"
+                android:textColor="@color/colorTextContent"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                app:typeface="Gotham_Rounded_Bold" />
+
+            <mx.com.factico.diputinder.views.CustomTextView
+                android:id="@+id/drawer_header_website_factico"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="5dp"
+                android:text="http://www.factico.com.mx"
+                android:textColor="@color/colorTextContent"
+                android:textSize="14sp"
+                android:textStyle="normal"
+                app:typeface="Gotham_Rounded_Book" />
+        </LinearLayout>
     </LinearLayout>
 
     <ImageView
@@ -52,5 +118,5 @@
         android:layout_marginLeft="16dp"
         android:layout_marginTop="38dp"
         android:src="@drawable/ic_factico"
-        android:visibility="gone"/>
+        android:visibility="gone" />
 </RelativeLayout>
