@@ -22,6 +22,9 @@ import java.util.Date;
 import mx.com.factico.diputinder.R;
 import mx.com.factico.diputinder.dialogues.Dialogues;
 
+/**
+ * Created by zace3d on 26/05/15.
+ */
 public class LocationClientListener implements GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
         LocationListener {
@@ -59,7 +62,7 @@ public class LocationClientListener implements GoogleApiClient.ConnectionCallbac
         // LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
 
         mLocationRequest = LocationRequest.create();
-        mLocationRequest.setPriority(LocationRequest.PRIORITY_LOW_POWER);
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
         mLocationRequest.setInterval(1000); // Update location every second
         mLocationRequest.setFastestInterval(5000);
 

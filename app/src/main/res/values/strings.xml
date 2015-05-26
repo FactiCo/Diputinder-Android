@@ -8,6 +8,9 @@
     <string name="action_gobernadores">Gobernadores</string>
     <string name="action_refresh">Actualizar ubicación</string>
 
+    <string name="drawer_open">Open</string>
+    <string name="drawer_close">Close</string>
+
     <string name="no_gps_enabled">Servicios de ubicación apagados. Inténtalo de nuevo.</string>
 
     <!-- Twitter -->
