@@ -53,6 +53,7 @@ import mx.com.factico.diputinder.views.CustomTextView;
 
 public class MainFragment extends Fragment implements View.OnClickListener {
     public static final String INDEX = "index";
+    public static final String CANDIDATO_TYPE = "candidato_type";
 
     public static final String TAG_CLASS = MainFragment.class.getSimpleName();
 
@@ -78,6 +79,7 @@ public class MainFragment extends Fragment implements View.OnClickListener {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_main, container, false);
         int i = getArguments().getInt(INDEX);
+        candidatoType = CandidatoType.getCandidatoType(getArguments().getInt(CANDIDATO_TYPE));
 
         createView();
 

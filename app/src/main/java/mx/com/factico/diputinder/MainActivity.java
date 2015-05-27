@@ -87,6 +87,7 @@ public class MainActivity extends ActionBarActivity {
             @Override
             public void onItemClick(View v, int position) {
                 Dialogues.Toast(getBaseContext(), "Click in position: " + position, Toast.LENGTH_LONG);
+                selectItem(position);
             }
         });
 
@@ -107,6 +108,7 @@ public class MainActivity extends ActionBarActivity {
         Fragment fragment = new MainFragment();
         Bundle args = new Bundle();
         args.putInt(MainFragment.INDEX, position);
+        args.putSerializable(MainFragment.INDEX, position);
         fragment.setArguments(args);
 
         FragmentManager fragmentManager = getFragmentManager();
