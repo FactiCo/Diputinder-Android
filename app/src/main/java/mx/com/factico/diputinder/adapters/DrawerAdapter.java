@@ -31,7 +31,7 @@ Ver gobernadores
 ¿Qué es Candidato Transparente? https://candidatotransparente.mx/#/acerca_de
 ¿Qué es Fáctico? http://www.factico.com.mx/
      */
-    public class DrawerViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    protected class DrawerViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         public int holderId;
 
         public TextView title;

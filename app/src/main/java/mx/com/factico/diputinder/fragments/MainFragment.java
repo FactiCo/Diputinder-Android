@@ -14,6 +14,9 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -81,6 +84,8 @@ public class MainFragment extends Fragment implements View.OnClickListener {
         int i = getArguments().getInt(INDEX);
         candidatoType = CandidatoType.getCandidatoType(getArguments().getInt(CANDIDATO_TYPE));
 
+        setHasOptionsMenu(true);
+
         createView();
 
         return rootView;
@@ -114,7 +119,7 @@ public class MainFragment extends Fragment implements View.OnClickListener {
                 .imageScaleType(ImageScaleType.EXACTLY)
                 .bitmapConfig(Bitmap.Config.RGB_565)
                 .considerExifParams(true)
-                        //.displayer(new FadeInBitmapDisplayer(300))
+                //.displayer(new FadeInBitmapDisplayer(300))
                 .build();
     }
 
@@ -467,6 +472,28 @@ public class MainFragment extends Fragment implements View.OnClickListener {
             }
         });
         dialog.show();
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_main, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        if (id == R.id.action_refresh) {
+            //showDialog("Obteniendo ciudad donde te encuentras...");
+            //clientListener.startLocationUpdates();
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     private class GetDiputadosPublicationsAsyncTask extends AsyncTask<String, String, String> {

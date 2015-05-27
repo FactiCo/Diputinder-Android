@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import mx.com.factico.diputinder.adapters.DrawerAdapter;
+import mx.com.factico.diputinder.beans.CandidatoType;
 import mx.com.factico.diputinder.beans.DrawerOption;
 import mx.com.factico.diputinder.dialogues.Dialogues;
 import mx.com.factico.diputinder.fragments.MainFragment;
@@ -86,12 +87,11 @@ public class MainActivity extends ActionBarActivity {
         drawerAdapter.setOnItemClickListener(new DrawerAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View v, int position) {
-                Dialogues.Toast(getBaseContext(), "Click in position: " + position, Toast.LENGTH_LONG);
+                //Dialogues.Toast(getBaseContext(), "Click in position: " + position, Toast.LENGTH_LONG);
                 selectItem(position);
             }
         });
 
-        // Set the adapter for the list view
         mDrawerList.setAdapter(new DrawerAdapter(mDrawerOptions));
 
         selectItem(0);
@@ -108,7 +108,7 @@ public class MainActivity extends ActionBarActivity {
         Fragment fragment = new MainFragment();
         Bundle args = new Bundle();
         args.putInt(MainFragment.INDEX, position);
-        args.putSerializable(MainFragment.INDEX, position);
+        args.putSerializable(MainFragment.CANDIDATO_TYPE, position);
         fragment.setArguments(args);
 
         FragmentManager fragmentManager = getFragmentManager();
@@ -126,7 +126,7 @@ public class MainActivity extends ActionBarActivity {
         actionbarTitle.setText(title);
     }
 
-    @Override
+    /*@Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
@@ -140,30 +140,12 @@ public class MainActivity extends ActionBarActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        /*if (id == R.id.action_diputados) {
-            if (candidatoType != CandidatoType.DIPUTADO) {
-                candidatoType = CandidatoType.DIPUTADO;
-
-                loadCandidatos(candidatoType);
-            }
-            return true;
-        }
-
-        if (id == R.id.action_gobernadores) {
-            if (candidatoType != CandidatoType.GOBERNADOR) {
-                candidatoType = CandidatoType.GOBERNADOR;
-
-                loadCandidatos(candidatoType);
-            }
-            return true;
-        }
-
         if (id == R.id.action_refresh) {
-            showDialog("Obteniendo ciudad donde te encuentras...");
-            clientListener.startLocationUpdates();
+            //showDialog("Obteniendo ciudad donde te encuentras...");
+            //clientListener.startLocationUpdates();
             return true;
-        }*/
+        }
 
         return super.onOptionsItemSelected(item);
-    }
+    }*/
 }
