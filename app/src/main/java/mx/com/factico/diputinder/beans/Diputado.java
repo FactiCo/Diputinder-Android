@@ -196,7 +196,7 @@ public class Diputado implements Serializable {
         this.fiscalPDF = fiscalPDF;
     }
 
-    /*@Override
+    @Override
     public boolean equals(Object o) {
         boolean isEqual = false;
 
@@ -211,5 +211,5 @@ public class Diputado implements Serializable {
         }
 
         return isEqual;
-    }*/
+    }
 }

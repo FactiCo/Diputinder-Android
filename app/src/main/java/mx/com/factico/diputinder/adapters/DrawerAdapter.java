@@ -53,9 +53,9 @@ Ver gobernadores
                 view.setOnClickListener(this);
                 holderId = 1;
             } else {
-                websiteMerecemos = (CustomTextView) view.findViewById(R.id.drawer_header_website_mexicomerecemos);
-                websiteTransparente = (CustomTextView) view.findViewById(R.id.drawer_header_website_candidatotransparente);
-                websiteFactico = (CustomTextView) view.findViewById(R.id.drawer_header_website_factico);
+                websiteMerecemos = (CustomTextView) view.findViewById(R.id.drawer_header_description_mexicomerecemos);
+                websiteTransparente = (CustomTextView) view.findViewById(R.id.drawer_header_description_candidatotransparente);
+                websiteFactico = (CustomTextView) view.findViewById(R.id.drawer_header_description_factico);
 
                 websiteMerecemos.setOnClickListener(this);
                 websiteTransparente.setOnClickListener(this);
@@ -68,13 +68,13 @@ Ver gobernadores
         @Override
         public void onClick(View v) {
             switch (v.getId()) {
-                case R.id.drawer_header_website_mexicomerecemos:
+                case R.id.drawer_header_description_mexicomerecemos:
                     startWebViewIntent(v.getContext(), v.getContext().getResources().getString(R.string.drawer_header_mexico_merecemos_website));
                     break;
-                case R.id.drawer_header_website_candidatotransparente:
+                case R.id.drawer_header_description_candidatotransparente:
                     startWebViewIntent(v.getContext(), v.getContext().getResources().getString(R.string.drawer_header_transparente_website));
                     break;
-                case R.id.drawer_header_website_factico:
+                case R.id.drawer_header_description_factico:
                     startWebViewIntent(v.getContext(), v.getContext().getResources().getString(R.string.drawer_header_factico_website));
                     break;
                 default:

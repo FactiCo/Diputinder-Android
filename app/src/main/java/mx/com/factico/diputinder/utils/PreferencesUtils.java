@@ -10,6 +10,7 @@ public class PreferencesUtils {
     public static final String TUTORIAL = "tutorial";
     public static final String LOCATION = "location";
     public static final String STATE = "state";
+    public static final String JSON_PDF = "json_PDF";
 
     public static void putStringPreference(Context context, String key, String value) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);

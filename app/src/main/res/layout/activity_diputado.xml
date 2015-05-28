@@ -141,7 +141,7 @@
                         android:paddingLeft="15dp"
                         android:paddingRight="15dp"
                         android:paddingTop="15dp"
-                        android:text="Partidos Aliados"
+                        android:text="Aliados"
                         android:textAppearance="?android:attr/textAppearanceLarge"
                         android:textColor="@color/colorTextTitle"
                         app:typeface="Gotham_Rounded_Bold" />
