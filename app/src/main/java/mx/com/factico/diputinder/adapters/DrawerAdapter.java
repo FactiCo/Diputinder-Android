@@ -68,10 +68,6 @@ Ver gobernadores
         @Override
         public void onClick(View v) {
             switch (v.getId()) {
-                case R.id.drawer_item_option:
-                    if (onItemClickListener != null)
-                        onItemClickListener.onItemClick(v, getPosition());
-                    break;
                 case R.id.drawer_header_website_mexicomerecemos:
                     startWebViewIntent(v.getContext(), v.getContext().getResources().getString(R.string.drawer_header_mexico_merecemos_website));
                     break;
@@ -80,6 +76,10 @@ Ver gobernadores
                     break;
                 case R.id.drawer_header_website_factico:
                     startWebViewIntent(v.getContext(), v.getContext().getResources().getString(R.string.drawer_header_factico_website));
+                    break;
+                default:
+                    if (onItemClickListener != null)
+                        onItemClickListener.onItemClick(v, getPosition());
                     break;
             }
         }

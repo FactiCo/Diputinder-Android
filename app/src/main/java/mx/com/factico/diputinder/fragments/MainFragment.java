@@ -533,7 +533,8 @@ public class MainFragment extends Fragment implements View.OnClickListener {
 
         @Override
         protected void onPostExecute(String result) {
-            // Dialogues.Log(TAG_CLASS, "Result: " + result, Log.ERROR);
+            Dialogues.Log(TAG_CLASS, "Result: " + result, Log.ERROR);
+            Dialogues.Log(TAG_CLASS, "json_PDF: " + json_PDF, Log.ERROR);
             // Dialogues.Toast(getActivity(), "Result: " + result, Toast.LENGTH_LONG);
 
             if (result != null) {
@@ -547,21 +548,21 @@ public class MainFragment extends Fragment implements View.OnClickListener {
                         }
 
                         if (diputadosAux.size() > 0) {
-                            // Dialogues.Log(TAG_CLASS, "Size Candidatos: " + diputadosAux.size(), Log.ERROR);
+                            Dialogues.Log(TAG_CLASS, "Size Candidatos: " + diputadosAux.size(), Log.ERROR);
 
                             String stateApi = StateType.getStateName(StateType.getStateType(state));
-                            // Dialogues.Log(TAG_CLASS, "Estado: " + stateApi, Log.ERROR);
+                            Dialogues.Log(TAG_CLASS, "Estado: " + stateApi, Log.ERROR);
 
                             List<Diputado> diputadosUnorder = getListDiputadosFromState(diputadosAux, stateApi);
-                            // Dialogues.Log(TAG_CLASS, "Size Filter: " + diputadosUnorder.size(), Log.ERROR);
+                            Dialogues.Log(TAG_CLASS, "Size Filter: " + diputadosUnorder.size(), Log.ERROR);
 
                             List<Diputado> auxDiputadosOrdered = getOrderedListDiputados(diputadosUnorder);
-                            // Dialogues.Log(TAG_CLASS, "Size Ordered: " + auxDiputadosOrdered.size(), Log.ERROR);
+                            Dialogues.Log(TAG_CLASS, "Size Ordered: " + auxDiputadosOrdered.size(), Log.ERROR);
 
                             if (auxDiputadosOrdered.size() > 0) {
                                 List<Diputado> candidatosPDF = candidatos.getCandidatos();
                                 if (candidatosPDF != null && candidatosPDF.size() > 0) {
-                                    // Dialogues.Log(TAG_CLASS, "Size candidatosPDF: " + candidatosPDF.size(), Log.ERROR);
+                                    Dialogues.Log(TAG_CLASS, "Size candidatosPDF: " + candidatosPDF.size(), Log.ERROR);
 
                                     for (Diputado diputado : candidatosPDF) {
                                         // Dialogues.Log(TAG_CLASS, "Diputado: " + diputado.getNombres(), Log.ERROR);

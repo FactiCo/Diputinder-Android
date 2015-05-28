@@ -11,12 +11,17 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.Reader;
 import java.io.UnsupportedEncodingException;
+import java.net.URL;
+import java.nio.charset.Charset;
 
 import mx.com.factico.diputinder.dialogues.Dialogues;
 
@@ -42,7 +47,7 @@ public class HttpConnection {
 		try {
 			response = client.execute(request);
 			
-			Dialogues.Log(TAG_CLASS, "Http Post Response:" + response.toString(), Log.DEBUG);
+			Dialogues.Log(TAG_CLASS, "Http Get Response:" + response.toString(), Log.DEBUG);
 			
 			HttpEntity httpEntity = response.getEntity();
 
@@ -56,6 +61,32 @@ public class HttpConnection {
 			e.printStackTrace();
 		}
 		
+		return result;
+	}
+
+	public static String GETJSON(String url) {
+		InputStream inputStream = null;
+		String result = "";
+		try {
+			// create HttpClient
+			HttpClient httpclient = new DefaultHttpClient();
+
+			// make GET request to the given URL
+			HttpResponse httpResponse = httpclient.execute(new HttpGet(url));
+
+			// receive response as inputStream
+			inputStream = httpResponse.getEntity().getContent();
+
+			// convert inputstream to string
+			if (inputStream != null)
+				result = convertInputStreamToString(inputStream);
+			else
+				result = "Did not work!";
+
+		} catch (Exception e) {
+			Log.d("InputStream", e.getLocalizedMessage());
+		}
+
 		return result;
 	}
 
@@ -93,7 +124,19 @@ public class HttpConnection {
 		
 		return result;
 	}
-	
+
+	private static String convertInputStreamToString(InputStream inputStream) throws IOException {
+		BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+		String line = "";
+		String result = "";
+		while ((line = bufferedReader.readLine()) != null)
+			result += line;
+
+		inputStream.close();
+		return result;
+
+	}
+
 	private static HttpEntity createStringEntity(String json) {
 		StringEntity se = null;
 		try {
