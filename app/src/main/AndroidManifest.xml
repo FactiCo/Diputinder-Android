@@ -34,10 +34,16 @@
             android:screenOrientation="portrait" />
 
         <activity
-            android:name="mx.com.factico.diputinder.WebViewActivity"
+            android:name="mx.com.factico.diputinder.PdfViewerActivity"
             android:launchMode="singleTask"
             android:parentActivityName="mx.com.factico.diputinder.DiputadoActivity"
             android:screenOrientation="portrait" />
+
+        <activity
+            android:name="mx.com.factico.diputinder.WebViewActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:parentActivityName="mx.com.factico.diputinder.MainActivity"/>
 
         <activity
             android:name="mx.com.factico.diputinder.MainActivity"

@@ -14,8 +14,8 @@ import android.widget.TextView;
 /**
  * Created by zace3d on 18/05/15.
  */
-public class WebViewActivity extends ActionBarActivity {
-    public static final String TAG_CLASS = WebViewActivity.class.getSimpleName();
+public class PdfViewerActivity extends ActionBarActivity {
+    public static final String TAG_CLASS = PdfViewerActivity.class.getSimpleName();
 
     private WebView webView;
     private String url;
@@ -72,7 +72,7 @@ public class WebViewActivity extends ActionBarActivity {
         webView.getSettings().setDisplayZoomControls(false);
         webView.setScrollBarStyle(View.SCROLLBARS_INSIDE_OVERLAY);
         webView.getSettings().setSupportZoom(true);
-        webView.loadUrl(url);
+        webView.loadUrl("http://docs.google.com/gview?embedded=true&url=" + url);
     }
 
     @Override
@@ -103,15 +103,6 @@ public class WebViewActivity extends ActionBarActivity {
         @Override
         public void onPageFinished(WebView view, String url) {
             super.onPageFinished(view, url);
-        }
-    }
-
-    @Override
-    public void onBackPressed() {
-        if (webView.canGoBack()) {
-            webView.goBack();
-        } else {
-            super.onBackPressed();
         }
     }
 }

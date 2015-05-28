@@ -611,7 +611,7 @@ public class MainFragment extends Fragment implements View.OnClickListener {
         List<Diputado> auxNoTwitter = new ArrayList<>();
 
         for (Diputado diputado : listDiputados) {
-            if (diputado.getTwitter() != null && !diputado.getTwitter().equals(""))
+            if (diputado.getTwitter() != null && !diputado.getTwitter().equals("") && !diputado.getTwitter().equals("no se identificó"))
                 auxTwitter.add(diputado);
             else
                 auxNoTwitter.add(diputado);

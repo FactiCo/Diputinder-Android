@@ -6,7 +6,6 @@ import android.graphics.Point;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.ImageView;
@@ -18,7 +17,6 @@ import android.widget.Toast;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
-import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 
 import java.text.NumberFormat;
 import java.text.ParsePosition;
@@ -229,7 +227,7 @@ public class DiputadoActivity extends ActionBarActivity {
     };
 
     private void startWebViewIntent(String url) {
-        Intent intent = new Intent(getBaseContext(), WebViewActivity.class);
+        Intent intent = new Intent(getBaseContext(), PdfViewerActivity.class);
         intent.putExtra("url", url);
         startActivity(intent);
     }

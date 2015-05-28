@@ -1,5 +1,7 @@
 package mx.com.factico.diputinder.adapters;
 
+import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,9 +12,12 @@ import android.widget.Toast;
 
 import java.util.List;
 
+import mx.com.factico.diputinder.PdfViewerActivity;
 import mx.com.factico.diputinder.R;
+import mx.com.factico.diputinder.WebViewActivity;
 import mx.com.factico.diputinder.beans.DrawerOption;
 import mx.com.factico.diputinder.dialogues.Dialogues;
+import mx.com.factico.diputinder.views.CustomTextView;
 
 /**
  * Created by zace3d on 26/05/15.
@@ -34,32 +39,56 @@ Ver gobernadores
     protected class DrawerViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         public int holderId;
 
-        public TextView title;
+        public CustomTextView title;
 
-        public ImageView profileImage;
-        public TextView description;
-        public TextView website;
+        public CustomTextView websiteMerecemos;
+        public CustomTextView websiteTransparente;
+        public CustomTextView websiteFactico;
 
         public DrawerViewHolder(View view, int viewType) {
             super(view);
 
             if (viewType == TYPE_ITEM) {
-                title = (TextView) view.findViewById(R.id.drawer_item_option);
+                title = (CustomTextView) view.findViewById(R.id.drawer_item_option);
                 view.setOnClickListener(this);
                 holderId = 1;
             } else {
-                description = (TextView) view.findViewById(R.id.drawer_header_description_factico);
-                website = (TextView) view.findViewById(R.id.drawer_header_website_factico);
-                profileImage = (ImageView) view.findViewById(R.id.drawer_header_icon);
+                websiteMerecemos = (CustomTextView) view.findViewById(R.id.drawer_header_website_mexicomerecemos);
+                websiteTransparente = (CustomTextView) view.findViewById(R.id.drawer_header_website_candidatotransparente);
+                websiteFactico = (CustomTextView) view.findViewById(R.id.drawer_header_website_factico);
+
+                websiteMerecemos.setOnClickListener(this);
+                websiteTransparente.setOnClickListener(this);
+                websiteFactico.setOnClickListener(this);
+
                 holderId = 0;
             }
         }
 
         @Override
         public void onClick(View v) {
-            if (onItemClickListener != null)
-                onItemClickListener.onItemClick(v, getPosition());
+            switch (v.getId()) {
+                case R.id.drawer_item_option:
+                    if (onItemClickListener != null)
+                        onItemClickListener.onItemClick(v, getPosition());
+                    break;
+                case R.id.drawer_header_website_mexicomerecemos:
+                    startWebViewIntent(v.getContext(), v.getContext().getResources().getString(R.string.drawer_header_mexico_merecemos_website));
+                    break;
+                case R.id.drawer_header_website_candidatotransparente:
+                    startWebViewIntent(v.getContext(), v.getContext().getResources().getString(R.string.drawer_header_transparente_website));
+                    break;
+                case R.id.drawer_header_website_factico:
+                    startWebViewIntent(v.getContext(), v.getContext().getResources().getString(R.string.drawer_header_factico_website));
+                    break;
+            }
         }
+    }
+
+    private void startWebViewIntent(Context context, String url) {
+        Intent intent = new Intent(context, WebViewActivity.class);
+        intent.putExtra("url", url);
+        context.startActivity(intent);
     }
 
     public DrawerAdapter(List<DrawerOption> items) {
@@ -86,7 +115,6 @@ Ver gobernadores
             holder.title.setText(items.get(position - 1).getTitle());
 
         } else if (holder.holderId == TYPE_HEADER) {
-            holder.profileImage.setImageResource(R.drawable.ic_factico);
             //viewHolder.description.setText(name);
             //viewHolder.website.setText(email);
         }

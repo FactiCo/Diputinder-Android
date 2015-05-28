@@ -11,6 +11,15 @@
     <string name="drawer_open">Open</string>
     <string name="drawer_close">Close</string>
 
+    <string name="drawer_header_mexico_merecemos">¿Qué es Por el México que merecemos?</string>
+    <string name="drawer_header_mexico_merecemos_website">http://www.mexicoquemerecemos.com/agenda.php</string>
+
+    <string name="drawer_header_transparente">¿Qué es Candidato Transparente?</string>
+    <string name="drawer_header_transparente_website">https://candidatotransparente.mx/#/acerca_de</string>
+
+    <string name="drawer_header_factico">¿Qué es Fáctico?</string>
+    <string name="drawer_header_factico_website">http://www.factico.com.mx</string>
+
     <string name="getting_city">Obteniendo ciudad donde te encuentras</string>
     <string name="getting_info">Obteniendo información de candidatos</string>
 
