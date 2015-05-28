@@ -197,17 +197,6 @@ public class Diputado implements Serializable {
         this.fiscalPDF = fiscalPDF;
     }
 
-    /*@Override
-    public int hashCode() {
-        int hash = 3;
-        hash = 7 * hash + this.getNombres().hashCode();
-        hash = 7 * hash + this.getApellidoPaterno().hashCode();
-        hash = 7 * hash + this.getApellidoMaterno().hashCode();
-        hash = 7 * hash + this.getEntidadFederativa().hashCode();
-        hash = 7 * hash + this.getDistritoElectoral().hashCode();
-        return hash;
-    }*/
-
     @Override
     public boolean equals(Object o) {
         boolean isEqual = false;
@@ -219,8 +208,8 @@ public class Diputado implements Serializable {
             isEqual = ((this.nombres != null && this.nombres.equals(diputado.nombres))
                     && (this.apellidoPaterno != null && this.apellidoPaterno.equals(diputado.apellidoPaterno))
                     && (this.apellidoMaterno != null && this.apellidoMaterno.equals(diputado.apellidoMaterno))
-                    && (this.entidadFederativa != null && this.entidadFederativa.equals(diputado.entidadFederativa))
-                    && (this.distritoElectoral != null && this.distritoElectoral.equals(diputado.distritoElectoral)));
+                    && (this.entidadFederativa != null && this.entidadFederativa.equals(diputado.entidadFederativa)));
+                    //&& (this.distritoElectoral != null && this.distritoElectoral.equals(diputado.distritoElectoral)));
         }
 
         return isEqual;
@@ -233,7 +222,7 @@ public class Diputado implements Serializable {
         hash = 31 * hash + (null == apellidoPaterno ? 0 : apellidoPaterno.hashCode());
         hash = 31 * hash + (null == apellidoMaterno ? 0 : apellidoMaterno.hashCode());
         hash = 31 * hash + (null == entidadFederativa ? 0 : entidadFederativa.hashCode());
-        hash = 31 * hash + (null == distritoElectoral ? 0 : distritoElectoral.hashCode());
+        //hash = 31 * hash + (null == distritoElectoral ? 0 : distritoElectoral.hashCode());
         return hash;
     }
 }
