@@ -41,7 +41,7 @@ public enum PartidoType {
             case MORENA:
                 return R.drawable.ic_logo_morena;
             default:
-                return R.drawable.drawable_bgr_circle;
+                return R.drawable.bgr_default;
         }
     }
 

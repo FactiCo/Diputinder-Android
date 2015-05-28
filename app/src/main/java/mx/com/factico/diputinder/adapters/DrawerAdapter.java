@@ -57,8 +57,6 @@ Ver gobernadores
 
         @Override
         public void onClick(View v) {
-            Dialogues.Toast(v.getContext(), "Click in position: " + getPosition(), Toast.LENGTH_LONG);
-
             if (onItemClickListener != null)
                 onItemClickListener.onItemClick(v, getPosition());
         }

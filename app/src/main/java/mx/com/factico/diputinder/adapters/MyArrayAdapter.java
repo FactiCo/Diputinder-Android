@@ -91,8 +91,13 @@ public class MyArrayAdapter extends ArrayAdapter<Diputado> {
         holder.imageInfo.setOnClickListener(InfoOnClickListener);
 
         Diputado diputado = getItem(position);
-        holder.name.setText(String.format(Locale.getDefault(), "%s %s %s", diputado.getNombres(), diputado.getApellidoPaterno(), diputado.getApellidoMaterno()));
-        if (diputado.getTwitter() != null && !diputado.getTwitter().equals("")) {
+
+        String nombres = diputado.getNombres() != null ? diputado.getNombres() : "";
+        String apellidoPaterno = diputado.getApellidoPaterno() != null ? diputado.getApellidoPaterno() : "";
+        String apellidoMaterno = diputado.getApellidoMaterno() != null ? diputado.getApellidoMaterno() : "";
+        holder.name.setText(String.format(Locale.getDefault(), "%s %s %s", nombres, apellidoPaterno, apellidoMaterno));
+
+        if (diputado.getTwitter() != null && !diputado.getTwitter().equals("") && !diputado.getTwitter().equals("no se identificó")) {
             String twitter = diputado.getTwitter().replaceAll("\\s+", "");
             ImageLoader.getInstance().displayImage(String.format(Locale.getDefault(), HttpConnection.TWITTER_IMAGE_URL, twitter), holder.imageProfile, options);
         } else {
@@ -104,7 +109,8 @@ public class MyArrayAdapter extends ArrayAdapter<Diputado> {
             }
         }
 
-        holder.imagePartido.setImageResource(PartidoType.getIconPartido(PartidoType.getPartidoType(diputado.getPartido())));
+        if (diputado.getPartido() != null && !diputado.getPartido().equals(""))
+            holder.imagePartido.setImageResource(PartidoType.getIconPartido(PartidoType.getPartidoType(diputado.getPartido())));
 
         return rowView;
     }

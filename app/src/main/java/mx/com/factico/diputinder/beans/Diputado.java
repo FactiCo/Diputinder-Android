@@ -6,7 +6,7 @@ import java.io.Serializable;
  * Created by zace3d on 4/27/15.
  */
 public class Diputado implements Serializable {
-    private long id;
+    private String id;
     private String nombres;
     private String apellidoPaterno;
     private String apellidoMaterno;
@@ -28,11 +28,11 @@ public class Diputado implements Serializable {
     private String fiscal;
     private String fiscalPDF;
 
-    public long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -196,14 +196,14 @@ public class Diputado implements Serializable {
         this.fiscalPDF = fiscalPDF;
     }
 
-    @Override
+    /*@Override
     public boolean equals(Object o) {
         boolean isEqual = false;
 
         if (o == null) return false;
         if (o instanceof Diputado) {
             Diputado diputado = (Diputado) o;
-            isEqual = (diputado.nombres.equals(this.nombres)
+            isEqual = (diputado.getNombres().equals(this.getNombres())
                     && diputado.getApellidoPaterno().equals(this.getApellidoPaterno())
                     && diputado.getApellidoMaterno().equals(this.getApellidoMaterno())
                     && diputado.getEntidadFederativa().equals(this.getEntidadFederativa())
@@ -211,5 +211,5 @@ public class Diputado implements Serializable {
         }
 
         return isEqual;
-    }
+    }*/
 }

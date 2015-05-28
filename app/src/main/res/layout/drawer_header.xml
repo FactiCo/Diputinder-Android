@@ -34,7 +34,7 @@
                 android:layout_marginRight="16dp"
                 android:text="¿Qué es Por el México que merecemos?"
                 android:textColor="@color/colorTextContent"
-                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textAppearance="?android:attr/textAppearanceSmall"
                 android:textStyle="bold"
                 app:typeface="Gotham_Rounded_Bold" />
 
@@ -65,7 +65,7 @@
                 android:layout_marginRight="16dp"
                 android:text="¿Qué es Candidato Transparente?"
                 android:textColor="@color/colorTextContent"
-                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textAppearance="?android:attr/textAppearanceSmall"
                 android:textStyle="bold"
                 app:typeface="Gotham_Rounded_Bold" />
 
@@ -96,7 +96,7 @@
                 android:layout_marginRight="16dp"
                 android:text="¿Qué es Fáctico?"
                 android:textColor="@color/colorTextContent"
-                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textAppearance="?android:attr/textAppearanceSmall"
                 android:textStyle="bold"
                 app:typeface="Gotham_Rounded_Bold" />
 

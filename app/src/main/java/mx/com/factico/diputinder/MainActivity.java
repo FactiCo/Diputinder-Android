@@ -10,6 +10,7 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,8 +22,10 @@ import java.util.List;
 import mx.com.factico.diputinder.adapters.DrawerAdapter;
 import mx.com.factico.diputinder.beans.CandidatoType;
 import mx.com.factico.diputinder.beans.DrawerOption;
+import mx.com.factico.diputinder.beans.StateType;
 import mx.com.factico.diputinder.dialogues.Dialogues;
 import mx.com.factico.diputinder.fragments.MainFragment;
+import mx.com.factico.diputinder.location.LocationUtils;
 import mx.com.factico.diputinder.views.CustomTextView;
 
 /**
@@ -45,6 +48,8 @@ public class MainActivity extends ActionBarActivity {
 
         setSupportActionBar();
         initUI();
+
+        //LocationUtils.getStateFromLatLong(getBaseContext());
     }
 
     protected void setSupportActionBar() {
@@ -76,30 +81,25 @@ public class MainActivity extends ActionBarActivity {
 
         /****/
         mDrawerOptions = new ArrayList<>();
-        mDrawerOptions.add(new DrawerOption("Diputados"));
-        mDrawerOptions.add(new DrawerOption("Gobernadores"));
+        mDrawerOptions.add(new DrawerOption("Ver diputados"));
+        mDrawerOptions.add(new DrawerOption("Ver gobernadores"));
+        mDrawerOptions.add(new DrawerOption("Ver alcaldes"));
         mDrawerList = (RecyclerView) findViewById(R.id.left_drawer_recycler);
         mDrawerList.setHasFixedSize(true);
         mDrawerList.setLayoutManager(new LinearLayoutManager(getBaseContext()));
         mDrawerList.setItemAnimator(new DefaultItemAnimator());
 
         DrawerAdapter drawerAdapter = new DrawerAdapter(mDrawerOptions);
-        drawerAdapter.setOnItemClickListener(new DrawerAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(View v, int position) {
-                //Dialogues.Toast(getBaseContext(), "Click in position: " + position, Toast.LENGTH_LONG);
-                selectItem(position);
-            }
-        });
+        drawerAdapter.setOnItemClickListener(new DrawerItemClickListener());
+        mDrawerList.setAdapter(drawerAdapter);
 
-        mDrawerList.setAdapter(new DrawerAdapter(mDrawerOptions));
-
-        selectItem(0);
+        selectItem(1);
     }
 
     private class DrawerItemClickListener implements DrawerAdapter.OnItemClickListener {
         @Override
         public void onItemClick(View view, int position) {
+            // Dialogues.Toast(getBaseContext(), "Position: " + position, Toast.LENGTH_SHORT);
             selectItem(position);
         }
     }

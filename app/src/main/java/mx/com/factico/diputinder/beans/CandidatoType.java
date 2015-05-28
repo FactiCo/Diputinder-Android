@@ -7,12 +7,12 @@ public enum CandidatoType {
     DEFAULT,
     DIPUTADO,
     GOBERNADOR,
-    PRESIDENTE_PARTIDO;
+    ALCALDIAS;
 
     public static final int DEFAULT_ID = -1;
     public static final int DIPUTADO_ID = 1;
     public static final int GOBERNADOR_ID = 2;
-    public static final int PRESIDENTE_PARTIDO_ID = 3;
+    public static final int ALCALDIAS_ID = 3;
 
     public static int getCandidatoTypeId(CandidatoType type) {
         switch (type) {
@@ -20,8 +20,8 @@ public enum CandidatoType {
                 return DIPUTADO_ID;
             case GOBERNADOR:
                 return GOBERNADOR_ID;
-            case PRESIDENTE_PARTIDO:
-                return PRESIDENTE_PARTIDO_ID;
+            case ALCALDIAS:
+                return ALCALDIAS_ID;
             default:
                 return DEFAULT_ID;
         }
@@ -33,8 +33,8 @@ public enum CandidatoType {
                 return DIPUTADO;
             case GOBERNADOR_ID:
                 return GOBERNADOR;
-            case PRESIDENTE_PARTIDO_ID:
-                return PRESIDENTE_PARTIDO;
+            case ALCALDIAS_ID:
+                return ALCALDIAS;
             default:
                 return DEFAULT;
         }
