@@ -26,6 +26,7 @@ import mx.com.factico.diputinder.beans.StateType;
 import mx.com.factico.diputinder.dialogues.Dialogues;
 import mx.com.factico.diputinder.fragments.MainFragment;
 import mx.com.factico.diputinder.location.LocationUtils;
+import mx.com.factico.diputinder.utils.CacheUtils;
 import mx.com.factico.diputinder.views.CustomTextView;
 
 /**
@@ -50,6 +51,21 @@ public class MainActivity extends ActionBarActivity {
         initUI();
 
         //LocationUtils.getStateFromLatLong(getBaseContext());
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        CacheUtils.clearMemoryCache();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        finish();
+        System.exit(0);
     }
 
     protected void setSupportActionBar() {

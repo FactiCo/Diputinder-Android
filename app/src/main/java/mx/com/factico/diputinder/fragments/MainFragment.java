@@ -591,7 +591,7 @@ public class MainFragment extends Fragment implements View.OnClickListener {
                                                 auxDiputadosOrdered.get(indexOf).setFiscalPDF(diputado.getFiscalPDF());
                                                 auxDiputadosOrdered.get(indexOf).setInteresesPDF(diputado.getInteresesPDF());
                                             }
-                                            Dialogues.Log(TAG_CLASS, "Lo contiene: " + diputado.getNombres() + diputado.getApellidoPaterno(), Log.ERROR);
+                                            //Dialogues.Log(TAG_CLASS, "Lo contiene: " + diputado.getNombres() + diputado.getApellidoPaterno(), Log.ERROR);
                                         } else {
                                             // Dialogues.Log(TAG_CLASS, "NO lo contiene: " + diputado.getNombres() + diputado.getApellidoPaterno(), Log.ERROR);
                                         }

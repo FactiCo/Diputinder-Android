@@ -26,6 +26,7 @@ import mx.com.factico.diputinder.beans.Diputado;
 import mx.com.factico.diputinder.beans.PartidoType;
 import mx.com.factico.diputinder.dialogues.Dialogues;
 import mx.com.factico.diputinder.httpconnection.HttpConnection;
+import mx.com.factico.diputinder.utils.CacheUtils;
 import mx.com.factico.diputinder.utils.ScreenUtils;
 import mx.com.factico.diputinder.views.CustomTextView;
 
@@ -56,6 +57,20 @@ public class DiputadoActivity extends ActionBarActivity {
                 fillDiputado();
             }
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        CacheUtils.unbindDrawables(findViewById(R.id.container));
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        CacheUtils.clearMemoryCache();
     }
 
     protected void setSupportActionBar() {
