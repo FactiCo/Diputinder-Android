@@ -10,6 +10,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -27,13 +28,19 @@ import mx.com.factico.diputinder.dialogues.Dialogues;
 
 public class HttpConnection {
 	public static final String TAG_CLASS = HttpConnection.class.getSimpleName();
-	
-	public static final String URL = "https://candidatotransparente.mx/";
+
+    /*public static final String URL = "https://candidatotransparente.mx/";
     public static final String DIPUTADOS = "scripts/datos/Diputados.json";
 	public static final String GOBERNADORES = "scripts/datos/Gobernadores.json";
 	public static final String ALCALDIAS = "scripts/datos/Alcaldias.json";
 
-	public static final String PDFS = "api/api/candidatos/transparentes";
+	public static final String PDFS = "api/api/candidatos/transparentes";*/
+
+	public static final String URL = "http://factico.com.mx/liguepolitico/";
+    public static final String DIPUTADOS = "Diputados.json";
+    public static final String GOBERNADORES = "Gobernadores.json";
+    public static final String ALCALDIAS = "Alcaldias.json";
+    public static final String PDFS = "transparentes";
 
 	public static final String TWITTER_IMAGE_URL = "https://twitter.com/@%s/profile_image?size=original";
 
@@ -51,7 +58,7 @@ public class HttpConnection {
 			
 			HttpEntity httpEntity = response.getEntity();
 
-			result = EntityUtils.toString(httpEntity);
+			result = EntityUtils.toString(httpEntity, HTTP.UTF_8);
 			
 			Dialogues.Log(TAG_CLASS, result, Log.DEBUG);
 			

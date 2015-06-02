@@ -29,6 +29,16 @@ public class Diputado implements Serializable {
     private String fiscal;
     private String fiscalPDF;
 
+    private String municipioDelegacin;
+
+    public String getMunicipioDelegacin() {
+        return municipioDelegacin;
+    }
+
+    public void setMunicipioDelegacin(String municipioDelegacin) {
+        this.municipioDelegacin = municipioDelegacin;
+    }
+
     public String getId() {
         return id;
     }

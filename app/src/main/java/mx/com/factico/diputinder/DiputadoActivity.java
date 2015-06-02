@@ -141,11 +141,26 @@ public class DiputadoActivity extends ActionBarActivity {
             }
         }
 
+        // Cargo
         CustomTextView tvCargo = (CustomTextView) findViewById(R.id.diputado_tv_cargo);
         tvCargo.setText(diputado.getPuesto());
 
+        // Entidad
         CustomTextView tvEntidad = (CustomTextView) findViewById(R.id.diputado_tv_entidad);
         tvEntidad.setText(diputado.getEntidadFederativa());
+
+        // City
+        CustomTextView tvCity = (CustomTextView) findViewById(R.id.diputado_tv_city);
+
+        String city = null;
+        if (diputado.getMunicipioDelegacin() != null) {
+            city = diputado.getMunicipioDelegacin();
+        } else if (diputado.getDistritoElectoral() != null) {
+            city = "Distrito " + diputado.getDistritoElectoral();
+        }
+
+        if (city != null)
+            tvCity.setText(city);
 
         // Partido
         ImageView ivIcon = (ImageView) findViewById(R.id.diputado_iv_partido);
