@@ -26,6 +26,7 @@ import mx.com.factico.diputinder.beans.Diputado;
 import mx.com.factico.diputinder.beans.PartidoType;
 import mx.com.factico.diputinder.dialogues.Dialogues;
 import mx.com.factico.diputinder.httpconnection.HttpConnection;
+import mx.com.factico.diputinder.utils.CacheUtils;
 import mx.com.factico.diputinder.utils.ScreenUtils;
 import mx.com.factico.diputinder.views.CustomTextView;
 
@@ -56,6 +57,20 @@ public class DiputadoActivity extends ActionBarActivity {
                 fillDiputado();
             }
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        CacheUtils.unbindDrawables(findViewById(R.id.container));
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        CacheUtils.clearMemoryCache();
     }
 
     protected void setSupportActionBar() {
@@ -126,11 +141,26 @@ public class DiputadoActivity extends ActionBarActivity {
             }
         }
 
+        // Cargo
         CustomTextView tvCargo = (CustomTextView) findViewById(R.id.diputado_tv_cargo);
         tvCargo.setText(diputado.getPuesto());
 
+        // Entidad
         CustomTextView tvEntidad = (CustomTextView) findViewById(R.id.diputado_tv_entidad);
         tvEntidad.setText(diputado.getEntidadFederativa());
+
+        // City
+        CustomTextView tvCity = (CustomTextView) findViewById(R.id.diputado_tv_city);
+
+        String city = null;
+        if (diputado.getMunicipioDelegacin() != null) {
+            city = diputado.getMunicipioDelegacin();
+        } else if (diputado.getDistritoElectoral() != null) {
+            city = "Distrito " + diputado.getDistritoElectoral();
+        }
+
+        if (city != null)
+            tvCity.setText(city);
 
         // Partido
         ImageView ivIcon = (ImageView) findViewById(R.id.diputado_iv_partido);

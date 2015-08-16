@@ -79,9 +79,14 @@ public class PdfViewerActivity extends ActionBarActivity {
     protected void onDestroy() {
         super.onDestroy();
 
-        webView.stopLoading();
-        webView.loadData("", "text/html", "utf-8");
-        webView.destroy();
+        if (webView != null) {
+            webView.clearCache(true);
+            webView.clearHistory();
+
+            webView.stopLoading();
+            webView.loadData("", "text/html", "utf-8");
+            webView.destroy();
+        }
     }
 
     @Override

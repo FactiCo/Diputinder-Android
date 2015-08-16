@@ -75,6 +75,9 @@ public class MainFragment extends Fragment implements View.OnClickListener {
     private CandidatoType candidatoType = CandidatoType.DIPUTADO;
     private View rootView;
 
+    private String json_PDF;
+    private boolean isFirstTime = true;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -94,6 +97,8 @@ public class MainFragment extends Fragment implements View.OnClickListener {
     }
 
     private void createView() {
+        json_PDF = PreferencesUtils.getStringPreference(getActivity().getApplication(), PreferencesUtils.JSON_PDF);
+
         state = PreferencesUtils.getStringPreference(getActivity().getApplication(), PreferencesUtils.STATE);
         if (state != null && !state.equals("")) {
             //Dialogues.Toast(getActivity(), "State: " + state + ", CandidatoType: " + candidatoType, Toast.LENGTH_SHORT);
@@ -298,8 +303,10 @@ public class MainFragment extends Fragment implements View.OnClickListener {
                 @Override
                 public void onScroll(float scrollProgressPercent) {
                     View view = flingContainer.getSelectedView();
-                    view.findViewById(R.id.item_swipe_right_indicator).setAlpha(scrollProgressPercent < 0 ? -scrollProgressPercent : 0);
-                    view.findViewById(R.id.item_swipe_left_indicator).setAlpha(scrollProgressPercent > 0 ? scrollProgressPercent : 0);
+                    if (view != null) {
+                        view.findViewById(R.id.item_swipe_right_indicator).setAlpha(scrollProgressPercent < 0 ? -scrollProgressPercent : 0);
+                        view.findViewById(R.id.item_swipe_left_indicator).setAlpha(scrollProgressPercent > 0 ? scrollProgressPercent : 0);
+                    }
                 }
             });
 
@@ -515,7 +522,6 @@ public class MainFragment extends Fragment implements View.OnClickListener {
     }
 
     private class GetDiputadosPublicationsAsyncTask extends AsyncTask<String, String, String> {
-        private String json_PDF;
         private String url;
 
         public GetDiputadosPublicationsAsyncTask(String url) {
@@ -527,17 +533,27 @@ public class MainFragment extends Fragment implements View.OnClickListener {
 
         @Override
         protected String doInBackground(String... params) {
-            json_PDF = HttpConnection.GET(HttpConnection.URL + HttpConnection.PDFS);
+            if ((json_PDF == null || json_PDF.equals("")) && isFirstTime) {
+                json_PDF = HttpConnection.GET(HttpConnection.URL + HttpConnection.PDFS);
+                // Dialogues.Log(TAG_CLASS, "Entré primera vez: " + json_PDF, Log.ERROR);
+            } else {
+                // Dialogues.Log(TAG_CLASS, "Entré segunda vez: " + json_PDF, Log.ERROR);
+            }
+
             return HttpConnection.GET(url);
         }
 
         @Override
         protected void onPostExecute(String result) {
-            Dialogues.Log(TAG_CLASS, "Result: " + result, Log.ERROR);
-            Dialogues.Log(TAG_CLASS, "json_PDF: " + json_PDF, Log.ERROR);
+            // Dialogues.Log(TAG_CLASS, "Result: " + result, Log.ERROR);
+            // Dialogues.Log(TAG_CLASS, "json_PDF: " + json_PDF, Log.ERROR);
             // Dialogues.Toast(getActivity(), "Result: " + result, Toast.LENGTH_LONG);
 
             if (result != null) {
+                if (json_PDF == null || json_PDF.equals("")) {
+                    json_PDF = PreferencesUtils.getStringPreference(getActivity().getApplication(), PreferencesUtils.JSON_PDF);
+                }
+
                 if (json_PDF != null && !json_PDF.equals("")) {
                     try {
                         List<Diputado> diputadosAux = GsonParser.getListDiputadosFromJSON(result);
@@ -547,22 +563,25 @@ public class MainFragment extends Fragment implements View.OnClickListener {
                             return;
                         }
 
+                        isFirstTime = false;
+                        PreferencesUtils.putStringPreference(getActivity().getApplication(), PreferencesUtils.JSON_PDF, json_PDF);
+
                         if (diputadosAux.size() > 0) {
-                            Dialogues.Log(TAG_CLASS, "Size Candidatos: " + diputadosAux.size(), Log.ERROR);
+                            // Dialogues.Log(TAG_CLASS, "Size Candidatos: " + diputadosAux.size(), Log.ERROR);
 
                             String stateApi = StateType.getStateName(StateType.getStateType(state));
-                            Dialogues.Log(TAG_CLASS, "Estado: " + stateApi, Log.ERROR);
+                            // Dialogues.Log(TAG_CLASS, "Estado: " + stateApi, Log.ERROR);
 
                             List<Diputado> diputadosUnorder = getListDiputadosFromState(diputadosAux, stateApi);
-                            Dialogues.Log(TAG_CLASS, "Size Filter: " + diputadosUnorder.size(), Log.ERROR);
+                            // Dialogues.Log(TAG_CLASS, "Size Filter: " + diputadosUnorder.size(), Log.ERROR);
 
                             List<Diputado> auxDiputadosOrdered = getOrderedListDiputados(diputadosUnorder);
-                            Dialogues.Log(TAG_CLASS, "Size Ordered: " + auxDiputadosOrdered.size(), Log.ERROR);
+                            // Dialogues.Log(TAG_CLASS, "Size Ordered: " + auxDiputadosOrdered.size(), Log.ERROR);
 
                             if (auxDiputadosOrdered.size() > 0) {
                                 List<Diputado> candidatosPDF = candidatos.getCandidatos();
                                 if (candidatosPDF != null && candidatosPDF.size() > 0) {
-                                    Dialogues.Log(TAG_CLASS, "Size candidatosPDF: " + candidatosPDF.size(), Log.ERROR);
+                                    // Dialogues.Log(TAG_CLASS, "Size candidatosPDF: " + candidatosPDF.size(), Log.ERROR);
 
                                     for (Diputado diputado : candidatosPDF) {
                                         // Dialogues.Log(TAG_CLASS, "Diputado: " + diputado.getNombres(), Log.ERROR);
@@ -574,7 +593,7 @@ public class MainFragment extends Fragment implements View.OnClickListener {
                                                 auxDiputadosOrdered.get(indexOf).setFiscalPDF(diputado.getFiscalPDF());
                                                 auxDiputadosOrdered.get(indexOf).setInteresesPDF(diputado.getInteresesPDF());
                                             }
-                                            // Dialogues.Log(TAG_CLASS, "Lo contiene: " + diputado.getNombres() + diputado.getApellidoPaterno(), Log.ERROR);
+                                            //Dialogues.Log(TAG_CLASS, "Lo contiene: " + diputado.getNombres() + diputado.getApellidoPaterno(), Log.ERROR);
                                         } else {
                                             // Dialogues.Log(TAG_CLASS, "NO lo contiene: " + diputado.getNombres() + diputado.getApellidoPaterno(), Log.ERROR);
                                         }
@@ -593,6 +612,8 @@ public class MainFragment extends Fragment implements View.OnClickListener {
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
+                } else {
+                    setTextMessageError(getResources().getString(R.string.error_message_default));
                 }
             } else {
                 setTextMessageError(getResources().getString(R.string.error_message_default));

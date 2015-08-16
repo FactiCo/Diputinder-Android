@@ -1,6 +1,7 @@
 package mx.com.factico.diputinder.beans;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 /**
  * Created by zace3d on 4/27/15.
@@ -27,6 +28,16 @@ public class Diputado implements Serializable {
     private String interesesPDF;
     private String fiscal;
     private String fiscalPDF;
+
+    private String municipioDelegacin;
+
+    public String getMunicipioDelegacin() {
+        return municipioDelegacin;
+    }
+
+    public void setMunicipioDelegacin(String municipioDelegacin) {
+        this.municipioDelegacin = municipioDelegacin;
+    }
 
     public String getId() {
         return id;
@@ -196,20 +207,32 @@ public class Diputado implements Serializable {
         this.fiscalPDF = fiscalPDF;
     }
 
-    /*@Override
+    @Override
     public boolean equals(Object o) {
         boolean isEqual = false;
 
-        if (o == null) return false;
+        if(this == o) return true;
+        if (o == null)  return false;
         if (o instanceof Diputado) {
             Diputado diputado = (Diputado) o;
-            isEqual = (diputado.getNombres().equals(this.getNombres())
-                    && diputado.getApellidoPaterno().equals(this.getApellidoPaterno())
-                    && diputado.getApellidoMaterno().equals(this.getApellidoMaterno())
-                    && diputado.getEntidadFederativa().equals(this.getEntidadFederativa())
-                    && diputado.getDistritoElectoral().equals(this.getDistritoElectoral()));
+            isEqual = ((this.nombres != null && this.nombres.equals(diputado.nombres))
+                    && (this.apellidoPaterno != null && this.apellidoPaterno.equals(diputado.apellidoPaterno))
+                    && (this.apellidoMaterno != null && this.apellidoMaterno.equals(diputado.apellidoMaterno))
+                    && (this.entidadFederativa != null && this.entidadFederativa.equals(diputado.entidadFederativa)));
+                    //&& (this.distritoElectoral != null && this.distritoElectoral.equals(diputado.distritoElectoral)));
         }
 
         return isEqual;
-    }*/
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 31 * hash + (null == nombres ? 0 : nombres.hashCode());
+        hash = 31 * hash + (null == apellidoPaterno ? 0 : apellidoPaterno.hashCode());
+        hash = 31 * hash + (null == apellidoMaterno ? 0 : apellidoMaterno.hashCode());
+        hash = 31 * hash + (null == entidadFederativa ? 0 : entidadFederativa.hashCode());
+        //hash = 31 * hash + (null == distritoElectoral ? 0 : distritoElectoral.hashCode());
+        return hash;
+    }
 }

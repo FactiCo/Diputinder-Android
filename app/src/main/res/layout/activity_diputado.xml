@@ -13,6 +13,7 @@
         android:layout_height="wrap_content" />
 
     <ScrollView
+        android:id="@+id/container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fillViewport="true">
@@ -45,7 +46,7 @@
                         android:paddingEnd="15dp"
                         android:paddingLeft="15dp"
                         android:paddingRight="15dp"
-                        android:paddingTop="10dp"
+                        android:paddingTop="5dp"
                         android:text=""
                         android:textAppearance="?android:attr/textAppearanceMedium"
                         android:textColor="@color/colorBackgroundWhite"
@@ -59,7 +60,6 @@
                         android:layout_below="@+id/diputado_tv_name"
                         android:paddingLeft="15dp"
                         android:paddingRight="15dp"
-                        android:paddingTop="10dp"
                         android:text=""
                         android:textAppearance="?android:attr/textAppearanceSmall"
                         android:textColor="@color/colorBackgroundWhite"
@@ -72,7 +72,18 @@
                         android:layout_below="@+id/diputado_tv_cargo"
                         android:paddingLeft="15dp"
                         android:paddingRight="15dp"
-                        android:paddingTop="10dp"
+                        android:text=""
+                        android:textAppearance="?android:attr/textAppearanceSmall"
+                        android:textColor="@color/colorBackgroundWhite"
+                        app:typeface="Gotham_Rounded_Book" />
+
+                    <mx.com.factico.diputinder.views.CustomTextView
+                        android:id="@+id/diputado_tv_city"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/diputado_tv_entidad"
+                        android:paddingLeft="15dp"
+                        android:paddingRight="15dp"
                         android:text=""
                         android:textAppearance="?android:attr/textAppearanceSmall"
                         android:textColor="@color/colorBackgroundWhite"
@@ -141,7 +152,7 @@
                         android:paddingLeft="15dp"
                         android:paddingRight="15dp"
                         android:paddingTop="15dp"
-                        android:text="Partidos Aliados"
+                        android:text="Aliados"
                         android:textAppearance="?android:attr/textAppearanceLarge"
                         android:textColor="@color/colorTextTitle"
                         app:typeface="Gotham_Rounded_Bold" />
