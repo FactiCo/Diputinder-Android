@@ -36,13 +36,21 @@ public class HttpConnection {
 
 	public static final String PDFS = "api/api/candidatos/transparentes";*/
 
-	public static final String URL = "http://factico.com.mx/liguepolitico/";
-    public static final String DIPUTADOS = "Diputados.json";
-    public static final String GOBERNADORES = "Gobernadores.json";
-    public static final String ALCALDIAS = "Alcaldias.json";
-    public static final String PDFS = "transparentes";
+    //http://liguepolitico-staging.herokuapp.com/geocoder?latitude=19.413297&longitude=-99.163970
 
-	public static final String TWITTER_IMAGE_URL = "https://twitter.com/@%s/profile_image?size=original";
+	public static final String URL = "http://liguepolitico-staging.herokuapp.com";
+    public static final String GEOCODER = "/geocoder.json?latitude=%s&longitude=%s";
+
+    public static final String COUNTRIES = "/countries";
+    public static final String STATES = "/states";
+    public static final String CITIES = "/cities";
+
+    //public static final String DIPUTADOS = "Diputados.json";
+    //public static final String GOBERNADORES = "Gobernadores.json";
+    //public static final String ALCALDIAS = "Alcaldias.json";
+    //public static final String PDFS = "transparentes";
+
+	public static final String TWITTER_IMAGE_URL = "https://twitter.com/%s/profile_image?size=original";
 
 	public static String GET(String url) {
 		HttpClient client = new DefaultHttpClient();

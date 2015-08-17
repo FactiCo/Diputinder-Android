@@ -28,7 +28,6 @@ import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -36,12 +35,11 @@ import java.util.Locale;
 import mx.com.factico.diputinder.CandidateActivity;
 import mx.com.factico.diputinder.R;
 import mx.com.factico.diputinder.adapters.MyArrayAdapter;
+import mx.com.factico.diputinder.beans.Address;
 import mx.com.factico.diputinder.beans.Candidate;
-import mx.com.factico.diputinder.beans.CandidateInfo;
 import mx.com.factico.diputinder.beans.CandidateType;
-import mx.com.factico.diputinder.beans.Candidates;
-import mx.com.factico.diputinder.beans.GeocoderResult;
-import mx.com.factico.diputinder.beans.Territory;
+import mx.com.factico.diputinder.beans.Candidatos;
+import mx.com.factico.diputinder.beans.StateType;
 import mx.com.factico.diputinder.dialogues.Dialogues;
 import mx.com.factico.diputinder.httpconnection.HttpConnection;
 import mx.com.factico.diputinder.httpconnection.NetworkUtils;
@@ -56,13 +54,13 @@ import mx.com.factico.diputinder.views.CustomTextView;
  * Created by zace3d on 26/05/15.
  */
 
-public class MainFragment extends Fragment implements View.OnClickListener {
+public class MainFragmentCopy extends Fragment implements View.OnClickListener {
     public static final String INDEX = "index";
     public static final String CANDIDATE_TYPE = "candidate_type";
 
-    public static final String TAG_CLASS = MainFragment.class.getSimpleName();
+    public static final String TAG_CLASS = MainFragmentCopy.class.getSimpleName();
 
-    private List<CandidateInfo> auxCandidates = new ArrayList<>();
+    private List<Candidate> auxCandidates = new ArrayList<>();
     private MyArrayAdapter arrayAdapter;
     private int i;
 
@@ -79,13 +77,9 @@ public class MainFragment extends Fragment implements View.OnClickListener {
     private String json_PDF;
     private boolean isFirstTime = true;
 
-    protected LatLng testLocation;
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        testLocation = new LatLng(19.4326, -99.1332);
 
         setHasOptionsMenu(true);
     }
@@ -104,22 +98,16 @@ public class MainFragment extends Fragment implements View.OnClickListener {
     private void createView() {
         json_PDF = PreferencesUtils.getStringPreference(getActivity().getApplication(), PreferencesUtils.JSON_PDF);
 
-        /*state = PreferencesUtils.getStringPreference(getActivity().getApplication(), PreferencesUtils.STATE);
-        if ((state != null && !state.equals(""))) {
+        state = PreferencesUtils.getStringPreference(getActivity().getApplication(), PreferencesUtils.STATE);
+        if (state != null && !state.equals("")) {
             //Dialogues.Toast(getActivity(), "State: " + state + ", CandidateType: " + candidateType, Toast.LENGTH_SHORT);
             loadCandidatos(candidateType);
-        } else */
-        if (LocationUtils.isGpsOrNetworkProviderEnabled(getActivity())) {
+        } else if (LocationUtils.isGpsOrNetworkProviderEnabled(getActivity())) {
             initLocationClientListener();
 
             if (NetworkUtils.isNetworkConnectionAvailable(getActivity())) {
-                showDialog(getResources().getString(R.string.getting_location));
+                showDialog(getResources().getString(R.string.getting_city));
                 initUI();
-
-                if (testLocation != null) {
-                    userLocation = testLocation;
-                    reverseGeocoderFromLatLng(userLocation);
-                }
             } else {
                 setTextMessageError(getResources().getString(R.string.no_internet_connection));
             }
@@ -141,19 +129,35 @@ public class MainFragment extends Fragment implements View.OnClickListener {
     }
 
     protected void initLocationClientListener() {
-        showDialog(getResources().getString(R.string.getting_location));
-
         clientListener = new LocationClientListener(getActivity());
         clientListener.setOnLocationClientListener(new LocationClientListener.OnLocationClientListener() {
             @Override
             public void onLocationChanged(Location location) {
                 userLocation = LocationUtils.getLatLngFromLocation(location);
+                // Dialogues.Toast(getBaseContext(), "Find location: " + location.getLatitude() + ", " + location.getLongitude(), Toast.LENGTH_LONG);
 
-                Dialogues.Toast(getActivity(), "Latitude: " + userLocation.latitude + ", Longitude: " + userLocation.longitude, Toast.LENGTH_SHORT);
+                Address address = LocationUtils.getAdressFromLatLong(getActivity(), location.getLatitude(), location.getLongitude());
 
-                dismissDialog();
+                if (address != null) {
+                    /*Dialogues.Log(TAG_CLASS, "Address: " + address.getAddress(), Log.ERROR);
+                    Dialogues.Log(TAG_CLASS, "City: " + address.getCity(), Log.ERROR);
+                    Dialogues.Log(TAG_CLASS, "State: " + address.getState(), Log.ERROR);
+                    Dialogues.Log(TAG_CLASS, "Country: " + address.getCountry(), Log.ERROR);
+                    Dialogues.Log(TAG_CLASS, "PostalCode: " + address.getPostalCode(), Log.ERROR);
+                    Dialogues.Log(TAG_CLASS, "KnownName: " + address.getKnownName(), Log.ERROR);*/
 
-                //reverseGeocoderFromLatLng(userLocation);
+                    if (address.getState() != null && !address.getState().equals("")) {
+                        PreferencesUtils.putStringPreference(getActivity().getApplication(), PreferencesUtils.STATE, address.getState());
+
+                        state = address.getState();
+                        // state = StateType.getStateName(StateType.getStateType(state));
+
+                        //if (state == null)
+                        loadCandidatos(candidateType);
+                    }
+
+                    clientListener.stopLocationUpdates();
+                }
             }
         });
     }
@@ -233,6 +237,7 @@ public class MainFragment extends Fragment implements View.OnClickListener {
                 if (state != null) {
                     loadCandidatos(candidateType);
                 } else {
+                    showDialog(getResources().getString(R.string.getting_city));
                     initLocationClientListener();
                 }
             }
@@ -261,7 +266,7 @@ public class MainFragment extends Fragment implements View.OnClickListener {
 
         if (auxCandidates != null && auxCandidates.size() > 0) {
             // arrayAdapter = new ArrayAdapter<>(this, R.layout.item, R.id.helloText, diputados);
-            arrayAdapter = new MyArrayAdapter(getActivity(), auxCandidates);
+            //arrayAdapter = new MyArrayAdapter(getActivity(), auxCandidates);
 
             flingContainer.setAdapter(arrayAdapter);
             arrayAdapter.notifyDataSetChanged();
@@ -307,7 +312,7 @@ public class MainFragment extends Fragment implements View.OnClickListener {
             flingContainer.setOnItemClickListener(new SwipeFlingAdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClicked(int itemPosition, Object dataObject) {
-                    startIntentCandidate((CandidateInfo) dataObject);
+                    startIntentDiputado((Candidate) dataObject);
                 }
             });
         }
@@ -325,9 +330,9 @@ public class MainFragment extends Fragment implements View.OnClickListener {
         }
     }
 
-    private void startIntentCandidate(CandidateInfo candidate) {
+    private void startIntentDiputado(Candidate diputado) {
         Intent intent = new Intent(getActivity(), CandidateActivity.class);
-        intent.putExtra(CandidateActivity.TAG_CANDIDATE, candidate);
+        intent.putExtra(CandidateActivity.TAG_CANDIDATE, diputado);
         startActivity(intent);
     }
 
@@ -506,88 +511,13 @@ public class MainFragment extends Fragment implements View.OnClickListener {
         int id = item.getItemId();
 
         if (id == R.id.action_refresh) {
+            showDialog(getResources().getString(R.string.getting_city));
             initLocationClientListener();
             startLocationListener();
             return true;
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    protected void reverseGeocoderFromLatLng(LatLng location) {
-        if (location != null) {
-            if (NetworkUtils.isNetworkConnectionAvailable(getActivity())) {
-                ReverseGeocoderAsyncTask task = new ReverseGeocoderAsyncTask(location.latitude, location.longitude);
-                task.execute();
-            } else {
-                setTextMessageError(getResources().getString(R.string.no_internet_connection));
-            }
-        }
-    }
-
-    private class ReverseGeocoderAsyncTask extends AsyncTask<String, String, String> {
-        private double latitude;
-        private double longitude;
-
-        public ReverseGeocoderAsyncTask(double latitude, double longitude) {
-            this.latitude = latitude;
-            this.longitude = longitude;
-        }
-
-        @Override
-        protected void onPreExecute() {}
-
-        @Override
-        protected String doInBackground(String... params) {
-            return HttpConnection.GET(String.format(Locale.getDefault(), HttpConnection.URL + HttpConnection.GEOCODER, latitude, longitude));
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-            // Dialogues.Log(TAG_CLASS, "Result: " + result, Log.ERROR);
-            // Dialogues.Log(TAG_CLASS, "json_PDF: " + json_PDF, Log.ERROR);
-            Dialogues.Toast(getActivity(), "Result: " + result, Toast.LENGTH_LONG);
-
-            if (result != null) {
-                String urlCandidates = HttpConnection.URL;
-
-                GeocoderResult geocoderResult = GsonParser.getGeocoderResultFromJSON(result);
-
-                if (geocoderResult != null) {
-                    if (geocoderResult.getCountry() != null) {
-                        urlCandidates += HttpConnection.COUNTRIES + File.separator + geocoderResult.getCountry().getId();
-
-                        if (geocoderResult.getState() != null) {
-                            urlCandidates += HttpConnection.STATES + File.separator + geocoderResult.getState().getId();
-
-                            if (geocoderResult.getCity() != null) {
-                                urlCandidates += HttpConnection.CITIES + File.separator + geocoderResult.getCity().getId();
-                            }
-                        }
-                    }
-
-                    urlCandidates += ".json";
-
-                    //Dialogues.Toast(getActivity(), "urlCandidates: " + urlCandidates, Toast.LENGTH_SHORT);
-                    getCandidatesFromAddress(urlCandidates);
-                }
-
-            } else {
-                setTextMessageError(getResources().getString(R.string.error_message_default));
-            }
-
-            if (dialog != null && dialog.isShowing()) {
-                dialog.dismiss();
-            }
-
-            if (!this.isCancelled())
-                this.cancel(true);
-        }
-    }
-
-    protected void getCandidatesFromAddress(String url) {
-        GetCandidatesAsyncTask task = new GetCandidatesAsyncTask(url);
-        task.execute();
     }
 
     private class GetCandidatesAsyncTask extends AsyncTask<String, String, String> {
@@ -602,6 +532,13 @@ public class MainFragment extends Fragment implements View.OnClickListener {
 
         @Override
         protected String doInBackground(String... params) {
+            if ((json_PDF == null || json_PDF.equals("")) && isFirstTime) {
+                //json_PDF = HttpConnection.GET(HttpConnection.URL + HttpConnection.PDFS);
+                // Dialogues.Log(TAG_CLASS, "Entré primera vez: " + json_PDF, Log.ERROR);
+            } else {
+                // Dialogues.Log(TAG_CLASS, "Entré segunda vez: " + json_PDF, Log.ERROR);
+            }
+
             return HttpConnection.GET(url);
         }
 
@@ -612,42 +549,70 @@ public class MainFragment extends Fragment implements View.OnClickListener {
             // Dialogues.Toast(getActivity(), "Result: " + result, Toast.LENGTH_LONG);
 
             if (result != null) {
-                Dialogues.Toast(getActivity(), "Result: " + result, Toast.LENGTH_LONG);
+                if (json_PDF == null || json_PDF.equals("")) {
+                    json_PDF = PreferencesUtils.getStringPreference(getActivity().getApplication(), PreferencesUtils.JSON_PDF);
+                }
 
-                try {
-                    Territory territory = GsonParser.getTerritoryJSON(result);
+                if (json_PDF != null && !json_PDF.equals("")) {
+                    try {
+                        List<Candidate> candidatesAux = GsonParser.getListDiputadosFromJSON(result);
+                        Candidatos candidatos = GsonParser.getCandidatosFromJSON(json_PDF);
 
-                    if (territory == null) {
-                        return;
-                    }
+                        if (candidatos == null || candidatesAux == null) {
+                            return;
+                        }
 
-                    isFirstTime = false;
-                    PreferencesUtils.putStringPreference(getActivity().getApplication(), PreferencesUtils.JSON_PDF, json_PDF);
+                        isFirstTime = false;
+                        PreferencesUtils.putStringPreference(getActivity().getApplication(), PreferencesUtils.JSON_PDF, json_PDF);
 
-                    List<CandidateInfo> candidateInfoList = new ArrayList<>();
+                        if (candidatesAux.size() > 0) {
+                            // Dialogues.Log(TAG_CLASS, "Size Candidatos: " + diputadosAux.size(), Log.ERROR);
 
-                    if (territory.getPositions() != null && territory.getPositions().size() > 0) {
-                        for (Territory.Positions positions : territory.getPositions()) {
+                            String stateApi = StateType.getStateName(StateType.getStateType(state));
+                            // Dialogues.Log(TAG_CLASS, "Estado: " + stateApi, Log.ERROR);
 
-                            for (Candidates candidates : positions.getCandidates()) {
-                                CandidateInfo candidateInfo = new CandidateInfo();
-                                candidateInfo.setPosition(positions.getTitle());
-                                candidateInfo.setCandidates(candidates);
+                            List<Candidate> diputadosUnorder = getListDiputadosFromState(candidatesAux, stateApi);
+                            // Dialogues.Log(TAG_CLASS, "Size Filter: " + diputadosUnorder.size(), Log.ERROR);
 
-                                candidateInfoList.add(candidateInfo);
+                            List<Candidate> auxDiputadosOrdered = getOrderedListDiputados(diputadosUnorder);
+                            // Dialogues.Log(TAG_CLASS, "Size Ordered: " + auxDiputadosOrdered.size(), Log.ERROR);
+
+                            if (auxDiputadosOrdered.size() > 0) {
+                                List<Candidate> candidatosPDF = candidatos.getCandidatos();
+                                if (candidatosPDF != null && candidatosPDF.size() > 0) {
+                                    // Dialogues.Log(TAG_CLASS, "Size candidatosPDF: " + candidatosPDF.size(), Log.ERROR);
+
+                                    for (Candidate diputado : candidatosPDF) {
+                                        // Dialogues.Log(TAG_CLASS, "Candidate: " + diputado.getNombres(), Log.ERROR);
+
+                                        if (auxDiputadosOrdered.contains(diputado)) {
+                                            int indexOf = auxDiputadosOrdered.indexOf(diputado);
+                                            if (indexOf != -1) {
+                                                /*auxDiputadosOrdered.get(indexOf).setPatrimonialPDF(diputado.getPatrimonialPDF());
+                                                auxDiputadosOrdered.get(indexOf).setFiscalPDF(diputado.getFiscalPDF());
+                                                auxDiputadosOrdered.get(indexOf).setInteresesPDF(diputado.getInteresesPDF());*/
+                                            }
+                                            //Dialogues.Log(TAG_CLASS, "Lo contiene: " + diputado.getNombres() + diputado.getApellidoPaterno(), Log.ERROR);
+                                        } else {
+                                            // Dialogues.Log(TAG_CLASS, "NO lo contiene: " + diputado.getNombres() + diputado.getApellidoPaterno(), Log.ERROR);
+                                        }
+                                    }
+                                } else {
+                                    // Dialogues.Log(TAG_CLASS, "candidatosPDF NULL", Log.ERROR);
+                                }
+
+                                auxCandidates = auxDiputadosOrdered;
+
+                                initUI();
+                            } else {
+                                Dialogues.Toast(getActivity(), "No se encontraron coincidencias en tu Entidad Federativa.", Toast.LENGTH_SHORT);
                             }
                         }
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
-
-                    if (candidateInfoList.size() > 0) {
-                        auxCandidates = candidateInfoList;
-
-                        Dialogues.Toast(getActivity(), "Size auxCandidates: " + auxCandidates.size(), Toast.LENGTH_SHORT);
-
-                        initUI();
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
+                } else {
+                    setTextMessageError(getResources().getString(R.string.error_message_default));
                 }
             } else {
                 setTextMessageError(getResources().getString(R.string.error_message_default));
@@ -677,5 +642,16 @@ public class MainFragment extends Fragment implements View.OnClickListener {
             auxTwitter.addAll(auxNoTwitter);
 
         return auxTwitter;
+    }
+
+    protected List<Candidate> getListDiputadosFromState(List<Candidate> listDiputados, String state) {
+        List<Candidate> auxListDiputados = new ArrayList<>();
+
+        for (Candidate diputado : listDiputados) {
+            //if (diputado.getEntidadFederativa().contains(state))
+            //    auxListDiputados.add(diputado);
+        }
+
+        return auxListDiputados;
     }
 }

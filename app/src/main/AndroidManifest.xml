@@ -28,7 +28,7 @@
         </activity>
 
         <activity
-            android:name="mx.com.factico.diputinder.DiputadoActivity"
+            android:name=".CandidateActivity"
             android:launchMode="singleTask"
             android:parentActivityName="mx.com.factico.diputinder.MainActivity"
             android:screenOrientation="portrait" />
@@ -36,7 +36,7 @@
         <activity
             android:name="mx.com.factico.diputinder.PdfViewerActivity"
             android:launchMode="singleTask"
-            android:parentActivityName="mx.com.factico.diputinder.DiputadoActivity"
+            android:parentActivityName=".CandidateActivity"
             android:screenOrientation="portrait" />
 
         <activity

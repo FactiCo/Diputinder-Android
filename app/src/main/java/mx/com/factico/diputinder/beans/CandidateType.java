@@ -3,7 +3,7 @@ package mx.com.factico.diputinder.beans;
 /**
  * Created by zace3d on 5/13/15.
  */
-public enum CandidatoType {
+public enum CandidateType {
     DEFAULT,
     DIPUTADO,
     GOBERNADOR,
@@ -14,7 +14,7 @@ public enum CandidatoType {
     public static final int GOBERNADOR_ID = 2;
     public static final int ALCALDIAS_ID = 3;
 
-    public static int getCandidatoTypeId(CandidatoType type) {
+    public static int getCandidatoTypeId(CandidateType type) {
         switch (type) {
             case DIPUTADO:
                 return DIPUTADO_ID;
@@ -27,7 +27,7 @@ public enum CandidatoType {
         }
     }
 
-    public static CandidatoType getCandidatoType(int type) {
+    public static CandidateType getCandidatoType(int type) {
         switch (type) {
             case DIPUTADO_ID:
                 return DIPUTADO;

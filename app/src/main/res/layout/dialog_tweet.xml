@@ -72,7 +72,6 @@
             android:layout_toRightOf="@+id/dialog_tweet_iv_tweet"
             android:gravity="center_vertical"
             android:padding="10dp"
-            android:text=""
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:textColor="@color/colorBackgroundWhite"
             app:typeface="Gotham_Rounded_Book" />

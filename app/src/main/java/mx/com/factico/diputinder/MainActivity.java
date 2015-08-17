@@ -10,22 +10,14 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import mx.com.factico.diputinder.adapters.DrawerAdapter;
-import mx.com.factico.diputinder.beans.CandidatoType;
 import mx.com.factico.diputinder.beans.DrawerOption;
-import mx.com.factico.diputinder.beans.StateType;
-import mx.com.factico.diputinder.dialogues.Dialogues;
 import mx.com.factico.diputinder.fragments.MainFragment;
-import mx.com.factico.diputinder.location.LocationUtils;
 import mx.com.factico.diputinder.utils.CacheUtils;
 import mx.com.factico.diputinder.views.CustomTextView;
 
@@ -124,7 +116,7 @@ public class MainActivity extends ActionBarActivity {
         Fragment fragment = new MainFragment();
         Bundle args = new Bundle();
         args.putInt(MainFragment.INDEX, position);
-        args.putSerializable(MainFragment.CANDIDATO_TYPE, position);
+        args.putSerializable(MainFragment.CANDIDATE_TYPE, position);
         fragment.setArguments(args);
 
         FragmentManager fragmentManager = getFragmentManager();

@@ -9,23 +9,25 @@ import com.google.gson.reflect.TypeToken;
 import java.lang.reflect.Type;
 import java.util.List;
 
+import mx.com.factico.diputinder.beans.Candidate;
 import mx.com.factico.diputinder.beans.Candidatos;
-import mx.com.factico.diputinder.beans.Diputado;
+import mx.com.factico.diputinder.beans.GeocoderResult;
+import mx.com.factico.diputinder.beans.Territory;
 import mx.com.factico.diputinder.dialogues.Dialogues;
 
 public class GsonParser {
 	private static String TAG_CLASS = GsonParser.class.getName();
 
-	public static Diputado getDiputadoFromJSON(String json) throws Exception {
+	public static Candidate getDiputadoFromJSON(String json) throws Exception {
 		Gson gson = new Gson();
 
-		return gson.fromJson(json, Diputado.class);
+		return gson.fromJson(json, Candidate.class);
 	}
 
-    public static List<Diputado> getListDiputadosFromJSON(String json) {
+    public static List<Candidate> getListDiputadosFromJSON(String json) {
         Gson gson = new Gson();
 
-        Type listType = new TypeToken<List<Diputado>>(){}.getType();
+        Type listType = new TypeToken<List<Candidate>>(){}.getType();
 
         return gson.fromJson(json, listType);
     }
@@ -35,6 +37,18 @@ public class GsonParser {
 
 		return gson.fromJson(json, Candidatos.class);
 	}
+
+	public static GeocoderResult getGeocoderResultFromJSON(String json) {
+		Gson gson = new Gson();
+
+		return gson.fromJson(json, GeocoderResult.class);
+	}
+
+    public static Territory getTerritoryJSON(String json) {
+        Gson gson = new Gson();
+
+        return gson.fromJson(json, Territory.class);
+    }
 
 	public static String createJsonFromObject(Object object) {
 		Gson gson = new Gson();

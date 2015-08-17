@@ -15,28 +15,28 @@ import android.widget.TextView;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
-import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 
 import java.util.List;
 import java.util.Locale;
 
-import mx.com.factico.diputinder.DiputadoActivity;
+import mx.com.factico.diputinder.CandidateActivity;
 import mx.com.factico.diputinder.R;
-import mx.com.factico.diputinder.beans.Diputado;
-import mx.com.factico.diputinder.beans.PartidoType;
+import mx.com.factico.diputinder.beans.Candidate;
+import mx.com.factico.diputinder.beans.CandidateInfo;
+import mx.com.factico.diputinder.beans.Party;
 import mx.com.factico.diputinder.httpconnection.HttpConnection;
 import mx.com.factico.diputinder.utils.ScreenUtils;
 
 /**
  * Created by zace3d on 4/27/15.
  */
-public class MyArrayAdapter extends ArrayAdapter<Diputado> {
+public class MyArrayAdapter extends ArrayAdapter<CandidateInfo> {
     private final Activity activity;
-    private final List<Diputado> values;
+    private final List<CandidateInfo> values;
 
     private final DisplayImageOptions options;
 
-    public MyArrayAdapter(Activity activity, List<Diputado> values) {
+    public MyArrayAdapter(Activity activity, List<CandidateInfo> values) {
         super(activity, R.layout.item_diputado, values);
         this.activity = activity;
         this.values = values;
@@ -90,27 +90,30 @@ public class MyArrayAdapter extends ArrayAdapter<Diputado> {
         holder.imageInfo.setTag(getItem(position));
         holder.imageInfo.setOnClickListener(InfoOnClickListener);
 
-        Diputado diputado = getItem(position);
+        CandidateInfo candidateInfo = getItem(position);
 
-        String nombres = diputado.getNombres() != null ? diputado.getNombres() : "";
-        String apellidoPaterno = diputado.getApellidoPaterno() != null ? diputado.getApellidoPaterno() : "";
-        String apellidoMaterno = diputado.getApellidoMaterno() != null ? diputado.getApellidoMaterno() : "";
-        holder.name.setText(String.format(Locale.getDefault(), "%s %s %s", nombres, apellidoPaterno, apellidoMaterno));
+        Candidate candidate = candidateInfo.getCandidate().getCandidate();
+        if (candidate != null) {
+            String nombres =  candidate.getNombres() != null ? candidate.getNombres() : "";
+            String apellidoPaterno = candidate.getApellidoPaterno() != null ? candidate.getApellidoPaterno() : "";
+            String apellidoMaterno = candidate.getApellidoMaterno() != null ? candidate.getApellidoMaterno() : "";
 
-        if (diputado.getTwitter() != null && !diputado.getTwitter().equals("") && !diputado.getTwitter().equals("no se identificó")) {
-            String twitter = diputado.getTwitter().replaceAll("\\s+", "");
-            ImageLoader.getInstance().displayImage(String.format(Locale.getDefault(), HttpConnection.TWITTER_IMAGE_URL, twitter), holder.imageProfile, options);
-        } else {
-            if (diputado.getGnero() != null) {
-                if (diputado.getGnero().equals("F"))
-                    holder.imageProfile.setImageResource(R.drawable.ic_avatar_women_square);
-                else if (diputado.getGnero().equals("M"))
-                    holder.imageProfile.setImageResource(R.drawable.ic_avatar_men_square);
+            holder.name.setText(String.format(Locale.getDefault(), "%s %s %s", nombres, apellidoPaterno, apellidoMaterno));
+
+            if (candidate.getTwitter() != null && !candidate.getTwitter().equals("") && !candidate.getTwitter().equals("no se identificó")) {
+                String twitter = candidate.getTwitter().replaceAll("\\s+", "");
+                ImageLoader.getInstance().displayImage(String.format(Locale.getDefault(), HttpConnection.TWITTER_IMAGE_URL, twitter), holder.imageProfile, options);
+            } else {
+                holder.imageProfile.setImageResource(R.drawable.ic_avatar_men_square);
             }
         }
 
-        if (diputado.getPartido() != null && !diputado.getPartido().equals(""))
-            holder.imagePartido.setImageResource(PartidoType.getIconPartido(PartidoType.getPartidoType(diputado.getPartido())));
+        if (candidateInfo.getCandidate() != null) {
+            List<Party> parties = candidateInfo.getCandidate().getParty();
+            if (parties != null && parties.size() > 0) {
+                ImageLoader.getInstance().displayImage(parties.get(0).getImage(), holder.imagePartido, options);
+            }
+        }
 
         return rowView;
     }
@@ -121,23 +124,23 @@ public class MyArrayAdapter extends ArrayAdapter<Diputado> {
     }
 
     @Override
-    public Diputado getItem(int position) {
+    public CandidateInfo getItem(int position) {
         return values.get(position);
     }
 
     View.OnClickListener InfoOnClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            Diputado diputado = v.getTag() != null ? (Diputado) v.getTag() : null;
+            CandidateInfo candidate = v.getTag() != null ? (CandidateInfo) v.getTag() : null;
 
-            if (diputado != null)
-                startIntentDiputado(diputado);
+            if (candidate != null)
+                startIntentCandidate(candidate);
         }
     };
 
-    private void startIntentDiputado(Diputado diputado) {
-        Intent intent = new Intent(getContext(), DiputadoActivity.class);
-        intent.putExtra(DiputadoActivity.TAG_DIPUTADO, diputado);
+    private void startIntentCandidate(CandidateInfo candidate) {
+        Intent intent = new Intent(getContext(), CandidateActivity.class);
+        intent.putExtra(CandidateActivity.TAG_CANDIDATE, candidate);
         getContext().startActivity(intent);
     }
 

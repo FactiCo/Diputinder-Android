@@ -20,10 +20,13 @@ import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 
 import java.text.NumberFormat;
 import java.text.ParsePosition;
+import java.util.List;
 import java.util.Locale;
 
-import mx.com.factico.diputinder.beans.Diputado;
+import mx.com.factico.diputinder.beans.Candidate;
+import mx.com.factico.diputinder.beans.CandidateInfo;
 import mx.com.factico.diputinder.beans.PartidoType;
+import mx.com.factico.diputinder.beans.Party;
 import mx.com.factico.diputinder.dialogues.Dialogues;
 import mx.com.factico.diputinder.httpconnection.HttpConnection;
 import mx.com.factico.diputinder.utils.CacheUtils;
@@ -33,11 +36,11 @@ import mx.com.factico.diputinder.views.CustomTextView;
 /**
  * Created by zace3d on 4/30/15.
  */
-public class DiputadoActivity extends ActionBarActivity {
-    public static final String TAG_CLASS = DiputadoActivity.class.getSimpleName();
+public class CandidateActivity extends ActionBarActivity {
+    public static final String TAG_CLASS = CandidateActivity.class.getSimpleName();
 
-    public static final String TAG_DIPUTADO = "diputado";
-    private Diputado diputado;
+    public static final String TAG_CANDIDATE = "candidate";
+    private CandidateInfo candidateInfo;
     private DisplayImageOptions options;
 
     @Override
@@ -50,10 +53,10 @@ public class DiputadoActivity extends ActionBarActivity {
 
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
-            diputado = (Diputado) bundle.getSerializable(TAG_DIPUTADO);
+            candidateInfo = (CandidateInfo) bundle.getSerializable(TAG_CANDIDATE);
 
-            if (diputado != null) {
-                //Dialogues.Toast(getBaseContext(), "DIPUTADO: " + diputado.getNombres(), Toast.LENGTH_SHORT);
+            if (candidateInfo != null) {
+                //Dialogues.Toast(getBaseContext(), "DIPUTADO: " + candidateInfo.getNombres(), Toast.LENGTH_SHORT);
                 fillDiputado();
             }
         }
@@ -101,73 +104,81 @@ public class DiputadoActivity extends ActionBarActivity {
     }
 
     protected void fillDiputado() {
-        String nombres = diputado.getNombres() != null ? diputado.getNombres() : "";
-        String apellidoPaterno = diputado.getApellidoPaterno() != null ? diputado.getApellidoPaterno() : "";
-        String apellidoMaterno = diputado.getApellidoMaterno() != null ? diputado.getApellidoMaterno() : "";
-        CustomTextView tvName = (CustomTextView) findViewById(R.id.diputado_tv_name);
-        tvName.setText(String.format(Locale.getDefault(), "%s %s %s", nombres, apellidoPaterno, apellidoMaterno));
 
-        Point point = ScreenUtils.getScreenSize(getBaseContext());
-        int width = point.x / 3;
-        int height = point.y / 5;
+        Candidate candidate = candidateInfo.getCandidate().getCandidate();
+        if (candidate != null) {
+            String nombres =  candidate.getNombres() != null ? candidate.getNombres() : "";
+            String apellidoPaterno = candidate.getApellidoPaterno() != null ? candidate.getApellidoPaterno() : "";
+            String apellidoMaterno = candidate.getApellidoMaterno() != null ? candidate.getApellidoMaterno() : "";
 
-        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-        params.setMargins(width / 2, 0, 0, 0);
-        View vgInfo = findViewById(R.id.diputado_vg_info);
-        vgInfo.setMinimumHeight(width);
-        vgInfo.setPadding(width / 2, 0, 0, 0);
-        vgInfo.setLayoutParams(params);
+            CustomTextView tvName = (CustomTextView) findViewById(R.id.diputado_tv_name);
+            tvName.setText(String.format(Locale.getDefault(), "%s %s %s", nombres, apellidoPaterno, apellidoMaterno));
 
-        int sizeIcons = point.x / 5;
+            Point point = ScreenUtils.getScreenSize(getBaseContext());
+            int width = point.x / 3;
+            int height = point.y / 5;
 
-        RelativeLayout.LayoutParams paramsIconsStatus = new RelativeLayout.LayoutParams(sizeIcons / 2, sizeIcons / 2);
-        paramsIconsStatus.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-        paramsIconsStatus.addRule(RelativeLayout.CENTER_VERTICAL);
+            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+            params.setMargins(width / 2, 0, 0, 0);
+            View vgInfo = findViewById(R.id.diputado_vg_info);
+            vgInfo.setMinimumHeight(width);
+            vgInfo.setPadding(width / 2, 0, 0, 0);
+            vgInfo.setLayoutParams(params);
 
-        RelativeLayout.LayoutParams paramsIcons = new RelativeLayout.LayoutParams(sizeIcons, sizeIcons);
-        paramsIcons.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+            int sizeIcons = point.x / 5;
 
-        ImageView ivProfile = (ImageView) findViewById(R.id.diputado_iv_profile);
-        ivProfile.setLayoutParams(new RelativeLayout.LayoutParams(width, width));
-        if (diputado.getTwitter() != null && !diputado.getTwitter().equals("") && !diputado.getTwitter().equals("no se identificó")) {
-            String twitter = diputado.getTwitter().replaceAll("\\s+", "");
-            ImageLoader.getInstance().displayImage(String.format(Locale.getDefault(), HttpConnection.TWITTER_IMAGE_URL, twitter), ivProfile, options);
-        } else {
-            if (diputado.getGnero() != null) {
-                if (diputado.getGnero().equals("F"))
-                    ivProfile.setImageResource(R.drawable.ic_avatar_women);
-                else if (diputado.getGnero().equals("M"))
-                    ivProfile.setImageResource(R.drawable.ic_avatar_men);
+            RelativeLayout.LayoutParams paramsIconsStatus = new RelativeLayout.LayoutParams(sizeIcons / 2, sizeIcons / 2);
+            paramsIconsStatus.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+            paramsIconsStatus.addRule(RelativeLayout.CENTER_VERTICAL);
+
+            RelativeLayout.LayoutParams paramsIcons = new RelativeLayout.LayoutParams(sizeIcons, sizeIcons);
+            paramsIcons.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+
+            ImageView ivProfile = (ImageView) findViewById(R.id.diputado_iv_profile);
+            ivProfile.setLayoutParams(new RelativeLayout.LayoutParams(width, width));
+
+
+            if (candidate.getTwitter() != null && !candidate.getTwitter().equals("") && !candidate.getTwitter().equals("no se identificó")) {
+                String twitter = candidate.getTwitter().replaceAll("\\s+", "");
+                ImageLoader.getInstance().displayImage(String.format(Locale.getDefault(), HttpConnection.TWITTER_IMAGE_URL, twitter), ivProfile, options);
+            } else {
+                ivProfile.setImageResource(R.drawable.ic_avatar_men_square);
+            }
+
+            // Cargo
+            CustomTextView tvCargo = (CustomTextView) findViewById(R.id.diputado_tv_cargo);
+            tvCargo.setText(candidateInfo.getPosition());
+
+            // Entidad
+            CustomTextView tvEntidad = (CustomTextView) findViewById(R.id.diputado_tv_entidad);
+            tvEntidad.setText("TerritoryID: " + candidate.getTerritoryId());
+
+            // Partido
+            ImageView ivIcon = (ImageView) findViewById(R.id.diputado_iv_partido);
+            LinearLayout.LayoutParams paramsPartido = new LinearLayout.LayoutParams(width / 2, width / 2);
+            paramsPartido.gravity = Gravity.CENTER_HORIZONTAL;
+            ivIcon.setLayoutParams(paramsPartido);
+            if (candidateInfo.getCandidate() != null) {
+                List<Party> parties = candidateInfo.getCandidate().getParty();
+                if (parties != null && parties.size() > 0) {
+                    ImageLoader.getInstance().displayImage(parties.get(0).getImage(), ivIcon, options);
+                }
             }
         }
 
-        // Cargo
-        CustomTextView tvCargo = (CustomTextView) findViewById(R.id.diputado_tv_cargo);
-        tvCargo.setText(diputado.getPuesto());
-
-        // Entidad
-        CustomTextView tvEntidad = (CustomTextView) findViewById(R.id.diputado_tv_entidad);
-        tvEntidad.setText(diputado.getEntidadFederativa());
-
+        /*
         // City
         CustomTextView tvCity = (CustomTextView) findViewById(R.id.diputado_tv_city);
 
         String city = null;
-        if (diputado.getMunicipioDelegacin() != null) {
-            city = diputado.getMunicipioDelegacin();
-        } else if (diputado.getDistritoElectoral() != null) {
-            city = "Distrito " + diputado.getDistritoElectoral();
+        if (candidateInfo.getMunicipioDelegacin() != null) {
+            city = candidateInfo.getMunicipioDelegacin();
+        } else if (candidateInfo.getDistritoElectoral() != null) {
+            city = "Distrito " + candidateInfo.getDistritoElectoral();
         }
 
         if (city != null)
             tvCity.setText(city);
-
-        // Partido
-        ImageView ivIcon = (ImageView) findViewById(R.id.diputado_iv_partido);
-        LinearLayout.LayoutParams paramsPartido = new LinearLayout.LayoutParams(width / 2, width / 2);
-        paramsPartido.gravity = Gravity.CENTER_HORIZONTAL;
-        ivIcon.setLayoutParams(paramsPartido);
-        ivIcon.setImageResource(PartidoType.getIconPartido(PartidoType.getPartidoType(diputado.getPartido())));
 
         // Tiene 3 de 3
         ImageView ivPatrimonial = (ImageView) findViewById(R.id.diputado_iv_patrimonial);
@@ -191,34 +202,34 @@ public class DiputadoActivity extends ActionBarActivity {
         ImageView ivFiscalStatus = (ImageView) findViewById(R.id.diputado_iv_fiscal_status);
         ivFiscalStatus.setLayoutParams(paramsIconsStatus);
 
-        if (diputado.getPatrimonialPDF() != null && !diputado.getPatrimonialPDF().equals("")) {
-            ivPatrimonial.setTag(diputado.getPatrimonialPDF());
-            ivPatrimonial.setImageResource(PartidoType.getIconPartidoPatrimonial(PartidoType.getPartidoType(diputado.getPartido())));
+        if (candidateInfo.getPatrimonialPDF() != null && !candidateInfo.getPatrimonialPDF().equals("")) {
+            ivPatrimonial.setTag(candidateInfo.getPatrimonialPDF());
+            ivPatrimonial.setImageResource(PartidoType.getIconPartidoPatrimonial(PartidoType.getPartidoType(candidateInfo.getPartido())));
 
             ivPatrimonialStatus.setImageResource(R.drawable.ic_btn_declaro);
         }
 
-        if (diputado.getInteresesPDF() != null && !diputado.getInteresesPDF().equals("")) {
-            ivIntereses.setTag(diputado.getInteresesPDF());
-            ivIntereses.setImageResource(PartidoType.getIconPartidoIntereses(PartidoType.getPartidoType(diputado.getPartido())));
+        if (candidateInfo.getInteresesPDF() != null && !candidateInfo.getInteresesPDF().equals("")) {
+            ivIntereses.setTag(candidateInfo.getInteresesPDF());
+            ivIntereses.setImageResource(PartidoType.getIconPartidoIntereses(PartidoType.getPartidoType(candidateInfo.getPartido())));
 
             ivInteresesStatus.setImageResource(R.drawable.ic_btn_declaro);
         }
 
-        if (diputado.getFiscalPDF() != null && !diputado.getFiscalPDF().equals("")) {
-            ivFiscal.setTag(diputado.getFiscalPDF());
-            ivFiscal.setImageResource(PartidoType.getIconPartidoFiscal(PartidoType.getPartidoType(diputado.getPartido())));
+        if (candidateInfo.getFiscalPDF() != null && !candidateInfo.getFiscalPDF().equals("")) {
+            ivFiscal.setTag(candidateInfo.getFiscalPDF());
+            ivFiscal.setImageResource(PartidoType.getIconPartidoFiscal(PartidoType.getPartidoType(candidateInfo.getPartido())));
 
             ivFiscalStatus.setImageResource(R.drawable.ic_btn_declaro);
         }
 
         LinearLayout partidosContainer = (LinearLayout) findViewById(R.id.diputado_vg_partidos_container);
-        if (diputado.getAlianza() != null && !diputado.getAlianza().equals("")) {
-            if (isNumeric(diputado.getAlianza())) {
+        if (candidateInfo.getAlianza() != null && !candidateInfo.getAlianza().equals("")) {
+            if (isNumeric(candidateInfo.getAlianza())) {
 
-                if (Integer.parseInt(diputado.getAlianza()) == 1) {
+                if (Integer.parseInt(candidateInfo.getAlianza()) == 1) {
 
-                    String partidoEnAlianza = diputado.getPartidosEnAlianza();
+                    String partidoEnAlianza = candidateInfo.getPartidosEnAlianza();
                     if (partidoEnAlianza != null) {
                         String[] partidosAlianza = partidoEnAlianza.replaceAll("\\s+", "").split(",");
                         boolean aliados = false;
@@ -237,7 +248,7 @@ public class DiputadoActivity extends ActionBarActivity {
                     }
                 }
             }
-        }
+        }*/
     }
 
     private View.OnClickListener WebViewOnClickListener = new View.OnClickListener() {

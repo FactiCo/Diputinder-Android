@@ -20,7 +20,8 @@
     <string name="drawer_header_factico">¿Qué es Fáctico?</string>
     <string name="drawer_header_factico_website">http://www.factico.com.mx</string>
 
-    <string name="getting_city">Obteniendo ciudad donde te encuentras</string>
+    <string name="getting_city">Obteniendo dirección donde te encuentras</string>
+    <string name="getting_location">Obteniendo ubicación</string>
     <string name="getting_info">Obteniendo información de candidatos</string>
 
     <string name="no_gps_enabled">Servicios de ubicación apagados. Inténtalo de nuevo.</string>
