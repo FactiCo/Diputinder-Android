@@ -41,6 +41,7 @@ import mx.com.factico.diputinder.beans.CandidateInfo;
 import mx.com.factico.diputinder.beans.CandidateType;
 import mx.com.factico.diputinder.beans.Candidates;
 import mx.com.factico.diputinder.beans.GeocoderResult;
+import mx.com.factico.diputinder.beans.Indicator;
 import mx.com.factico.diputinder.beans.Territory;
 import mx.com.factico.diputinder.dialogues.Dialogues;
 import mx.com.factico.diputinder.httpconnection.HttpConnection;
@@ -70,13 +71,11 @@ public class MainFragment extends Fragment implements View.OnClickListener {
 
     private LocationClientListener clientListener;
     private LatLng userLocation;
-    private String state;
     private DisplayImageOptions options;
 
-    private CandidateType candidateType = CandidateType.DIPUTADO;
+    //private CandidateType candidateType = CandidateType.DIPUTADO;
     private View rootView;
 
-    private String json_PDF;
     private boolean isFirstTime = true;
 
     protected LatLng testLocation;
@@ -94,7 +93,7 @@ public class MainFragment extends Fragment implements View.OnClickListener {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_main, container, false);
         int i = getArguments().getInt(INDEX);
-        candidateType = CandidateType.getCandidatoType(getArguments().getInt(CANDIDATE_TYPE));
+        //candidateType = CandidateType.getCandidatoType(getArguments().getInt(CANDIDATE_TYPE));
 
         createView();
 
@@ -102,13 +101,14 @@ public class MainFragment extends Fragment implements View.OnClickListener {
     }
 
     private void createView() {
-        json_PDF = PreferencesUtils.getStringPreference(getActivity().getApplication(), PreferencesUtils.JSON_PDF);
+        //json_PDF = PreferencesUtils.getStringPreference(getActivity().getApplication(), PreferencesUtils.JSON_PDF);
 
         /*state = PreferencesUtils.getStringPreference(getActivity().getApplication(), PreferencesUtils.STATE);
         if ((state != null && !state.equals(""))) {
             //Dialogues.Toast(getActivity(), "State: " + state + ", CandidateType: " + candidateType, Toast.LENGTH_SHORT);
             loadCandidatos(candidateType);
         } else */
+
         if (LocationUtils.isGpsOrNetworkProviderEnabled(getActivity())) {
             initLocationClientListener();
 
@@ -216,9 +216,9 @@ public class MainFragment extends Fragment implements View.OnClickListener {
             } else {
                 setTextMessageError(getResources().getString(R.string.no_internet_connection));
             }
-        }/* else {
+        } else {
             dismissDialog();
-        }*/
+        }
     }
 
     private void setTextMessageError(String messageError) {
@@ -230,11 +230,14 @@ public class MainFragment extends Fragment implements View.OnClickListener {
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (state != null) {
+
+                initLocationClientListener();
+
+                /*if (state != null) {
                     loadCandidatos(candidateType);
                 } else {
                     initLocationClientListener();
-                }
+                }*/
             }
         });
         view.setVisibility(View.VISIBLE);
@@ -280,9 +283,9 @@ public class MainFragment extends Fragment implements View.OnClickListener {
 
                 @Override
                 public void onRightCardExit(Object dataObject) {
-                    Candidate diputado = (Candidate) dataObject;
-                    if (diputado != null)
-                        showDialogSwipe(diputado);
+                    CandidateInfo candidateInfo = (CandidateInfo) dataObject;
+                    if (candidateInfo != null)
+                        showDialogSwipe(candidateInfo);
                 }
 
                 @Override
@@ -348,55 +351,70 @@ public class MainFragment extends Fragment implements View.OnClickListener {
     }
 
     private AlertDialog alertDialog;
-    private void showDialogSwipe(Candidate diputado) {
+    private void showDialogSwipe(CandidateInfo candidateInfo) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
         View view = getActivity().getLayoutInflater().inflate(R.layout.dialog_tweet, null, false);
 
-        CustomTextView tvMessage = (CustomTextView) view.findViewById(R.id.dialog_tweet_tv_message);
-        CustomTextView tvSubMessage = (CustomTextView) view.findViewById(R.id.dialog_tweet_tv_submessage);
+        Candidate candidate = candidateInfo.getCandidate().getCandidate();
 
-        String userName = (diputado.getTwitter() != null && !diputado.getTwitter().equals(""))
-                ? "@" + diputado.getTwitter()
-                : "#" + diputado.getNombres().replaceAll("\\s+", "")
-                + diputado.getApellidoPaterno().replaceAll("\\s+", "")
-                + diputado.getApellidoMaterno().replaceAll("\\s+", "");
+        if (candidate != null) {
+            CustomTextView tvMessage = (CustomTextView) view.findViewById(R.id.dialog_tweet_tv_message);
+            CustomTextView tvSubMessage = (CustomTextView) view.findViewById(R.id.dialog_tweet_tv_submessage);
 
-        View btnTweet = view.findViewById(R.id.dialog_tweet_btn_tweet);
-        btnTweet.setOnClickListener(TweetOnClickListener);
+            String userName = (candidate.getTwitter() != null && !candidate.getTwitter().equals(""))
+                    ? "@" + candidate.getTwitter()
+                    : "#" + candidate.getNombres().replaceAll("\\s+", "")
+                    + candidate.getApellidoPaterno().replaceAll("\\s+", "")
+                    + candidate.getApellidoMaterno().replaceAll("\\s+", "");
 
-        View btnTweetInvite = view.findViewById(R.id.dialog_tweet_btn_tweet_invite);
-        btnTweetInvite.setTag(String.format(Locale.getDefault(), getResources().getString(R.string.tweet_second_message_invite), userName));
-        btnTweetInvite.setOnClickListener(TweetOnClickListener);
+            View btnTweet = view.findViewById(R.id.dialog_tweet_btn_tweet);
+            btnTweet.setOnClickListener(TweetOnClickListener);
 
-        /*if ((diputado.getPatrimonialPDF() != null && !diputado.getPatrimonialPDF().equals(""))
-                && (diputado.getInteresesPDF() != null && !diputado.getInteresesPDF().equals(""))
-                && (diputado.getFiscalPDF() != null && !diputado.getFiscalPDF().equals(""))) {
-            tvMessage.setText(getResources().getString(R.string.tweet_message_good));
-            tvSubMessage.setText(getResources().getString(R.string.tweet_submessage_good));
-            btnTweet.setTag(String.format(Locale.getDefault(), getResources().getString(R.string.tweet_first_message_good), userName));
+            View btnTweetInvite = view.findViewById(R.id.dialog_tweet_btn_tweet_invite);
+            btnTweetInvite.setTag(String.format(Locale.getDefault(), getResources().getString(R.string.tweet_second_message_invite), userName));
+            btnTweetInvite.setOnClickListener(TweetOnClickListener);
 
-            //btnTweetInvite.setVisibility(View.GONE);
-        } else {
-            tvMessage.setText(getResources().getString(R.string.tweet_message_bad));
-            tvSubMessage.setText(getResources().getString(R.string.tweet_submessage_bad));
-            btnTweet.setTag(String.format(Locale.getDefault(), getResources().getString(R.string.tweet_first_message_bad), userName));
-        }*/
+            String nombres =  candidate.getNombres() != null ? candidate.getNombres() : "";
+            String apellidoPaterno = candidate.getApellidoPaterno() != null ? candidate.getApellidoPaterno() : "";
+            String apellidoMaterno = candidate.getApellidoMaterno() != null ? candidate.getApellidoMaterno() : "";
 
-        CustomTextView tvName = (CustomTextView) view.findViewById(R.id.dialog_tweet_tv_name);
-        tvName.setText(String.format(Locale.getDefault(), "%s %s %s", diputado.getNombres(), diputado.getApellidoPaterno(), diputado.getApellidoMaterno()));
+            CustomTextView tvName = (CustomTextView) view.findViewById(R.id.dialog_tweet_tv_name);
+            tvName.setText(String.format(Locale.getDefault(), "%s %s %s", nombres, apellidoPaterno, apellidoMaterno));
 
-        ImageView ivProfile = (ImageView) view.findViewById(R.id.dialog_tweet_iv_profile);
-        if (diputado.getTwitter() != null && !diputado.getTwitter().equals("")) {
-            String twitter = diputado.getTwitter().replaceAll("\\s+", "");
-            ImageLoader.getInstance().displayImage(String.format(Locale.getDefault(), HttpConnection.TWITTER_IMAGE_URL, twitter), ivProfile, options);
-        } else {
-            /*if (diputado.getGnero() != null) {
-                if (diputado.getGnero().equals("F"))
-                    ivProfile.setImageResource(R.drawable.ic_avatar_women);
-                else if (diputado.getGnero().equals("M"))
-                    ivProfile.setImageResource(R.drawable.ic_avatar_men);
-            }*/
+            ImageView ivProfile = (ImageView) view.findViewById(R.id.dialog_tweet_iv_profile);
+            if (candidate.getTwitter() != null && !candidate.getTwitter().equals("")) {
+                String twitter = candidate.getTwitter().replaceAll("\\s+", "");
+                ImageLoader.getInstance().displayImage(String.format(Locale.getDefault(), HttpConnection.TWITTER_IMAGE_URL, twitter), ivProfile, options);
+            } else {
+                ivProfile.setImageResource(R.drawable.ic_avatar_men);
+            }
+
+            if (candidateInfo.getCandidate() != null) {
+                boolean hasAllIndicators = true;
+                List<Indicator> indicators = candidateInfo.getCandidate().getIndicators();
+
+                if (indicators != null && indicators.size() > 0) {
+                    for (Indicator indicator : indicators) {
+                        if (indicator.getDocument() != null && !indicator.getDocument().equals("")) {
+                            //hasAllIndicators = true;
+                        } else {
+                            hasAllIndicators = false;
+                            break;
+                        }
+                    }
+                }
+
+                if (hasAllIndicators) {
+                    tvMessage.setText(getResources().getString(R.string.tweet_message_good));
+                    tvSubMessage.setText(getResources().getString(R.string.tweet_submessage_good));
+                    btnTweet.setTag(String.format(Locale.getDefault(), getResources().getString(R.string.tweet_first_message_good), userName));
+                } else {
+                    tvMessage.setText(getResources().getString(R.string.tweet_message_bad));
+                    tvSubMessage.setText(getResources().getString(R.string.tweet_submessage_bad));
+                    btnTweet.setTag(String.format(Locale.getDefault(), getResources().getString(R.string.tweet_first_message_bad), userName));
+                }
+            }
         }
 
         builder.setView(view);
@@ -622,7 +640,7 @@ public class MainFragment extends Fragment implements View.OnClickListener {
                     }
 
                     isFirstTime = false;
-                    PreferencesUtils.putStringPreference(getActivity().getApplication(), PreferencesUtils.JSON_PDF, json_PDF);
+                    //PreferencesUtils.putStringPreference(getActivity().getApplication(), PreferencesUtils.JSON_PDF, json_PDF);
 
                     List<CandidateInfo> candidateInfoList = new ArrayList<>();
 

@@ -27,8 +27,8 @@
     <string name="no_gps_enabled">Servicios de ubicación apagados. Inténtalo de nuevo.</string>
 
     <!-- Twitter -->
-    <string name="tweet_message_good">A este candidato sí le interesas porque ya presentó sus declaraciones patrimonial, fiscal y de intereses.</string>
-    <string name="tweet_message_bad">Lo sentimos, a este candidato no le interesas porque no ha presentado sus declaraciones patrimonial, fiscal y de intereses</string>
+    <string name="tweet_message_good">A este candidato sí le interesas porque ya presentó sus indicadores.</string>
+    <string name="tweet_message_bad">Lo sentimos, a este candidato no le interesas porque no ha presentado sus indicadores.</string>
 
     <string name="tweet_submessage_good">¡Mándale un mensaje de felicitación!</string>
     <string name="tweet_submessage_bad">¡Mándale un mensaje para que presente sus declaraciones!</string>

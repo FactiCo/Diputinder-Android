@@ -25,6 +25,7 @@ import java.util.Locale;
 
 import mx.com.factico.diputinder.beans.Candidate;
 import mx.com.factico.diputinder.beans.CandidateInfo;
+import mx.com.factico.diputinder.beans.Indicator;
 import mx.com.factico.diputinder.beans.PartidoType;
 import mx.com.factico.diputinder.beans.Party;
 import mx.com.factico.diputinder.dialogues.Dialogues;
@@ -127,16 +128,8 @@ public class CandidateActivity extends ActionBarActivity {
 
             int sizeIcons = point.x / 5;
 
-            RelativeLayout.LayoutParams paramsIconsStatus = new RelativeLayout.LayoutParams(sizeIcons / 2, sizeIcons / 2);
-            paramsIconsStatus.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-            paramsIconsStatus.addRule(RelativeLayout.CENTER_VERTICAL);
-
-            RelativeLayout.LayoutParams paramsIcons = new RelativeLayout.LayoutParams(sizeIcons, sizeIcons);
-            paramsIcons.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
-
             ImageView ivProfile = (ImageView) findViewById(R.id.diputado_iv_profile);
             ivProfile.setLayoutParams(new RelativeLayout.LayoutParams(width, width));
-
 
             if (candidate.getTwitter() != null && !candidate.getTwitter().equals("") && !candidate.getTwitter().equals("no se identificó")) {
                 String twitter = candidate.getTwitter().replaceAll("\\s+", "");
@@ -153,15 +146,30 @@ public class CandidateActivity extends ActionBarActivity {
             CustomTextView tvEntidad = (CustomTextView) findViewById(R.id.diputado_tv_entidad);
             tvEntidad.setText("TerritoryID: " + candidate.getTerritoryId());
 
-            // Partido
-            ImageView ivIcon = (ImageView) findViewById(R.id.diputado_iv_partido);
-            LinearLayout.LayoutParams paramsPartido = new LinearLayout.LayoutParams(width / 2, width / 2);
-            paramsPartido.gravity = Gravity.CENTER_HORIZONTAL;
-            ivIcon.setLayoutParams(paramsPartido);
             if (candidateInfo.getCandidate() != null) {
-                List<Party> parties = candidateInfo.getCandidate().getParty();
-                if (parties != null && parties.size() > 0) {
-                    ImageLoader.getInstance().displayImage(parties.get(0).getImage(), ivIcon, options);
+                // Partido
+                ImageView ivIcon = (ImageView) findViewById(R.id.diputado_iv_partido);
+                LinearLayout.LayoutParams paramsPartido = new LinearLayout.LayoutParams(width / 2, width / 2);
+                paramsPartido.gravity = Gravity.CENTER_HORIZONTAL;
+                ivIcon.setLayoutParams(paramsPartido);
+                if (candidateInfo.getCandidate() != null) {
+                    List<Party> parties = candidateInfo.getCandidate().getParty();
+                    if (parties != null && parties.size() > 0) {
+                        ImageLoader.getInstance().displayImage(parties.get(0).getImage(), ivIcon, options);
+                    }
+                }
+
+                List<Indicator> indicators = candidateInfo.getCandidate().getIndicators();
+                if (indicators != null && indicators.size() > 0) {
+                    LinearLayout vgIndicators = (LinearLayout) findViewById(R.id.diputado_vg_indicators);
+
+                    for (Indicator indicator : indicators) {
+                        View indicatorView = createIndicatorView(indicator, sizeIcons);
+
+                        if (indicatorView != null)
+                            vgIndicators.addView(indicatorView);
+
+                    }
                 }
             }
         }
@@ -179,49 +187,6 @@ public class CandidateActivity extends ActionBarActivity {
 
         if (city != null)
             tvCity.setText(city);
-
-        // Tiene 3 de 3
-        ImageView ivPatrimonial = (ImageView) findViewById(R.id.diputado_iv_patrimonial);
-        ivPatrimonial.setLayoutParams(paramsIcons);
-        ivPatrimonial.setOnClickListener(WebViewOnClickListener);
-
-        ImageView ivIntereses = (ImageView) findViewById(R.id.diputado_iv_intereses);
-        ivIntereses.setLayoutParams(paramsIcons);
-        ivIntereses.setOnClickListener(WebViewOnClickListener);
-
-        ImageView ivFiscal = (ImageView) findViewById(R.id.diputado_iv_fiscal);
-        ivFiscal.setLayoutParams(paramsIcons);
-        ivFiscal.setOnClickListener(WebViewOnClickListener);
-
-        ImageView ivPatrimonialStatus = (ImageView) findViewById(R.id.diputado_iv_patrimonial_status);
-        ivPatrimonialStatus.setLayoutParams(paramsIconsStatus);
-
-        ImageView ivInteresesStatus = (ImageView) findViewById(R.id.diputado_iv_intereses_status);
-        ivInteresesStatus.setLayoutParams(paramsIconsStatus);
-
-        ImageView ivFiscalStatus = (ImageView) findViewById(R.id.diputado_iv_fiscal_status);
-        ivFiscalStatus.setLayoutParams(paramsIconsStatus);
-
-        if (candidateInfo.getPatrimonialPDF() != null && !candidateInfo.getPatrimonialPDF().equals("")) {
-            ivPatrimonial.setTag(candidateInfo.getPatrimonialPDF());
-            ivPatrimonial.setImageResource(PartidoType.getIconPartidoPatrimonial(PartidoType.getPartidoType(candidateInfo.getPartido())));
-
-            ivPatrimonialStatus.setImageResource(R.drawable.ic_btn_declaro);
-        }
-
-        if (candidateInfo.getInteresesPDF() != null && !candidateInfo.getInteresesPDF().equals("")) {
-            ivIntereses.setTag(candidateInfo.getInteresesPDF());
-            ivIntereses.setImageResource(PartidoType.getIconPartidoIntereses(PartidoType.getPartidoType(candidateInfo.getPartido())));
-
-            ivInteresesStatus.setImageResource(R.drawable.ic_btn_declaro);
-        }
-
-        if (candidateInfo.getFiscalPDF() != null && !candidateInfo.getFiscalPDF().equals("")) {
-            ivFiscal.setTag(candidateInfo.getFiscalPDF());
-            ivFiscal.setImageResource(PartidoType.getIconPartidoFiscal(PartidoType.getPartidoType(candidateInfo.getPartido())));
-
-            ivFiscalStatus.setImageResource(R.drawable.ic_btn_declaro);
-        }
 
         LinearLayout partidosContainer = (LinearLayout) findViewById(R.id.diputado_vg_partidos_container);
         if (candidateInfo.getAlianza() != null && !candidateInfo.getAlianza().equals("")) {
@@ -249,6 +214,38 @@ public class CandidateActivity extends ActionBarActivity {
                 }
             }
         }*/
+    }
+
+    protected View createIndicatorView(Indicator indicator, int sizeIcons) {
+        RelativeLayout view = (RelativeLayout) getLayoutInflater().inflate(R.layout.item_indicator, null, false);
+        view.setOnClickListener(WebViewOnClickListener);
+
+        RelativeLayout.LayoutParams paramsIconsStatus = new RelativeLayout.LayoutParams(sizeIcons / 2, sizeIcons / 2);
+        paramsIconsStatus.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+        paramsIconsStatus.addRule(RelativeLayout.CENTER_VERTICAL);
+
+        RelativeLayout.LayoutParams paramsIcons = new RelativeLayout.LayoutParams(sizeIcons, sizeIcons);
+        paramsIcons.setMargins(5, 10, 5, 10);
+        paramsIcons.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+
+        CustomTextView tvName = (CustomTextView) view.findViewById(R.id.indicator_tv_name);
+        tvName.setText(indicator.getName());
+
+        ImageView ivIndicator = (ImageView) view.findViewById(R.id.indicator_iv_icon);
+        ivIndicator.setLayoutParams(paramsIcons);
+
+        ImageView ivIndicatorStatus = (ImageView) view.findViewById(R.id.indicator_iv_status);
+        ivIndicatorStatus.setLayoutParams(paramsIconsStatus);
+
+        if (indicator.getDocument() != null && !indicator.getDocument().equals("")) {
+            view.setTag(indicator.getDocument());
+
+            //ivIndicator.setImageResource(PartidoType.getIconPartidoPatrimonial(PartidoType.getPartidoType("PT")));
+
+            ivIndicatorStatus.setImageResource(R.drawable.ic_btn_declaro);
+        }
+
+        return view;
     }
 
     private View.OnClickListener WebViewOnClickListener = new View.OnClickListener() {

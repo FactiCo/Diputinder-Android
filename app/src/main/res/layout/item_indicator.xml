@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/indicator_vg_container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="10dp">
+
+    <mx.com.factico.diputinder.views.CustomTextView
+        android:id="@+id/indicator_tv_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/indicator_iv_status"
+        android:layout_alignTop="@+id/indicator_iv_status"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="-20dp"
+        android:layout_marginRight="-20dp"
+        android:layout_toLeftOf="@+id/indicator_iv_status"
+        android:layout_toRightOf="@+id/indicator_iv_icon"
+        android:background="@color/colorLine"
+        android:gravity="center"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:text=""
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textColor="@color/colorBackgroundWhite"
+        app:typeface="Gotham_Rounded_Bold" />
+
+    <ImageView
+        android:id="@+id/indicator_iv_icon"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_alignParentLeft="true"
+        android:scaleType="fitCenter"
+        android:src="@drawable/ic_patrimonial_off" />
+
+    <ImageView
+        android:id="@+id/indicator_iv_status"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:background="@drawable/drawable_bgr_circle_dark"
+        android:scaleType="fitCenter"
+        android:src="@drawable/ic_btn_no_declaro" />
+</RelativeLayout>
