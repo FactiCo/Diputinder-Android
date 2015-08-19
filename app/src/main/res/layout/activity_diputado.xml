@@ -94,7 +94,8 @@
                     android:id="@+id/diputado_iv_profile"
                     android:layout_width="120dp"
                     android:layout_height="120dp"
-                    android:background="@drawable/drawable_bgr_circle"
+                    android:padding="1dp"
+                    android:background="@drawable/drawable_bgr_circle_purple"
                     android:contentDescription="@string/app_name"
                     android:scaleType="centerCrop"
                     app:riv_mutate_background="true"
@@ -127,13 +128,15 @@
                         android:textColor="@color/colorTextTitle"
                         app:typeface="Gotham_Rounded_Bold" />
 
-                    <ImageView
+                    <com.makeramen.roundedimageview.RoundedImageView
                         android:id="@+id/diputado_iv_partido"
                         android:layout_width="50dp"
                         android:layout_height="50dp"
                         android:layout_gravity="center_horizontal"
                         android:scaleType="centerCrop"
-                        android:src="@drawable/drawable_bgr_circle" />
+                        android:src="@drawable/drawable_bgr_circle"
+                        app:riv_mutate_background="true"
+                        app:riv_oval="true"/>
                 </LinearLayout>
 
                 <LinearLayout

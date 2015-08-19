@@ -25,4 +25,7 @@
     <color name="colorLine">#494848</color>
 
     <color name="colorCyan">#00BCD4</color>
+
+    <color name="colorBlueGrey500">#607D8B</color>
+    <color name="colorBlueGrey200">#B0BEC5</color>
 </resources>

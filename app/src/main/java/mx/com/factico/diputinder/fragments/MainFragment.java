@@ -78,13 +78,13 @@ public class MainFragment extends Fragment implements View.OnClickListener {
 
     private boolean isFirstTime = true;
 
-    protected LatLng testLocation;
+    //protected LatLng testLocation;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        testLocation = new LatLng(19.4326, -99.1332);
+        //testLocation = new LatLng(19.4326, -99.1332);
 
         setHasOptionsMenu(true);
     }
@@ -113,13 +113,13 @@ public class MainFragment extends Fragment implements View.OnClickListener {
             initLocationClientListener();
 
             if (NetworkUtils.isNetworkConnectionAvailable(getActivity())) {
-                showDialog(getResources().getString(R.string.getting_location));
+                //showDialog(getResources().getString(R.string.getting_location));
                 initUI();
 
-                if (testLocation != null) {
+                /*if (testLocation != null) {
                     userLocation = testLocation;
                     reverseGeocoderFromLatLng(userLocation);
-                }
+                }*/
             } else {
                 setTextMessageError(getResources().getString(R.string.no_internet_connection));
             }
@@ -151,9 +151,11 @@ public class MainFragment extends Fragment implements View.OnClickListener {
 
                 Dialogues.Toast(getActivity(), "Latitude: " + userLocation.latitude + ", Longitude: " + userLocation.longitude, Toast.LENGTH_SHORT);
 
-                dismissDialog();
+                showDialog(getResources().getString(R.string.getting_city));
 
-                //reverseGeocoderFromLatLng(userLocation);
+                clientListener.stopLocationUpdates();
+
+                reverseGeocoderFromLatLng(userLocation);
             }
         });
     }
@@ -564,7 +566,7 @@ public class MainFragment extends Fragment implements View.OnClickListener {
         protected void onPostExecute(String result) {
             // Dialogues.Log(TAG_CLASS, "Result: " + result, Log.ERROR);
             // Dialogues.Log(TAG_CLASS, "json_PDF: " + json_PDF, Log.ERROR);
-            Dialogues.Toast(getActivity(), "Result: " + result, Toast.LENGTH_LONG);
+            //Dialogues.Toast(getActivity(), "Result: " + result, Toast.LENGTH_LONG);
 
             if (result != null) {
                 String urlCandidates = HttpConnection.URL;
@@ -629,6 +631,8 @@ public class MainFragment extends Fragment implements View.OnClickListener {
             // Dialogues.Log(TAG_CLASS, "json_PDF: " + json_PDF, Log.ERROR);
             // Dialogues.Toast(getActivity(), "Result: " + result, Toast.LENGTH_LONG);
 
+            boolean hasNoCandidates = false;
+
             if (result != null) {
                 Dialogues.Toast(getActivity(), "Result: " + result, Toast.LENGTH_LONG);
 
@@ -665,14 +669,21 @@ public class MainFragment extends Fragment implements View.OnClickListener {
                         initUI();
                     }
                 } catch (Exception e) {
+                    hasNoCandidates = true;
+
                     e.printStackTrace();
                 }
             } else {
-                setTextMessageError(getResources().getString(R.string.error_message_default));
+                hasNoCandidates = true;
+                //setTextMessageError(getResources().getString(R.string.error_message_default));
             }
 
             if (dialog != null && dialog.isShowing()) {
                 dialog.dismiss();
+            }
+
+            if (hasNoCandidates) {
+                Dialogues.Toast(getActivity(), "No hay candidatos en tu ubicación", Toast.LENGTH_SHORT);
             }
 
             if (!this.isCancelled())
