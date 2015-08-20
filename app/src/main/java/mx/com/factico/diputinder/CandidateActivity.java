@@ -4,7 +4,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.View;
@@ -18,15 +18,12 @@ import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 
-import java.text.NumberFormat;
-import java.text.ParsePosition;
 import java.util.List;
 import java.util.Locale;
 
 import mx.com.factico.diputinder.beans.Candidate;
 import mx.com.factico.diputinder.beans.CandidateInfo;
 import mx.com.factico.diputinder.beans.Indicator;
-import mx.com.factico.diputinder.beans.PartidoType;
 import mx.com.factico.diputinder.beans.Party;
 import mx.com.factico.diputinder.dialogues.Dialogues;
 import mx.com.factico.diputinder.httpconnection.HttpConnection;
@@ -37,7 +34,7 @@ import mx.com.factico.diputinder.views.CustomTextView;
 /**
  * Created by zace3d on 4/30/15.
  */
-public class CandidateActivity extends ActionBarActivity {
+public class CandidateActivity extends AppCompatActivity {
     public static final String TAG_CLASS = CandidateActivity.class.getSimpleName();
 
     public static final String TAG_CANDIDATE = "candidate";
@@ -174,7 +171,7 @@ public class CandidateActivity extends ActionBarActivity {
             }
 
             // Alianzas
-            LinearLayout partidosContainer = (LinearLayout) findViewById(R.id.diputado_vg_partidos_container);
+            /*LinearLayout partidosContainer = (LinearLayout) findViewById(R.id.diputado_vg_partidos_container);
             if (candidateInfo.getCandidate().getParty() != null) {
                 List<Party> partidosEnAlianza = candidateInfo.getCandidate().getParty();
                 if (partidosEnAlianza != null && partidosEnAlianza.size() > 0) {
@@ -199,7 +196,7 @@ public class CandidateActivity extends ActionBarActivity {
                     if (aliados)
                         findViewById(R.id.diputado_vg_alianzas_container).setVisibility(View.VISIBLE);
                 }
-            }
+            }*/
         }
     }
 
@@ -226,8 +223,6 @@ public class CandidateActivity extends ActionBarActivity {
 
         if (indicator.getDocument() != null && !indicator.getDocument().equals("")) {
             view.setTag(indicator.getDocument());
-
-            //ivIndicator.setImageResource(PartidoType.getIconPartidoPatrimonial(PartidoType.getPartidoType("PT")));
 
             ivIndicatorStatus.setImageResource(R.drawable.ic_btn_declaro);
         }

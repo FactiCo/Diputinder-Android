@@ -4,7 +4,7 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.animation.AnimationUtils;
@@ -18,7 +18,7 @@ import mx.com.factico.diputinder.utils.PreferencesUtils;
 /**
  * Created by zace3d on 18/05/15.
  */
-public class TutorialActivity extends ActionBarActivity implements OnClickListener {
+public class TutorialActivity extends AppCompatActivity implements OnClickListener {
     public static final String TAG_CLASS = TutorialActivity.class.getSimpleName();
     private View btnSkipTutorial;
     private int CURRENT_POSITION = 0;

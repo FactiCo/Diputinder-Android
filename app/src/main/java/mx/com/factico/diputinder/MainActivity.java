@@ -3,9 +3,9 @@ package mx.com.factico.diputinder;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -24,7 +24,7 @@ import mx.com.factico.diputinder.views.CustomTextView;
 /**
  * Created by zace3d on 18/05/15.
  */
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends AppCompatActivity {
     public static final String TAG_CLASS = MainActivity.class.getSimpleName();
 
     private DrawerLayout mDrawerLayout;

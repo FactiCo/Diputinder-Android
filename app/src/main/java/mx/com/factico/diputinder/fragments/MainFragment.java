@@ -559,17 +559,17 @@ public class MainFragment extends Fragment implements View.OnClickListener {
 
         @Override
         protected String doInBackground(String... params) {
-            return HttpConnection.GET(String.format(Locale.getDefault(), HttpConnection.URL + HttpConnection.GEOCODER, latitude, longitude));
+            return HttpConnection.GET(String.format(Locale.getDefault(), HttpConnection.URL_HOST + HttpConnection.GEOCODER, latitude, longitude));
         }
 
         @Override
         protected void onPostExecute(String result) {
             // Dialogues.Log(TAG_CLASS, "Result: " + result, Log.ERROR);
             // Dialogues.Log(TAG_CLASS, "json_PDF: " + json_PDF, Log.ERROR);
-            //Dialogues.Toast(getActivity(), "Result: " + result, Toast.LENGTH_LONG);
+            // Dialogues.Toast(getActivity(), "Result: " + result, Toast.LENGTH_LONG);
 
             if (result != null) {
-                String urlCandidates = HttpConnection.URL;
+                String urlCandidates = HttpConnection.URL_HOST;
 
                 GeocoderResult geocoderResult = GsonParser.getGeocoderResultFromJSON(result);
 
@@ -629,7 +629,7 @@ public class MainFragment extends Fragment implements View.OnClickListener {
         protected void onPostExecute(String result) {
             // Dialogues.Log(TAG_CLASS, "Result: " + result, Log.ERROR);
             // Dialogues.Log(TAG_CLASS, "json_PDF: " + json_PDF, Log.ERROR);
-            // Dialogues.Toast(getActivity(), "Result: " + result, Toast.LENGTH_LONG);
+            Dialogues.Toast(getActivity(), "Result: " + result, Toast.LENGTH_LONG);
 
             boolean hasNoCandidates = false;
 

@@ -31,10 +31,10 @@
     <string name="tweet_message_bad">Lo sentimos, a este candidato no le interesas porque no ha presentado todos sus indicadores.</string>
 
     <string name="tweet_submessage_good">¡Mándale un mensaje de felicitación!</string>
-    <string name="tweet_submessage_bad">¡Mándale un mensaje para que presente todas sus declaraciones!</string>
+    <string name="tweet_submessage_bad">¡Mándale un mensaje para que presente todos sus indicadores!</string>
 
-    <string name="tweet_first_message_good">Oye %1$s, te encontré en @LiguePolitico y vi que ya presentaste todas tus declaraciones. ¡Bien hecho!</string>
-    <string name="tweet_first_message_bad">Oye %1$s, te encontré en @LiguePolitico y no has presentado todas tus declaraciones, ¿qué esperas? http://liguepolitico.herokuapp.com/</string>
+    <string name="tweet_first_message_good">Oye %1$s, te encontré en @LiguePolitico y vi que ya presentaste todos tus indicadores. ¡Bien hecho!</string>
+    <string name="tweet_first_message_bad">Oye %1$s, te encontré en @LiguePolitico y no has presentado todos tus indicadores, ¿qué esperas? http://liguepolitico.com</string>
 
     <string name="tweet_second_submessage_invite">Invítale a firmar la Agenda Mínima Ciudadana de Por el México que Merecemos</string>
 

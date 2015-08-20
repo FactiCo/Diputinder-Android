@@ -2,7 +2,7 @@ package mx.com.factico.diputinder;
 
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
@@ -14,7 +14,7 @@ import android.widget.TextView;
 /**
  * Created by zace3d on 18/05/15.
  */
-public class PdfViewerActivity extends ActionBarActivity {
+public class PdfViewerActivity extends AppCompatActivity {
     public static final String TAG_CLASS = PdfViewerActivity.class.getSimpleName();
 
     private WebView webView;
