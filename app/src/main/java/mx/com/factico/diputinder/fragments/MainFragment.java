@@ -149,7 +149,7 @@ public class MainFragment extends Fragment implements View.OnClickListener {
             public void onLocationChanged(Location location) {
                 userLocation = LocationUtils.getLatLngFromLocation(location);
 
-                Dialogues.Toast(getActivity(), "Latitude: " + userLocation.latitude + ", Longitude: " + userLocation.longitude, Toast.LENGTH_SHORT);
+                //Dialogues.Toast(getActivity(), "Latitude: " + userLocation.latitude + ", Longitude: " + userLocation.longitude, Toast.LENGTH_SHORT);
 
                 showDialog(getResources().getString(R.string.getting_city));
 
@@ -634,7 +634,7 @@ public class MainFragment extends Fragment implements View.OnClickListener {
             boolean hasNoCandidates = false;
 
             if (result != null) {
-                Dialogues.Toast(getActivity(), "Result: " + result, Toast.LENGTH_LONG);
+                //Dialogues.Toast(getActivity(), "Result: " + result, Toast.LENGTH_LONG);
 
                 try {
                     Territory territory = GsonParser.getTerritoryJSON(result);
@@ -653,8 +653,9 @@ public class MainFragment extends Fragment implements View.OnClickListener {
 
                             for (Candidates candidates : positions.getCandidates()) {
                                 CandidateInfo candidateInfo = new CandidateInfo();
+                                candidateInfo.setTerritoryName(positions.getTerritory());
                                 candidateInfo.setPosition(positions.getTitle());
-                                candidateInfo.setCandidates(candidates);
+                                candidateInfo.setCandidate(candidates);
 
                                 candidateInfoList.add(candidateInfo);
                             }
@@ -664,7 +665,7 @@ public class MainFragment extends Fragment implements View.OnClickListener {
                     if (candidateInfoList.size() > 0) {
                         auxCandidates = candidateInfoList;
 
-                        Dialogues.Toast(getActivity(), "Size auxCandidates: " + auxCandidates.size(), Toast.LENGTH_SHORT);
+                        //Dialogues.Toast(getActivity(), "Size auxCandidates: " + auxCandidates.size(), Toast.LENGTH_SHORT);
 
                         initUI();
                     }

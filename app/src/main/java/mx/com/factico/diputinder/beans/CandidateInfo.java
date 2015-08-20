@@ -7,6 +7,7 @@ import java.io.Serializable;
  */
 public class CandidateInfo implements Serializable {
     private String position;
+    private String territoryName;
     private Candidates candidate;
 
     public String getPosition() {
@@ -17,11 +18,19 @@ public class CandidateInfo implements Serializable {
         this.position = position;
     }
 
+    public String getTerritoryName() {
+        return territoryName;
+    }
+
+    public void setTerritoryName(String territoryName) {
+        this.territoryName = territoryName;
+    }
+
     public Candidates getCandidate() {
         return candidate;
     }
 
-    public void setCandidates(Candidates candidate) {
+    public void setCandidate(Candidates candidate) {
         this.candidate = candidate;
     }
 }

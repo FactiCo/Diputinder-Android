@@ -66,6 +66,7 @@ public class Territory {
     public class Positions implements Serializable {
         private long id;
         private String title;
+        private String territory;
         private List<Candidates> candidates;
 
         public long getId() {
@@ -82,6 +83,14 @@ public class Territory {
 
         public void setTitle(String title) {
             this.title = title;
+        }
+
+        public String getTerritory() {
+            return territory;
+        }
+
+        public void setTerritory(String territory) {
+            this.territory = territory;
         }
 
         public List<Candidates> getCandidates() {

@@ -27,14 +27,14 @@
     <string name="no_gps_enabled">Servicios de ubicación apagados. Inténtalo de nuevo.</string>
 
     <!-- Twitter -->
-    <string name="tweet_message_good">A este candidato sí le interesas porque ya presentó sus indicadores.</string>
-    <string name="tweet_message_bad">Lo sentimos, a este candidato no le interesas porque no ha presentado sus indicadores.</string>
+    <string name="tweet_message_good">A este candidato sí le interesas porque ya presentó todos sus indicadores.</string>
+    <string name="tweet_message_bad">Lo sentimos, a este candidato no le interesas porque no ha presentado todos sus indicadores.</string>
 
     <string name="tweet_submessage_good">¡Mándale un mensaje de felicitación!</string>
-    <string name="tweet_submessage_bad">¡Mándale un mensaje para que presente sus declaraciones!</string>
+    <string name="tweet_submessage_bad">¡Mándale un mensaje para que presente todas sus declaraciones!</string>
 
-    <string name="tweet_first_message_good">Oye %1$s, te encontré en @LiguePolitico y vi que ya presentaste tu #3de3. ¡Bien hecho!</string>
-    <string name="tweet_first_message_bad">Oye %1$s, te encontré en @LiguePolitico y no has presentado tu #3de3, ¿qué esperas? http://candidatotransparente.mx</string>
+    <string name="tweet_first_message_good">Oye %1$s, te encontré en @LiguePolitico y vi que ya presentaste todas tus declaraciones. ¡Bien hecho!</string>
+    <string name="tweet_first_message_bad">Oye %1$s, te encontré en @LiguePolitico y no has presentado todas tus declaraciones, ¿qué esperas? http://liguepolitico.herokuapp.com/</string>
 
     <string name="tweet_second_submessage_invite">Invítale a firmar la Agenda Mínima Ciudadana de Por el México que Merecemos</string>
 

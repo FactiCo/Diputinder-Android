@@ -144,7 +144,7 @@ public class CandidateActivity extends ActionBarActivity {
 
             // Entidad
             CustomTextView tvEntidad = (CustomTextView) findViewById(R.id.diputado_tv_entidad);
-            tvEntidad.setText("TerritoryID: " + candidate.getTerritoryId());
+            tvEntidad.setText(candidateInfo.getTerritoryName());
 
             if (candidateInfo.getCandidate() != null) {
                 // Partido
@@ -172,48 +172,35 @@ public class CandidateActivity extends ActionBarActivity {
                     }
                 }
             }
-        }
 
-        /*
-        // City
-        CustomTextView tvCity = (CustomTextView) findViewById(R.id.diputado_tv_city);
+            // Alianzas
+            LinearLayout partidosContainer = (LinearLayout) findViewById(R.id.diputado_vg_partidos_container);
+            if (candidateInfo.getCandidate().getParty() != null) {
+                List<Party> partidosEnAlianza = candidateInfo.getCandidate().getParty();
+                if (partidosEnAlianza != null && partidosEnAlianza.size() > 0) {
 
-        String city = null;
-        if (candidateInfo.getMunicipioDelegacin() != null) {
-            city = candidateInfo.getMunicipioDelegacin();
-        } else if (candidateInfo.getDistritoElectoral() != null) {
-            city = "Distrito " + candidateInfo.getDistritoElectoral();
-        }
+                    boolean aliados = false;
+                    int partiesToPrint = partidosEnAlianza.size() > 2 ? 2 : partidosEnAlianza.size();
+                    for (int i = 0; i < partiesToPrint; i++) {
+                        Party party = partidosEnAlianza.get(i);
 
-        if (city != null)
-            tvCity.setText(city);
+                        View view = createImageParty(party, width);
+                        if (view != null) {
+                            partidosContainer.addView(view);
 
-        LinearLayout partidosContainer = (LinearLayout) findViewById(R.id.diputado_vg_partidos_container);
-        if (candidateInfo.getAlianza() != null && !candidateInfo.getAlianza().equals("")) {
-            if (isNumeric(candidateInfo.getAlianza())) {
-
-                if (Integer.parseInt(candidateInfo.getAlianza()) == 1) {
-
-                    String partidoEnAlianza = candidateInfo.getPartidosEnAlianza();
-                    if (partidoEnAlianza != null) {
-                        String[] partidosAlianza = partidoEnAlianza.replaceAll("\\s+", "").split(",");
-                        boolean aliados = false;
-                        for (String partidoAlianza : partidosAlianza) {
-                            View view = createPartidoImage(partidoAlianza, width);
-
-                            if (view != null) {
-                                partidosContainer.addView(view);
-
-                                aliados = true;
-                            }
+                            aliados = true;
                         }
-
-                        if (aliados)
-                            findViewById(R.id.diputado_vg_alianzas_container).setVisibility(View.VISIBLE);
                     }
+
+                    if (partidosEnAlianza.size() > 2) {
+
+                    }
+
+                    if (aliados)
+                        findViewById(R.id.diputado_vg_alianzas_container).setVisibility(View.VISIBLE);
                 }
             }
-        }*/
+        }
     }
 
     protected View createIndicatorView(Indicator indicator, int sizeIcons) {
@@ -270,21 +257,13 @@ public class CandidateActivity extends ActionBarActivity {
         startActivity(intent);
     }
 
-    public static boolean isNumeric(String str) {
-        NumberFormat formatter = NumberFormat.getInstance();
-        ParsePosition pos = new ParsePosition(0);
-        formatter.parse(str, pos);
-        return str.length() == pos.getIndex();
-    }
-
-    protected View createPartidoImage(String partido, int width) {
+    protected View createImageParty(Party party, int width) {
         ImageView ivIcon = new ImageView(getBaseContext());
         ivIcon.setScaleType(ImageView.ScaleType.CENTER_CROP);
-        //float px = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 50, getResources().getDisplayMetrics());
-        //ivIcon.setLayoutParams(new LinearLayout.LayoutParams((int) px, (int) px));
-        LinearLayout.LayoutParams paramsPartido = new LinearLayout.LayoutParams(width / 2, width / 2);
-        ivIcon.setLayoutParams(paramsPartido);
-        ivIcon.setImageResource(PartidoType.getIconPartido(PartidoType.getPartidoType(partido)));
+        LinearLayout.LayoutParams paramsParty = new LinearLayout.LayoutParams(width / 4, width / 4);
+        paramsParty.setMargins(5, 0, 5, 0);
+        ivIcon.setLayoutParams(paramsParty);
+        ImageLoader.getInstance().displayImage(party.getImage(), ivIcon, options);
 
         return ivIcon;
     }

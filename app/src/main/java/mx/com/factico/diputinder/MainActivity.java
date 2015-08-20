@@ -89,9 +89,9 @@ public class MainActivity extends ActionBarActivity {
 
         /****/
         mDrawerOptions = new ArrayList<>();
-        mDrawerOptions.add(new DrawerOption("Ver diputados"));
-        mDrawerOptions.add(new DrawerOption("Ver gobernadores"));
-        mDrawerOptions.add(new DrawerOption("Ver alcaldes"));
+        //mDrawerOptions.add(new DrawerOption("Ver diputados"));
+        //mDrawerOptions.add(new DrawerOption("Ver gobernadores"));
+        //mDrawerOptions.add(new DrawerOption("Ver alcaldes"));
         mDrawerList = (RecyclerView) findViewById(R.id.left_drawer_recycler);
         mDrawerList.setHasFixedSize(true);
         mDrawerList.setLayoutManager(new LinearLayoutManager(getBaseContext()));
