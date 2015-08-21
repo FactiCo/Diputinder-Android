@@ -38,17 +38,6 @@
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:textStyle="bold"
                 app:typeface="Gotham_Rounded_Bold" />
-
-            <!--<mx.com.factico.diputinder.views.CustomTextView
-                android:id="@+id/drawer_header_website_mexicomerecemos"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
-                android:text="@string/drawer_header_mexico_merecemos_website"
-                android:textColor="@color/colorPrimary"
-                android:textAppearance="?android:attr/textAppearanceSmall"
-                app:typeface="Gotham_Rounded_Book" />-->
         </LinearLayout>
 
         <LinearLayout
@@ -69,17 +58,6 @@
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:textStyle="bold"
                 app:typeface="Gotham_Rounded_Bold" />
-
-            <!--<mx.com.factico.diputinder.views.CustomTextView
-                android:id="@+id/drawer_header_website_candidatotransparente"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
-                android:text="@string/drawer_header_transparente_website"
-                android:textColor="@color/colorPrimary"
-                android:textAppearance="?android:attr/textAppearanceSmall"
-                app:typeface="Gotham_Rounded_Book" />-->
         </LinearLayout>
 
         <LinearLayout
@@ -100,17 +78,6 @@
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:textStyle="bold"
                 app:typeface="Gotham_Rounded_Bold" />
-
-            <!--<mx.com.factico.diputinder.views.CustomTextView
-                android:id="@+id/drawer_header_website_factico"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
-                android:text="@string/drawer_header_factico_website"
-                android:textColor="@color/colorPrimary"
-                android:textAppearance="?android:attr/textAppearanceSmall"
-                app:typeface="Gotham_Rounded_Book" />-->
         </LinearLayout>
     </LinearLayout>
 

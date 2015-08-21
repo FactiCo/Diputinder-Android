@@ -629,7 +629,7 @@ public class MainFragment extends Fragment implements View.OnClickListener {
         protected void onPostExecute(String result) {
             // Dialogues.Log(TAG_CLASS, "Result: " + result, Log.ERROR);
             // Dialogues.Log(TAG_CLASS, "json_PDF: " + json_PDF, Log.ERROR);
-            Dialogues.Toast(getActivity(), "Result: " + result, Toast.LENGTH_LONG);
+            // Dialogues.Toast(getActivity(), "Result: " + result, Toast.LENGTH_LONG);
 
             boolean hasNoCandidates = false;
 

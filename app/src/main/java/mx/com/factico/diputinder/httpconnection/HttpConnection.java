@@ -1,29 +1,12 @@
 package mx.com.factico.diputinder.httpconnection;
 
-import android.os.Build;
 import android.util.Log;
-
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
-import org.apache.http.StatusLine;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.protocol.HTTP;
-import org.apache.http.util.EntityUtils;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
@@ -55,6 +38,8 @@ public class HttpConnection {
             if (urlConnection.getResponseCode() == HttpURLConnection.HTTP_OK) {
                 InputStream in = new BufferedInputStream(urlConnection.getInputStream());
                 result = convertInputStreamToString(in);
+
+                Dialogues.Log(TAG_CLASS, result, Log.DEBUG);
             } else {
 
             }
@@ -120,7 +105,7 @@ public class HttpConnection {
         return result;
     }
 
-    public static String GETJSON(String url) {
+    /*public static String GETJSON(String url) {
         InputStream inputStream = null;
         String result = "";
         try {
@@ -203,7 +188,7 @@ public class HttpConnection {
         return result;
     }
 
-    private static HttpEntity createStringEntity(String json) {
+    /*private static HttpEntity createStringEntity(String json) {
         StringEntity se = null;
         try {
             se = new StringEntity(json, "UTF-8");
@@ -212,5 +197,5 @@ public class HttpConnection {
             Log.e(TAG_CLASS, "Failed to create StringEntity", e);
         }
         return se;
-    }
+    }*/
 }

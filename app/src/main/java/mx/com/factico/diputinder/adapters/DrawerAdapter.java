@@ -41,9 +41,9 @@ Ver gobernadores
 
         public CustomTextView title;
 
-        public CustomTextView websiteMerecemos;
+        /*public CustomTextView websiteMerecemos;
         public CustomTextView websiteTransparente;
-        public CustomTextView websiteFactico;
+        public CustomTextView websiteFactico;*/
 
         public DrawerViewHolder(View view, int viewType) {
             super(view);
@@ -53,13 +53,13 @@ Ver gobernadores
                 view.setOnClickListener(this);
                 holderId = 1;
             } else {
-                websiteMerecemos = (CustomTextView) view.findViewById(R.id.drawer_header_description_mexicomerecemos);
+                /*websiteMerecemos = (CustomTextView) view.findViewById(R.id.drawer_header_description_mexicomerecemos);
                 websiteTransparente = (CustomTextView) view.findViewById(R.id.drawer_header_description_candidatotransparente);
                 websiteFactico = (CustomTextView) view.findViewById(R.id.drawer_header_description_factico);
 
                 websiteMerecemos.setOnClickListener(this);
                 websiteTransparente.setOnClickListener(this);
-                websiteFactico.setOnClickListener(this);
+                websiteFactico.setOnClickListener(this);*/
 
                 holderId = 0;
             }
@@ -68,7 +68,7 @@ Ver gobernadores
         @Override
         public void onClick(View v) {
             switch (v.getId()) {
-                case R.id.drawer_header_description_mexicomerecemos:
+                /*case R.id.drawer_header_description_mexicomerecemos:
                     startWebViewIntent(v.getContext(), v.getContext().getResources().getString(R.string.drawer_header_mexico_merecemos_website));
                     break;
                 case R.id.drawer_header_description_candidatotransparente:
@@ -76,10 +76,10 @@ Ver gobernadores
                     break;
                 case R.id.drawer_header_description_factico:
                     startWebViewIntent(v.getContext(), v.getContext().getResources().getString(R.string.drawer_header_factico_website));
-                    break;
+                    break;*/
                 default:
                     if (onItemClickListener != null)
-                        onItemClickListener.onItemClick(v, getPosition());
+                        onItemClickListener.onItemClick(v, getAdapterPosition());
                     break;
             }
         }
@@ -143,6 +143,6 @@ Ver gobernadores
     }
 
     public interface OnItemClickListener {
-        public void onItemClick(View view, int position);
+        void onItemClick(View view, int position);
     }
 }
