@@ -22,7 +22,7 @@ public class TutorialActivity extends AppCompatActivity implements OnClickListen
     public static final String TAG_CLASS = TutorialActivity.class.getSimpleName();
     private View btnSkipTutorial;
     private int CURRENT_POSITION = 0;
-    private int COUNT_PAGES = 5;
+    private int COUNT_PAGES = 3;
     private ViewPager mViewPager;
 
     @Override
@@ -59,17 +59,13 @@ public class TutorialActivity extends AppCompatActivity implements OnClickListen
                 new Text("", res.getString(R.string.tutorial_message_2))));
         mPagerAdapter.addFragment(TextPageFragment.newInstance(2,
                 new Text("", res.getString(R.string.tutorial_message_3))));
-        mPagerAdapter.addFragment(TextPageFragment.newInstance(3,
-                new Text("", res.getString(R.string.tutorial_message_4))));
-        mPagerAdapter.addFragment(TextPageFragment.newInstance(4,
-                new Text("", res.getString(R.string.tutorial_message_5))));
 
         // Setting the PagerAdapter object to the viewPager object
         mViewPager.setAdapter(mPagerAdapter);
         //mViewPager.setOffscreenPageLimit(mPagerAdapter.getCount());
         mViewPager.setPageTransformer(false, new ParallaxTutorialPagerTransformer(R.id.text_iv_bgr));
 
-        mViewPager.setOnPageChangeListener(VerticalOnPageChangeListener);
+        mViewPager.addOnPageChangeListener(VerticalOnPageChangeListener);
 
         btnSkipTutorial = findViewById(R.id.tutorial_btn_skip);
         btnSkipTutorial.setOnClickListener(this);
