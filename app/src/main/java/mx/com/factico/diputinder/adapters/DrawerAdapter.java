@@ -29,21 +29,13 @@ public class DrawerAdapter extends RecyclerView.Adapter<DrawerAdapter.DrawerView
     private static final int TYPE_HEADER = 0;
     private static final int TYPE_ITEM = 1;
 
-    /*
-Ver diputados
-Ver gobernadores
-¿Qué es Por el México que merecemos? http://www.mexicoquemerecemos.com/agenda.php
-¿Qué es Candidato Transparente? https://candidatotransparente.mx/#/acerca_de
-¿Qué es Fáctico? http://www.factico.com.mx/
-     */
     protected class DrawerViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         public int holderId;
 
         public CustomTextView title;
 
-        /*public CustomTextView websiteMerecemos;
-        public CustomTextView websiteTransparente;
-        public CustomTextView websiteFactico;*/
+        public CustomTextView websiteLiguePolitico;
+        public CustomTextView websiteFactico;
 
         public DrawerViewHolder(View view, int viewType) {
             super(view);
@@ -53,13 +45,11 @@ Ver gobernadores
                 view.setOnClickListener(this);
                 holderId = 1;
             } else {
-                /*websiteMerecemos = (CustomTextView) view.findViewById(R.id.drawer_header_description_mexicomerecemos);
-                websiteTransparente = (CustomTextView) view.findViewById(R.id.drawer_header_description_candidatotransparente);
+                websiteLiguePolitico = (CustomTextView) view.findViewById(R.id.drawer_header_description_liguepolitico);
                 websiteFactico = (CustomTextView) view.findViewById(R.id.drawer_header_description_factico);
 
-                websiteMerecemos.setOnClickListener(this);
-                websiteTransparente.setOnClickListener(this);
-                websiteFactico.setOnClickListener(this);*/
+                websiteLiguePolitico.setOnClickListener(this);
+                websiteFactico.setOnClickListener(this);
 
                 holderId = 0;
             }
@@ -68,15 +58,12 @@ Ver gobernadores
         @Override
         public void onClick(View v) {
             switch (v.getId()) {
-                /*case R.id.drawer_header_description_mexicomerecemos:
-                    startWebViewIntent(v.getContext(), v.getContext().getResources().getString(R.string.drawer_header_mexico_merecemos_website));
-                    break;
-                case R.id.drawer_header_description_candidatotransparente:
-                    startWebViewIntent(v.getContext(), v.getContext().getResources().getString(R.string.drawer_header_transparente_website));
+                case R.id.drawer_header_description_liguepolitico:
+                    startWebViewIntent(v.getContext(), v.getContext().getResources().getString(R.string.drawer_header_liguepolitico_website));
                     break;
                 case R.id.drawer_header_description_factico:
                     startWebViewIntent(v.getContext(), v.getContext().getResources().getString(R.string.drawer_header_factico_website));
-                    break;*/
+                    break;
                 default:
                     if (onItemClickListener != null)
                         onItemClickListener.onItemClick(v, getAdapterPosition());

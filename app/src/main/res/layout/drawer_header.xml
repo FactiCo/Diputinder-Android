@@ -5,60 +5,14 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:scaleType="centerCrop"
-        android:layout_alignBottom="@+id/drawer_header_container"
-        android:src="@drawable/bgr_tutorial_candados" />
-
     <LinearLayout
         android:id="@+id/drawer_header_container"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="150dp"
+        android:background="@color/colorPrimary"
         android:paddingTop="20dp"
         android:paddingBottom="20dp"
         android:orientation="vertical">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingTop="10dp"
-            android:paddingBottom="10dp"
-            android:orientation="vertical">
-
-            <mx.com.factico.diputinder.views.CustomTextView
-                android:id="@+id/drawer_header_description_mexicomerecemos"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
-                android:text="@string/drawer_header_mexico_merecemos"
-                android:textColor="@color/colorWhite"
-                android:textAppearance="?android:attr/textAppearanceSmall"
-                android:textStyle="bold"
-                app:typeface="Gotham_Rounded_Bold" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingTop="10dp"
-            android:paddingBottom="10dp"
-            android:orientation="vertical">
-
-            <mx.com.factico.diputinder.views.CustomTextView
-                android:id="@+id/drawer_header_description_candidatotransparente"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
-                android:text="@string/drawer_header_transparente"
-                android:textColor="@color/colorWhite"
-                android:textAppearance="?android:attr/textAppearanceSmall"
-                android:textStyle="bold"
-                app:typeface="Gotham_Rounded_Bold" />
-        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -74,6 +28,26 @@
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
                 android:text="@string/drawer_header_factico"
+                android:textColor="@color/colorWhite"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:textStyle="bold"
+                app:typeface="Gotham_Rounded_Bold" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:orientation="vertical">
+
+            <mx.com.factico.diputinder.views.CustomTextView
+                android:id="@+id/drawer_header_description_liguepolitico"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:text="@string/drawer_header_liguepolitico"
                 android:textColor="@color/colorWhite"
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:textStyle="bold"

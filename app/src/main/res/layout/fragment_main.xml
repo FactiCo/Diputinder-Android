@@ -38,12 +38,12 @@
                 android:id="@+id/main_btn_swipe_left"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
-                android:padding="10dp"
+                android:padding="25dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="20dp"
-                android:background="@drawable/selector_circle_gray"
+                android:background="@drawable/selector_btn_no"
                 android:textColor="@color/colorTextContent"
-                android:scaleType="centerInside"
+                android:scaleType="centerCrop"
                 android:src="@drawable/ic_btn_no" />
 
             <!--<ImageView
@@ -64,12 +64,12 @@
                 android:id="@+id/main_btn_swipe_right"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
-                android:padding="10dp"
+                android:padding="25dp"
                 android:layout_marginRight="10dp"
                 android:layout_marginLeft="20dp"
-                android:background="@drawable/selector_circle_gray"
+                android:background="@drawable/selector_btn_yes"
                 android:textColor="@color/colorTextContent"
-                android:scaleType="centerInside"
+                android:scaleType="centerCrop"
                 android:src="@drawable/ic_btn_yes" />
         </LinearLayout>
     </RelativeLayout>

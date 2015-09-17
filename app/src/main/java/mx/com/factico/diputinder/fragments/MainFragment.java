@@ -73,18 +73,13 @@ public class MainFragment extends Fragment implements View.OnClickListener {
     private LatLng userLocation;
     private DisplayImageOptions options;
 
-    //private CandidateType candidateType = CandidateType.DIPUTADO;
     private View rootView;
 
     private boolean isFirstTime = true;
 
-    //protected LatLng testLocation;
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        //testLocation = new LatLng(19.4326, -99.1332);
 
         setHasOptionsMenu(true);
     }
@@ -93,7 +88,18 @@ public class MainFragment extends Fragment implements View.OnClickListener {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_main, container, false);
         int i = getArguments().getInt(INDEX);
-        //candidateType = CandidateType.getCandidatoType(getArguments().getInt(CANDIDATE_TYPE));
+
+        options = new DisplayImageOptions.Builder()
+                //.showImageOnLoading(null)
+                .showImageForEmptyUri(R.drawable.drawable_bgr_gray)
+                .showImageOnFail(R.drawable.drawable_bgr_gray)
+                .resetViewBeforeLoading(true)
+                .cacheOnDisk(true)
+                .imageScaleType(ImageScaleType.EXACTLY)
+                .bitmapConfig(Bitmap.Config.RGB_565)
+                .considerExifParams(true)
+                        //.displayer(new FadeInBitmapDisplayer(300))
+                .build();
 
         createView();
 
@@ -101,8 +107,6 @@ public class MainFragment extends Fragment implements View.OnClickListener {
     }
 
     private void createView() {
-        //json_PDF = PreferencesUtils.getStringPreference(getActivity().getApplication(), PreferencesUtils.JSON_PDF);
-
         /*state = PreferencesUtils.getStringPreference(getActivity().getApplication(), PreferencesUtils.STATE);
         if ((state != null && !state.equals(""))) {
             //Dialogues.Toast(getActivity(), "State: " + state + ", CandidateType: " + candidateType, Toast.LENGTH_SHORT);
@@ -113,51 +117,37 @@ public class MainFragment extends Fragment implements View.OnClickListener {
             initLocationClientListener();
 
             if (NetworkUtils.isNetworkConnectionAvailable(getActivity())) {
-                //showDialog(getResources().getString(R.string.getting_location));
                 initUI();
-
-                /*if (testLocation != null) {
-                    userLocation = testLocation;
-                    reverseGeocoderFromLatLng(userLocation);
-                }*/
             } else {
                 setTextMessageError(getResources().getString(R.string.no_internet_connection));
             }
         } else {
             setTextMessageError(getResources().getString(R.string.no_gps_enabled));
         }
-
-        options = new DisplayImageOptions.Builder()
-                //.showImageOnLoading(null)
-                .showImageForEmptyUri(R.drawable.ic_avatar_no)
-                .showImageOnFail(R.drawable.ic_avatar_no)
-                .resetViewBeforeLoading(true)
-                .cacheOnDisk(true)
-                .imageScaleType(ImageScaleType.EXACTLY)
-                .bitmapConfig(Bitmap.Config.RGB_565)
-                .considerExifParams(true)
-                //.displayer(new FadeInBitmapDisplayer(300))
-                .build();
     }
 
     protected void initLocationClientListener() {
-        showDialog(getResources().getString(R.string.getting_location));
+        if (LocationUtils.isGpsOrNetworkProviderEnabled(getActivity())) {
+            showDialog(getResources().getString(R.string.getting_location));
 
-        clientListener = new LocationClientListener(getActivity());
-        clientListener.setOnLocationClientListener(new LocationClientListener.OnLocationClientListener() {
-            @Override
-            public void onLocationChanged(Location location) {
-                userLocation = LocationUtils.getLatLngFromLocation(location);
+            clientListener = new LocationClientListener(getActivity());
+            clientListener.setOnLocationClientListener(new LocationClientListener.OnLocationClientListener() {
+                @Override
+                public void onLocationChanged(Location location) {
+                    userLocation = LocationUtils.getLatLngFromLocation(location);
 
-                //Dialogues.Toast(getActivity(), "Latitude: " + userLocation.latitude + ", Longitude: " + userLocation.longitude, Toast.LENGTH_SHORT);
+                    //Dialogues.Toast(getActivity(), "Latitude: " + userLocation.latitude + ", Longitude: " + userLocation.longitude, Toast.LENGTH_SHORT);
 
-                showDialog(getResources().getString(R.string.getting_city));
+                    showDialog(getResources().getString(R.string.getting_location));
 
-                clientListener.stopLocationUpdates();
+                    clientListener.stopLocationUpdates();
 
-                reverseGeocoderFromLatLng(userLocation);
-            }
-        });
+                    reverseGeocoderFromLatLng(userLocation);
+                }
+            });
+        } else {
+            setTextMessageError(getResources().getString(R.string.no_gps_enabled));
+        }
     }
 
     public void startLocationListener() {
@@ -188,23 +178,13 @@ public class MainFragment extends Fragment implements View.OnClickListener {
         }
     }
 
-    protected void loadCandidatos(CandidateType candidateType) {
+    /*protected void loadCandidatos() {
         showDialog(getResources().getString(R.string.getting_info));
 
         if (rootView.findViewById(R.id.main_btn_refresh).getVisibility() != View.GONE)
             rootView.findViewById(R.id.main_btn_refresh).setVisibility(View.GONE);
 
         String url = null;
-
-        /*if (candidateType.equals(CandidateType.DIPUTADO)) {
-            url = HttpConnection.URL + HttpConnection.DIPUTADOS;
-
-        } else if (candidateType.equals(CandidateType.GOBERNADOR)) {
-            url = HttpConnection.URL + HttpConnection.GOBERNADORES;
-
-        } else if (candidateType.equals(CandidateType.ALCALDIAS)) {
-            url = HttpConnection.URL + HttpConnection.ALCALDIAS;
-        }*/
 
         if (url != null) {
             if (NetworkUtils.isNetworkConnectionAvailable(getActivity())) {
@@ -221,7 +201,7 @@ public class MainFragment extends Fragment implements View.OnClickListener {
         } else {
             dismissDialog();
         }
-    }
+    }*/
 
     private void setTextMessageError(String messageError) {
         if (dialog != null && dialog.isShowing()) {
@@ -232,8 +212,11 @@ public class MainFragment extends Fragment implements View.OnClickListener {
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (rootView.findViewById(R.id.main_btn_refresh).getVisibility() != View.GONE)
+                    rootView.findViewById(R.id.main_btn_refresh).setVisibility(View.GONE);
 
                 initLocationClientListener();
+                startLocationListener();
 
                 /*if (state != null) {
                     loadCandidatos(candidateType);
@@ -389,7 +372,7 @@ public class MainFragment extends Fragment implements View.OnClickListener {
                 String twitter = candidate.getTwitter().replaceAll("\\s+", "");
                 ImageLoader.getInstance().displayImage(String.format(Locale.getDefault(), HttpConnection.TWITTER_IMAGE_URL, twitter), ivProfile, options);
             } else {
-                ivProfile.setImageResource(R.drawable.ic_avatar_men);
+                ivProfile.setImageResource(R.drawable.drawable_bgr_gray);
             }
 
             if (candidateInfo.getCandidate() != null) {
@@ -526,6 +509,9 @@ public class MainFragment extends Fragment implements View.OnClickListener {
         int id = item.getItemId();
 
         if (id == R.id.action_refresh) {
+            if (rootView.findViewById(R.id.main_btn_refresh).getVisibility() != View.GONE)
+                rootView.findViewById(R.id.main_btn_refresh).setVisibility(View.GONE);
+
             initLocationClientListener();
             startLocationListener();
             return true;

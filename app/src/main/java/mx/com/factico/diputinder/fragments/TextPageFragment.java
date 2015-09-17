@@ -95,7 +95,7 @@ public class TextPageFragment extends Fragment {
             else if (index == 1)
                 imageLogo.setImageResource(R.drawable.ic_tutorial_2);
             else if (index == 2)
-                imageLogo.setImageResource(R.drawable.ic_tutorial_5);
+                imageLogo.setImageResource(R.drawable.ic_tutorial_3);
 
             CustomTextView tvTitle = (CustomTextView) view.findViewById(R.id.text_tv_title);
             if (text.getTitle() != null && !text.getTitle().equals(""))

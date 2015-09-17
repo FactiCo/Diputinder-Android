@@ -43,8 +43,8 @@ public class MyArrayAdapter extends ArrayAdapter<CandidateInfo> {
 
         options = new DisplayImageOptions.Builder()
                 //.showImageOnLoading(R.drawable.drawable_bgr_gray)
-                .showImageForEmptyUri(R.drawable.ic_avatar_no)
-                .showImageOnFail(R.drawable.ic_avatar_no)
+                .showImageForEmptyUri(R.drawable.drawable_bgr_gray)
+                .showImageOnFail(R.drawable.drawable_bgr_gray)
                 .resetViewBeforeLoading(true)
                 //.cacheInMemory(false)
                 .cacheOnDisk(true)
@@ -104,7 +104,7 @@ public class MyArrayAdapter extends ArrayAdapter<CandidateInfo> {
                 String twitter = candidate.getTwitter().replaceAll("\\s+", "");
                 ImageLoader.getInstance().displayImage(String.format(Locale.getDefault(), HttpConnection.TWITTER_IMAGE_URL, twitter), holder.imageProfile, options);
             } else {
-                holder.imageProfile.setImageResource(R.drawable.ic_avatar_men_square);
+                holder.imageProfile.setImageResource(R.drawable.drawable_bgr_gray);
             }
         }
 

@@ -11,11 +11,8 @@
     <string name="drawer_open">Open</string>
     <string name="drawer_close">Close</string>
 
-    <string name="drawer_header_mexico_merecemos">¿Qué es Por el México que merecemos?</string>
-    <string name="drawer_header_mexico_merecemos_website">http://www.mexicoquemerecemos.com/agenda.php</string>
-
-    <string name="drawer_header_transparente">¿Qué es Candidato Transparente?</string>
-    <string name="drawer_header_transparente_website">https://candidatotransparente.mx/#/acerca_de</string>
+    <string name="drawer_header_liguepolitico">¿Más información de Ligue Político?</string>
+    <string name="drawer_header_liguepolitico_website">http://www.liguepolitico.com/</string>
 
     <string name="drawer_header_factico">¿Qué es Fáctico?</string>
     <string name="drawer_header_factico_website">http://www.factico.com.mx</string>
@@ -47,6 +44,6 @@
     <!-- Tutorial -->
     <string name="tutorial_title_1">¡HOLA! Bienvenido</string>
     <string name="tutorial_message_1">Con Ligue Político podrás conocer quiénes son tus candidatos a puestos de elección popular, de acuerdo a tu ubicación geográfica, para exigirles que se comprometan con la transparencia y la rendición de cuentas.</string>
-    <string name="tutorial_message_2">Ligue Político es una iniciativa ciudadana, abierta y colaborativa, promovida y apoyada por: Factual, Hivos, Chequeado, Yo Quiero Saber, El Tiempo, y Fáctico)</string>
+    <string name="tutorial_message_2">Es una iniciativa ciudadana, abierta, colaborativa y regional</string>
     <string name="tutorial_message_3">Si un candidato te atrae, desliza a la derecha. ¡Pero cuidado! Si no ha presentado su declaración patrimonial o jurada, ¡exígela!</string>
 </resources>

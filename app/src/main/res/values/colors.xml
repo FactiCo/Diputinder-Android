@@ -5,10 +5,12 @@
     <color name="colorAccent">#745EC5</color>
 
     <color name="colorRed">#F80043</color>
+    <color name="colorRed300">#E57373</color>
     <color name="colorGray">#E2E2E2</color>
 
     <color name="colorWhite">#FFFFFF</color>
     <color name="colorGreen100">#C8E6C9</color>
+    <color name="colorGreen300">#81C784</color>
     <color name="colorGreen">#4CAF50</color>
     <color name="colorLime">#CDDC39</color>
 

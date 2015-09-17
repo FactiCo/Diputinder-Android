@@ -117,8 +117,8 @@ public class MainFragmentCopy extends Fragment implements View.OnClickListener {
 
         options = new DisplayImageOptions.Builder()
                 //.showImageOnLoading(null)
-                .showImageForEmptyUri(R.drawable.ic_avatar_no)
-                .showImageOnFail(R.drawable.ic_avatar_no)
+                .showImageForEmptyUri(R.drawable.drawable_bgr_gray)
+                .showImageOnFail(R.drawable.drawable_bgr_gray)
                 .resetViewBeforeLoading(true)
                 .cacheOnDisk(true)
                 .imageScaleType(ImageScaleType.EXACTLY)

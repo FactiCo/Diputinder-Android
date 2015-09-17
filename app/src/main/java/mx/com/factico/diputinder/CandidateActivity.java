@@ -89,8 +89,8 @@ public class CandidateActivity extends AppCompatActivity {
     protected void initUI() {
         options = new DisplayImageOptions.Builder()
                 //.showImageOnLoading(null)
-                .showImageForEmptyUri(R.drawable.ic_avatar_no)
-                .showImageOnFail(R.drawable.ic_avatar_no)
+                .showImageForEmptyUri(R.drawable.drawable_bgr_gray)
+                .showImageOnFail(R.drawable.drawable_bgr_gray)
                 .resetViewBeforeLoading(true)
                 //.cacheInMemory(false)
                 .cacheOnDisk(true)
@@ -132,7 +132,7 @@ public class CandidateActivity extends AppCompatActivity {
                 String twitter = candidate.getTwitter().replaceAll("\\s+", "");
                 ImageLoader.getInstance().displayImage(String.format(Locale.getDefault(), HttpConnection.TWITTER_IMAGE_URL, twitter), ivProfile, options);
             } else {
-                ivProfile.setImageResource(R.drawable.ic_avatar_men_square);
+                ivProfile.setImageResource(R.drawable.drawable_bgr_gray);
             }
 
             // Cargo
