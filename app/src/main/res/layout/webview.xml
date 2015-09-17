@@ -20,5 +20,14 @@
             android:id="@+id/webview"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
+
+        <ProgressBar
+            android:id="@+id/webview_progressbar"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:progressDrawable="@drawable/custom_progressbar"
+            android:layout_width="match_parent"
+            android:layout_height="10px"
+            android:max="100"
+            android:visibility="gone" />
     </RelativeLayout>
 </LinearLayout>

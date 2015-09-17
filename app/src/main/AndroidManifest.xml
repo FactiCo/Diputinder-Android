@@ -50,6 +50,11 @@
             android:label="@string/app_name"
             android:launchMode="singleTask"
             android:screenOrientation="portrait" />
-    </application>
 
+        <activity
+            android:name="mx.com.factico.diputinder.AboutActivity"
+            android:launchMode="singleTask"
+            android:parentActivityName="mx.com.factico.diputinder.MainActivity"
+            android:screenOrientation="portrait" />
+    </application>
 </manifest>

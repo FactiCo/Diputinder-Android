@@ -4,6 +4,8 @@
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
 
+    <string name="about_name">Acerca</string>
+
     <string name="action_diputados">Diputados</string>
     <string name="action_gobernadores">Gobernadores</string>
     <string name="action_refresh">Actualizar ubicación</string>
@@ -40,6 +42,9 @@
     <string name="no_internet_connection">Sin conexión a Internet.\nInténtalo de nuevo.</string>
 
     <string name="error_message_default">Algo salió mal. Inténtalo de nuevo.</string>
+
+    <string name="about_text">Con Ligue Político podrás conocer quiénes son tus candidatos a puestos de elección popular, de acuerdo a tu ubicación geográfica, para exigirles que se comprometan con la transparencia y la rendición de cuentas.\n\nEs una iniciativa ciudadana, abierta y colaborativa, apoyada por: Factual, Hivos, Chequeando, Yo Quiero Saber, El Tiempo y Fáctico.\n\nSi un candidato te atrae, desliza a la derecha. ¡Pero cuidado! Si no ha presentado su declaración patrimonial o jurada ¡exígela!</string>
+    <string name="about_link">Para más información visita el sitio web aquí</string>
 
     <!-- Tutorial -->
     <string name="tutorial_title_1">¡HOLA! Bienvenido</string>

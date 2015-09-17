@@ -29,7 +29,7 @@ public class LocationClientListener implements GoogleApiClient.ConnectionCallbac
         GoogleApiClient.OnConnectionFailedListener,
         LocationListener {
 
-    private final String TAG_CLASS = LocationClientListener.class.getName();
+    private final String TAG_CLASS = LocationClientListener.class.getSimpleName();
     private final Activity activity;
 
     private GoogleApiClient mGoogleApiClient;
@@ -62,7 +62,7 @@ public class LocationClientListener implements GoogleApiClient.ConnectionCallbac
         // LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
 
         mLocationRequest = LocationRequest.create();
-        mLocationRequest.setPriority(LocationRequest.PRIORITY_LOW_POWER);
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
         mLocationRequest.setInterval(1000); // Update location every second
         mLocationRequest.setFastestInterval(5000);
 

@@ -2,6 +2,8 @@ package mx.com.factico.diputinder;
 
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.content.Intent;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -10,13 +12,16 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import mx.com.factico.diputinder.adapters.DrawerAdapter;
 import mx.com.factico.diputinder.beans.DrawerOption;
+import mx.com.factico.diputinder.dialogues.Dialogues;
 import mx.com.factico.diputinder.fragments.MainFragment;
 import mx.com.factico.diputinder.utils.CacheUtils;
 import mx.com.factico.diputinder.views.CustomTextView;
@@ -68,12 +73,19 @@ public class MainActivity extends AppCompatActivity {
         actionbarTitle.setText(getResources().getString(R.string.app_name));
 
         setSupportActionBar(mToolbar);
+
+        mToolbar.setNavigationIcon(ContextCompat.getDrawable(getBaseContext(), R.drawable.ic_action_info));
+        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startAboutIntent();
+            }
+        });
     }
 
     protected void initUI() {
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        /*mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, mToolbar, R.string.drawer_open, R.string.drawer_close) {
-
             @Override
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
@@ -87,19 +99,19 @@ public class MainActivity extends AppCompatActivity {
         mDrawerLayout.setDrawerListener(mDrawerToggle);
         mDrawerToggle.syncState();
 
-        /****/
+        //
         mDrawerOptions = new ArrayList<>();
         //mDrawerOptions.add(new DrawerOption("Ver diputados"));
         //mDrawerOptions.add(new DrawerOption("Ver gobernadores"));
         //mDrawerOptions.add(new DrawerOption("Ver alcaldes"));
         mDrawerList = (RecyclerView) findViewById(R.id.left_drawer_recycler);
-        mDrawerList.setHasFixedSize(true);
+        //mDrawerList.setHasFixedSize(true);
         mDrawerList.setLayoutManager(new LinearLayoutManager(getBaseContext()));
         mDrawerList.setItemAnimator(new DefaultItemAnimator());
 
         DrawerAdapter drawerAdapter = new DrawerAdapter(mDrawerOptions);
         drawerAdapter.setOnItemClickListener(new DrawerItemClickListener());
-        mDrawerList.setAdapter(drawerAdapter);
+        mDrawerList.setAdapter(drawerAdapter);*/
 
         selectItem(1);
     }
@@ -126,12 +138,17 @@ public class MainActivity extends AppCompatActivity {
 
         // Highlight the selected item, update the title, and close the drawer
         // mDrawerList.setItemChecked(position, true);
-        mDrawerLayout.closeDrawer(mDrawerList);
+        //mDrawerLayout.closeDrawer(mDrawerList);
     }
 
     @Override
     public void setTitle(CharSequence title) {
         actionbarTitle.setText(title);
+    }
+
+    protected void startAboutIntent() {
+        Intent intent = new Intent(this, AboutActivity.class);
+        startActivity(intent);
     }
 
     /*@Override
@@ -148,9 +165,7 @@ public class MainActivity extends AppCompatActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        if (id == R.id.action_refresh) {
-            //showDialog("Obteniendo ciudad donde te encuentras...");
-            //clientListener.startLocationUpdates();
+        if (id == android.R.id.home) {
             return true;
         }
 
