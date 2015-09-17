@@ -11,30 +11,45 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:padding="15dp"
-        android:orientation="vertical">
+        android:layout_height="wrap_content"
+        android:fillViewport="true">
 
-        <mx.com.factico.diputinder.views.CustomTextView
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/about_text"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textColor="@color/colorTextContent"
-            app:typeface="Gotham_Rounded_Book" />
+            android:orientation="vertical"
+            android:padding="15dp">
 
-        <mx.com.factico.diputinder.views.CustomTextView
-            android:id="@+id/about_tv_link"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"
-            android:gravity="center_horizontal"
-            android:text="@string/about_link"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textColor="@color/colorAccent"
-            app:typeface="Gotham_Rounded_Bold" />
-    </LinearLayout>
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="100dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="15dp"
+                android:layout_marginTop="10dp"
+                android:scaleType="centerInside"
+                android:src="@drawable/logo_about" />
+
+            <mx.com.factico.diputinder.views.CustomTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/about_text"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="@color/colorTextContent"
+                app:typeface="Gotham_Rounded_Book" />
+
+            <mx.com.factico.diputinder.views.CustomTextView
+                android:id="@+id/about_tv_link"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:layout_marginTop="10dp"
+                android:gravity="center_horizontal"
+                android:text="@string/about_link"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="@color/colorAccent"
+                app:typeface="Gotham_Rounded_Bold" />
+        </LinearLayout>
+    </ScrollView>
 </LinearLayout>
