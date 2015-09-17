@@ -248,7 +248,6 @@ public class MainFragment extends Fragment implements View.OnClickListener {
         btnSwipeRight.setOnClickListener(this);
 
         if (auxCandidates != null && auxCandidates.size() > 0) {
-            // arrayAdapter = new ArrayAdapter<>(this, R.layout.item, R.id.helloText, diputados);
             arrayAdapter = new MyArrayAdapter(getActivity(), auxCandidates);
 
             flingContainer.setAdapter(arrayAdapter);
@@ -276,10 +275,7 @@ public class MainFragment extends Fragment implements View.OnClickListener {
                 @Override
                 public void onAdapterAboutToEmpty(int itemsInAdapter) {
                     // Ask for more data here
-                    //diputados.add(new Candidate("XML ".concat(String.valueOf(i))));
-                    //arrayAdapter.notifyDataSetChanged();
                     //Log.d("LIST", "notified");
-                    //i++;
                 }
 
                 @Override
@@ -676,22 +672,5 @@ public class MainFragment extends Fragment implements View.OnClickListener {
             if (!this.isCancelled())
                 this.cancel(true);
         }
-    }
-
-    protected List<Candidate> getOrderedListDiputados(List<Candidate> listDiputados) {
-        List<Candidate> auxTwitter = new ArrayList<>();
-        List<Candidate> auxNoTwitter = new ArrayList<>();
-
-        for (Candidate diputado : listDiputados) {
-            if (diputado.getTwitter() != null && !diputado.getTwitter().equals("") && !diputado.getTwitter().equals("no se identificó"))
-                auxTwitter.add(diputado);
-            else
-                auxNoTwitter.add(diputado);
-        }
-
-        if (auxNoTwitter.size() > 0)
-            auxTwitter.addAll(auxNoTwitter);
-
-        return auxTwitter;
     }
 }

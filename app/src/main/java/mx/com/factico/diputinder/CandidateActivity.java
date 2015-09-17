@@ -44,7 +44,7 @@ public class CandidateActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_diputado);
+        setContentView(R.layout.activity_candidate);
 
         setSupportActionBar();
         initUI();
@@ -54,8 +54,7 @@ public class CandidateActivity extends AppCompatActivity {
             candidateInfo = (CandidateInfo) bundle.getSerializable(TAG_CANDIDATE);
 
             if (candidateInfo != null) {
-                //Dialogues.Toast(getBaseContext(), "DIPUTADO: " + candidateInfo.getNombres(), Toast.LENGTH_SHORT);
-                fillDiputado();
+                fillCandidateInfo();
             }
         }
     }
@@ -101,7 +100,7 @@ public class CandidateActivity extends AppCompatActivity {
                 .build();
     }
 
-    protected void fillDiputado() {
+    protected void fillCandidateInfo() {
 
         Candidate candidate = candidateInfo.getCandidate().getCandidate();
         if (candidate != null) {
@@ -109,7 +108,7 @@ public class CandidateActivity extends AppCompatActivity {
             String apellidoPaterno = candidate.getApellidoPaterno() != null ? candidate.getApellidoPaterno() : "";
             String apellidoMaterno = candidate.getApellidoMaterno() != null ? candidate.getApellidoMaterno() : "";
 
-            CustomTextView tvName = (CustomTextView) findViewById(R.id.diputado_tv_name);
+            CustomTextView tvName = (CustomTextView) findViewById(R.id.candidate_tv_name);
             tvName.setText(String.format(Locale.getDefault(), "%s %s %s", nombres, apellidoPaterno, apellidoMaterno));
 
             Point point = ScreenUtils.getScreenSize(getBaseContext());
@@ -118,14 +117,14 @@ public class CandidateActivity extends AppCompatActivity {
 
             RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
             params.setMargins(width / 2, 0, 0, 0);
-            View vgInfo = findViewById(R.id.diputado_vg_info);
+            View vgInfo = findViewById(R.id.candidate_vg_info);
             vgInfo.setMinimumHeight(width);
             vgInfo.setPadding(width / 2, 0, 0, 0);
             vgInfo.setLayoutParams(params);
 
             int sizeIcons = point.x / 5;
 
-            ImageView ivProfile = (ImageView) findViewById(R.id.diputado_iv_profile);
+            ImageView ivProfile = (ImageView) findViewById(R.id.candidate_iv_profile);
             ivProfile.setLayoutParams(new RelativeLayout.LayoutParams(width, width));
 
             if (candidate.getTwitter() != null && !candidate.getTwitter().equals("") && !candidate.getTwitter().equals("no se identificó")) {
@@ -136,16 +135,16 @@ public class CandidateActivity extends AppCompatActivity {
             }
 
             // Cargo
-            CustomTextView tvCargo = (CustomTextView) findViewById(R.id.diputado_tv_cargo);
+            CustomTextView tvCargo = (CustomTextView) findViewById(R.id.candidate_tv_cargo);
             tvCargo.setText(candidateInfo.getPosition());
 
             // Entidad
-            CustomTextView tvEntidad = (CustomTextView) findViewById(R.id.diputado_tv_entidad);
+            CustomTextView tvEntidad = (CustomTextView) findViewById(R.id.candidate_tv_entidad);
             tvEntidad.setText(candidateInfo.getTerritoryName());
 
             if (candidateInfo.getCandidate() != null) {
                 // Partido
-                ImageView ivIcon = (ImageView) findViewById(R.id.diputado_iv_partido);
+                ImageView ivIcon = (ImageView) findViewById(R.id.candidate_iv_partido);
                 LinearLayout.LayoutParams paramsPartido = new LinearLayout.LayoutParams(width / 2, width / 2);
                 paramsPartido.gravity = Gravity.CENTER_HORIZONTAL;
                 ivIcon.setLayoutParams(paramsPartido);
@@ -158,7 +157,7 @@ public class CandidateActivity extends AppCompatActivity {
 
                 List<Indicator> indicators = candidateInfo.getCandidate().getIndicators();
                 if (indicators != null && indicators.size() > 0) {
-                    LinearLayout vgIndicators = (LinearLayout) findViewById(R.id.diputado_vg_indicators);
+                    LinearLayout vgIndicators = (LinearLayout) findViewById(R.id.candidate_vg_indicators);
 
                     for (Indicator indicator : indicators) {
                         View indicatorView = createIndicatorView(indicator, sizeIcons);
@@ -171,7 +170,7 @@ public class CandidateActivity extends AppCompatActivity {
             }
 
             // Alianzas
-            /*LinearLayout partidosContainer = (LinearLayout) findViewById(R.id.diputado_vg_partidos_container);
+            /*LinearLayout partidosContainer = (LinearLayout) findViewById(R.id.candidate_vg_partidos_container);
             if (candidateInfo.getCandidate().getParty() != null) {
                 List<Party> partidosEnAlianza = candidateInfo.getCandidate().getParty();
                 if (partidosEnAlianza != null && partidosEnAlianza.size() > 0) {
@@ -194,7 +193,7 @@ public class CandidateActivity extends AppCompatActivity {
                     }
 
                     if (aliados)
-                        findViewById(R.id.diputado_vg_alianzas_container).setVisibility(View.VISIBLE);
+                        findViewById(R.id.candidate_vg_alianzas_container).setVisibility(View.VISIBLE);
                 }
             }*/
         }

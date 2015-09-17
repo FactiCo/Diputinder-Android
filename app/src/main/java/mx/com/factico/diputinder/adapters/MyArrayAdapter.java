@@ -37,7 +37,7 @@ public class MyArrayAdapter extends ArrayAdapter<CandidateInfo> {
     private final DisplayImageOptions options;
 
     public MyArrayAdapter(Activity activity, List<CandidateInfo> values) {
-        super(activity, R.layout.item_diputado, values);
+        super(activity, R.layout.item_candidate, values);
         this.activity = activity;
         this.values = values;
 
@@ -63,14 +63,14 @@ public class MyArrayAdapter extends ArrayAdapter<CandidateInfo> {
         // reuse views
         if (rowView == null) {
             LayoutInflater inflater = activity.getLayoutInflater();
-            rowView = inflater.inflate(R.layout.item_diputado, parent, false);
+            rowView = inflater.inflate(R.layout.item_candidate, parent, false);
             holder = new ViewHolder();
 
             // configure view holder
-            holder.name = (TextView) rowView.findViewById(R.id.item_diputado_tv_name);
-            holder.imageProfile = (ImageView) rowView.findViewById(R.id.item_diputado_iv_profile);
-            holder.imagePartido = (ImageView) rowView.findViewById(R.id.item_diputado_iv_partido);
-            holder.imageInfo = (ImageView) rowView.findViewById(R.id.item_diputado_iv_profile_info);
+            holder.name = (TextView) rowView.findViewById(R.id.item_candidate_tv_name);
+            holder.imageProfile = (ImageView) rowView.findViewById(R.id.item_candidate_iv_profile);
+            holder.imagePartido = (ImageView) rowView.findViewById(R.id.item_candidate_iv_partido);
+            holder.imageInfo = (ImageView) rowView.findViewById(R.id.item_candidate_iv_profile_info);
 
             Point point = ScreenUtils.getScreenSize(getContext());
             int sizeIcon = point.x / 5;
