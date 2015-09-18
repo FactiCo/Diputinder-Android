@@ -115,17 +115,20 @@ public class CandidateActivity extends AppCompatActivity {
             int width = point.x / 3;
             int height = point.y / 5;
 
-            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+            /*RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
             params.setMargins(width / 2, 0, 0, 0);
             View vgInfo = findViewById(R.id.candidate_vg_info);
             vgInfo.setMinimumHeight(width);
             vgInfo.setPadding(width / 2, 0, 0, 0);
-            vgInfo.setLayoutParams(params);
+            vgInfo.setLayoutParams(params);*/
 
             int sizeIcons = point.x / 5;
 
+            LinearLayout.LayoutParams profileImageParams = new LinearLayout.LayoutParams(width, width);
+            profileImageParams.gravity = Gravity.CENTER_HORIZONTAL;
+
             ImageView ivProfile = (ImageView) findViewById(R.id.candidate_iv_profile);
-            ivProfile.setLayoutParams(new RelativeLayout.LayoutParams(width, width));
+            ivProfile.setLayoutParams(profileImageParams);
 
             if (candidate.getTwitter() != null && !candidate.getTwitter().equals("") && !candidate.getTwitter().equals("no se identificó")) {
                 String twitter = candidate.getTwitter().replaceAll("\\s+", "");
