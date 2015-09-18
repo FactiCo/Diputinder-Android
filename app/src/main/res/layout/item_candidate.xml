@@ -40,7 +40,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textColor="@color/colorBackgroundWhite"
-                android:background="@color/colorAccent"
+                android:background="@drawable/drawable_box_candidate"
                 android:paddingLeft="10dp"
                 android:paddingRight="100dp"
                 android:paddingTop="5dp"
