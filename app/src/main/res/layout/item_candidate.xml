@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_gravity="center"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:layout_gravity="center">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -15,19 +15,19 @@
             android:id="@+id/item_candidate_iv_profile"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@drawable/drawable_bgr_gray"
             android:layout_marginBottom="30dp"
+            android:background="@drawable/drawable_bgr_gray"
             android:scaleType="centerCrop" />
 
         <ImageView
             android:id="@+id/item_candidate_iv_profile_info"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:layout_margin="15dp"
             android:layout_alignParentRight="true"
+            android:layout_margin="15dp"
             android:scaleType="centerCrop"
             android:src="@drawable/ic_info"
-            android:visibility="gone"/>
+            android:visibility="gone" />
 
         <RelativeLayout
             android:id="@+id/item_candidate_name_container"
@@ -39,50 +39,55 @@
                 android:id="@+id/item_candidate_tv_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@color/colorBackgroundWhite"
+                android:layout_alignParentBottom="true"
                 android:background="@drawable/drawable_box_candidate"
+                android:gravity="center_vertical"
+                android:minLines="2"
+                android:paddingBottom="5dp"
                 android:paddingLeft="10dp"
                 android:paddingRight="100dp"
                 android:paddingTop="5dp"
-                android:paddingBottom="5dp"
                 android:text=""
-                android:layout_alignParentBottom="true"
-                android:gravity="center_vertical"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:minLines="2"
-                app:typeface="Gotham_Rounded_Bold"/>
+                android:textColor="@color/colorBackgroundWhite"
+                app:typeface="Gotham_Rounded_Bold" />
 
-            <mx.com.factico.diputinder.views.CircularImageView
+            <com.makeramen.roundedimageview.RoundedImageView
                 android:id="@+id/item_candidate_iv_partido"
                 android:layout_width="80dp"
                 android:layout_height="80dp"
-                android:layout_marginRight="10dp"
-                android:layout_marginEnd="10dp"
                 android:layout_alignParentBottom="true"
-                android:layout_alignParentRight="true"
                 android:layout_alignParentEnd="true"
-                android:src="@drawable/bgr_default"
-                android:scaleType="centerCrop" />
+                android:layout_alignParentRight="true"
+                android:layout_marginBottom="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginRight="10dp"
+                android:background="@drawable/drawable_bgr_circle"
+                android:padding="2dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/drawable_bgr_circle"
+                app:riv_mutate_background="true"
+                app:riv_oval="true" />
         </RelativeLayout>
     </RelativeLayout>
 
     <View
         android:id="@+id/item_swipe_left_indicator"
-        android:alpha="0"
         android:layout_width="20dp"
         android:layout_height="20dp"
         android:layout_margin="10dp"
+        android:alpha="0"
         android:background="#A5F"
-        android:visibility="gone"/>
+        android:visibility="gone" />
 
     <View
         android:id="@+id/item_swipe_right_indicator"
-        android:alpha="0"
         android:layout_width="20dp"
         android:layout_height="20dp"
-        android:layout_margin="10dp"
         android:layout_gravity="right"
+        android:layout_margin="10dp"
+        android:alpha="0"
         android:background="#5AF"
-        android:visibility="gone"/>
+        android:visibility="gone" />
 
 </FrameLayout>

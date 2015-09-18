@@ -212,8 +212,7 @@ public class MainFragment extends Fragment implements View.OnClickListener {
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (rootView.findViewById(R.id.main_btn_refresh).getVisibility() != View.GONE)
-                    rootView.findViewById(R.id.main_btn_refresh).setVisibility(View.GONE);
+                showSwipeContainer();
 
                 initLocationClientListener();
                 startLocationListener();
@@ -227,6 +226,22 @@ public class MainFragment extends Fragment implements View.OnClickListener {
         });
         view.setVisibility(View.VISIBLE);
         ((CustomTextView) rootView.findViewById(R.id.main_tv_error_message)).setText(messageError);
+    }
+
+    protected void showSwipeContainer() {
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (rootView.findViewById(R.id.main_swipe_tinder).getVisibility() != View.VISIBLE)
+                    rootView.findViewById(R.id.main_swipe_tinder).setVisibility(View.VISIBLE);
+
+                if (rootView.findViewById(R.id.main_no_items).getVisibility() != View.INVISIBLE)
+                    rootView.findViewById(R.id.main_no_items).setVisibility(View.INVISIBLE);
+
+                if (rootView.findViewById(R.id.main_btn_refresh).getVisibility() != View.GONE)
+                    rootView.findViewById(R.id.main_btn_refresh).setVisibility(View.GONE);
+            }
+        });
     }
 
     protected void initUI() {
@@ -275,7 +290,14 @@ public class MainFragment extends Fragment implements View.OnClickListener {
                 @Override
                 public void onAdapterAboutToEmpty(int itemsInAdapter) {
                     // Ask for more data here
-                    //Log.d("LIST", "notified");
+
+                    if (itemsInAdapter == 0) {
+                        if (rootView.findViewById(R.id.main_no_items).getVisibility() != View.VISIBLE)
+                            rootView.findViewById(R.id.main_no_items).setVisibility(View.VISIBLE);
+
+                        if (rootView.findViewById(R.id.main_swipe_tinder).getVisibility() != View.GONE)
+                            rootView.findViewById(R.id.main_swipe_tinder).setVisibility(View.GONE);
+                    }
                 }
 
                 @Override
@@ -505,8 +527,7 @@ public class MainFragment extends Fragment implements View.OnClickListener {
         int id = item.getItemId();
 
         if (id == R.id.action_refresh) {
-            if (rootView.findViewById(R.id.main_btn_refresh).getVisibility() != View.GONE)
-                rootView.findViewById(R.id.main_btn_refresh).setVisibility(View.GONE);
+            showSwipeContainer();
 
             initLocationClientListener();
             startLocationListener();

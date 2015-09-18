@@ -77,7 +77,7 @@ public class MyArrayAdapter extends ArrayAdapter<CandidateInfo> {
             int margin = (int) ScreenUtils.convertDpToPixel(10, getContext());
 
             RelativeLayout.LayoutParams paramsIcon = new RelativeLayout.LayoutParams(sizeIcon, sizeIcon);
-            paramsIcon.setMargins(0, 0, margin, 0);
+            paramsIcon.setMargins(0, 0, margin, margin);
             paramsIcon.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
             paramsIcon.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
             holder.imagePartido.setLayoutParams(paramsIcon);
