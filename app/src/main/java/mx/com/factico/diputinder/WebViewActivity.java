@@ -74,15 +74,7 @@ public class WebViewActivity extends AppCompatActivity {
         webView.getSettings().setJavaScriptEnabled(true);
         webView.setScrollBarStyle(WebView.SCROLLBARS_OUTSIDE_OVERLAY);
         webView.setWebViewClient(new MyWebViewClient());
-        webView.setWebChromeClient(new WebChromeClient() {
-            @Override
-            public void onProgressChanged(WebView view, int progress) {
-                progressBar.setProgress(progress);
-                if(progress == 100) {
-                    progressBar.setVisibility(View.GONE);
-                }
-            }
-        });
+        webView.setWebChromeClient(new MyWebChromeClient());
         webView.getSettings().setBuiltInZoomControls(true);
         webView.getSettings().setDisplayZoomControls(false);
         webView.setScrollBarStyle(View.SCROLLBARS_INSIDE_OVERLAY);
@@ -123,6 +115,16 @@ public class WebViewActivity extends AppCompatActivity {
         @Override
         public void onPageFinished(WebView view, String url) {
             super.onPageFinished(view, url);
+        }
+    }
+
+    private class MyWebChromeClient extends WebChromeClient {
+        @Override
+        public void onProgressChanged(WebView view, int progress) {
+            progressBar.setProgress(progress);
+            if(progress == 100) {
+                progressBar.setVisibility(View.GONE);
+            }
         }
     }
 

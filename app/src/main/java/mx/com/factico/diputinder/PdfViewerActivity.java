@@ -9,6 +9,7 @@ import android.view.View;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 /**
@@ -21,6 +22,7 @@ public class PdfViewerActivity extends AppCompatActivity {
     private String url;
     private TextView actionbarTitle;
     private String title;
+    private ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +59,10 @@ public class PdfViewerActivity extends AppCompatActivity {
     }
 
     protected void loadWebView(String url) {
+        progressBar = (ProgressBar)findViewById(R.id.webview_progressbar);
+        progressBar.setProgress(0);
+        progressBar.setVisibility(View.VISIBLE);
+
         if (title != null && !title.equals(""))
             actionbarTitle.setText(title);
         else
@@ -66,8 +72,9 @@ public class PdfViewerActivity extends AppCompatActivity {
 
         webView.getSettings().setLoadsImagesAutomatically(true);
         webView.getSettings().setJavaScriptEnabled(true);
+        webView.setScrollBarStyle(WebView.SCROLLBARS_OUTSIDE_OVERLAY);
         webView.setWebViewClient(new MyWebViewClient());
-        webView.setWebChromeClient(new WebChromeClient());
+        webView.setWebChromeClient(new MyWebChromeClient());
         webView.getSettings().setBuiltInZoomControls(true);
         webView.getSettings().setDisplayZoomControls(false);
         webView.setScrollBarStyle(View.SCROLLBARS_INSIDE_OVERLAY);
@@ -108,6 +115,25 @@ public class PdfViewerActivity extends AppCompatActivity {
         @Override
         public void onPageFinished(WebView view, String url) {
             super.onPageFinished(view, url);
+        }
+    }
+
+    private class MyWebChromeClient extends WebChromeClient {
+        @Override
+        public void onProgressChanged(WebView view, int progress) {
+            progressBar.setProgress(progress);
+            if(progress == 100) {
+                progressBar.setVisibility(View.GONE);
+            }
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (webView.canGoBack()) {
+            webView.goBack();
+        } else {
+            super.onBackPressed();
         }
     }
 }

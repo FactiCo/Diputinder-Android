@@ -6,7 +6,7 @@
     <solid android:color="@color/colorBackgroundWhite"/>
 
     <stroke
-        android:color="@color/colorLine"
+        android:color="@color/colorGray"
         android:width="4dp"/>
 
     <size

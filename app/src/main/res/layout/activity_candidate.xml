@@ -22,36 +22,59 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="10dp">
+            android:paddingTop="20dp"
+            android:paddingBottom="10dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <com.makeramen.roundedimageview.RoundedImageView
-                    android:id="@+id/candidate_iv_profile"
+                <RelativeLayout
+                    android:id="@+id/candidate_vg_profile"
                     android:layout_width="120dp"
                     android:layout_height="120dp"
-                    android:layout_gravity="center_horizontal"
-                    android:padding="1dp"
-                    android:background="@drawable/drawable_bgr_circle_dark"
-                    android:contentDescription="@string/app_name"
-                    android:scaleType="centerCrop"
-                    app:riv_mutate_background="true"
-                    app:riv_oval="true" />
+                    android:layout_gravity="center_horizontal">
+
+                    <com.makeramen.roundedimageview.RoundedImageView
+                        android:id="@+id/candidate_iv_profile"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center_horizontal"
+                        android:background="@drawable/drawable_bgr_circle_dark"
+                        android:contentDescription="@string/app_name"
+                        android:padding="3dp"
+                        android:scaleType="centerCrop"
+                        app:riv_mutate_background="true"
+                        app:riv_oval="true" />
+
+                    <com.makeramen.roundedimageview.RoundedImageView
+                        android:id="@+id/candidate_iv_partido"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:scaleType="centerCrop"
+                        android:layout_alignParentBottom="true"
+                        android:layout_alignParentRight="true"
+                        android:padding="2dp"
+                        android:background="@drawable/drawable_bgr_circle"
+                        android:src="@drawable/drawable_bgr_circle"
+                        app:riv_mutate_background="true"
+                        app:riv_oval="true" />
+                </RelativeLayout>
 
                 <mx.com.factico.diputinder.views.CustomTextView
                     android:id="@+id/candidate_tv_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
                     android:paddingEnd="15dp"
                     android:paddingLeft="15dp"
                     android:paddingRight="15dp"
                     android:paddingTop="5dp"
-                    android:gravity="center_horizontal"
                     android:text=""
-                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
                     android:textColor="@color/colorTextContent"
                     android:textStyle="bold"
                     app:typeface="Gotham_Rounded_Bold" />
@@ -60,11 +83,11 @@
                     android:id="@+id/candidate_tv_cargo"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
                     android:paddingLeft="15dp"
                     android:paddingRight="15dp"
-                    android:gravity="center_horizontal"
                     android:text=""
-                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
                     android:textColor="@color/colorTextContent"
                     app:typeface="Gotham_Rounded_Book" />
 
@@ -72,260 +95,24 @@
                     android:id="@+id/candidate_tv_entidad"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
                     android:paddingLeft="15dp"
                     android:paddingRight="15dp"
-                    android:gravity="center_horizontal"
                     android:text=""
                     android:textAppearance="?android:attr/textAppearanceSmall"
                     android:textColor="@color/colorTextContent"
                     app:typeface="Gotham_Rounded_Book" />
-
-                <mx.com.factico.diputinder.views.CustomTextView
-                    android:id="@+id/candidate_tv_city"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:paddingLeft="15dp"
-                    android:paddingRight="15dp"
-                    android:gravity="center_horizontal"
-                    android:text=""
-                    android:textAppearance="?android:attr/textAppearanceSmall"
-                    android:textColor="@color/colorTextContent"
-                    app:typeface="Gotham_Rounded_Book" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:orientation="horizontal">
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-                    <mx.com.factico.diputinder.views.CustomTextView
-                        android:id="@+id/candidate_tv_partido"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_horizontal"
-                        android:gravity="center"
-                        android:paddingBottom="10dp"
-                        android:paddingLeft="15dp"
-                        android:paddingRight="15dp"
-                        android:paddingTop="15dp"
-                        android:text="Partido"
-                        android:textAppearance="?android:attr/textAppearanceMedium"
-                        android:textColor="@color/colorTextTitle"
-                        app:typeface="Gotham_Rounded_Bold" />
-
-                    <com.makeramen.roundedimageview.RoundedImageView
-                        android:id="@+id/candidate_iv_partido"
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
-                        android:layout_gravity="center_horizontal"
-                        android:scaleType="centerCrop"
-                        android:src="@drawable/drawable_bgr_circle"
-                        app:riv_mutate_background="true"
-                        app:riv_oval="true"/>
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/candidate_vg_alianzas_container"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:visibility="gone">
-
-                    <mx.com.factico.diputinder.views.CustomTextView
-                        android:id="@+id/candidate_tv_alianzas"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:layout_gravity="center_horizontal"
-                        android:paddingBottom="10dp"
-                        android:paddingLeft="15dp"
-                        android:paddingRight="15dp"
-                        android:paddingTop="15dp"
-                        android:text="Aliados"
-                        android:textAppearance="?android:attr/textAppearanceMedium"
-                        android:textColor="@color/colorTextTitle"
-                        app:typeface="Gotham_Rounded_Bold" />
-
-                    <LinearLayout
-                        android:id="@+id/candidate_vg_partidos_container"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:orientation="horizontal" />
-                </LinearLayout>
             </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/candidate_vg_indicators"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="30dp"
+                android:layout_marginBottom="15dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
-                android:layout_marginBottom="15dp"
-                android:orientation="vertical"/>
-
-            <!--<RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <RelativeLayout
-                    android:id="@+id/candidate_vg_info"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginLeft="60dp"
-                    android:layout_marginRight="0dp"
-                    android:background="@color/colorAccent"
-                    android:minHeight="120dp"
-                    android:paddingLeft="60dp">
-
-                    <mx.com.factico.diputinder.views.CustomTextView
-                        android:id="@+id/candidate_tv_name"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:paddingEnd="15dp"
-                        android:paddingLeft="15dp"
-                        android:paddingRight="15dp"
-                        android:paddingTop="5dp"
-                        android:text=""
-                        android:textAppearance="?android:attr/textAppearanceMedium"
-                        android:textColor="@color/colorBackgroundWhite"
-                        android:textStyle="bold"
-                        app:typeface="Gotham_Rounded_Bold" />
-
-                    <mx.com.factico.diputinder.views.CustomTextView
-                        android:id="@+id/candidate_tv_cargo"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@+id/candidate_tv_name"
-                        android:paddingLeft="15dp"
-                        android:paddingRight="15dp"
-                        android:text=""
-                        android:textAppearance="?android:attr/textAppearanceSmall"
-                        android:textColor="@color/colorBackgroundWhite"
-                        app:typeface="Gotham_Rounded_Book" />
-
-                    <mx.com.factico.diputinder.views.CustomTextView
-                        android:id="@+id/candidate_tv_entidad"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@+id/candidate_tv_cargo"
-                        android:paddingLeft="15dp"
-                        android:paddingRight="15dp"
-                        android:text=""
-                        android:textAppearance="?android:attr/textAppearanceSmall"
-                        android:textColor="@color/colorBackgroundWhite"
-                        app:typeface="Gotham_Rounded_Book" />
-
-                    <mx.com.factico.diputinder.views.CustomTextView
-                        android:id="@+id/candidate_tv_city"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@+id/candidate_tv_entidad"
-                        android:paddingLeft="15dp"
-                        android:paddingRight="15dp"
-                        android:text=""
-                        android:textAppearance="?android:attr/textAppearanceSmall"
-                        android:textColor="@color/colorBackgroundWhite"
-                        app:typeface="Gotham_Rounded_Book" />
-                </RelativeLayout>
-
-                <com.makeramen.roundedimageview.RoundedImageView
-                    android:id="@+id/candidate_iv_profile"
-                    android:layout_width="120dp"
-                    android:layout_height="120dp"
-                    android:padding="1dp"
-                    android:background="@drawable/drawable_bgr_circle_purple"
-                    android:contentDescription="@string/app_name"
-                    android:scaleType="centerCrop"
-                    app:riv_mutate_background="true"
-                    app:riv_oval="true" />
-            </RelativeLayout>
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:orientation="horizontal">
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-                    <mx.com.factico.diputinder.views.CustomTextView
-                        android:id="@+id/candidate_tv_partido"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_horizontal"
-                        android:gravity="center"
-                        android:paddingBottom="10dp"
-                        android:paddingLeft="15dp"
-                        android:paddingRight="15dp"
-                        android:paddingTop="15dp"
-                        android:text="Partido"
-                        android:textAppearance="?android:attr/textAppearanceMedium"
-                        android:textColor="@color/colorTextTitle"
-                        app:typeface="Gotham_Rounded_Bold" />
-
-                    <com.makeramen.roundedimageview.RoundedImageView
-                        android:id="@+id/candidate_iv_partido"
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
-                        android:layout_gravity="center_horizontal"
-                        android:scaleType="centerCrop"
-                        android:src="@drawable/drawable_bgr_circle"
-                        app:riv_mutate_background="true"
-                        app:riv_oval="true"/>
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/candidate_vg_alianzas_container"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:visibility="gone">
-
-                    <mx.com.factico.diputinder.views.CustomTextView
-                        android:id="@+id/candidate_tv_alianzas"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:layout_gravity="center_horizontal"
-                        android:paddingBottom="10dp"
-                        android:paddingLeft="15dp"
-                        android:paddingRight="15dp"
-                        android:paddingTop="15dp"
-                        android:text="Aliados"
-                        android:textAppearance="?android:attr/textAppearanceMedium"
-                        android:textColor="@color/colorTextTitle"
-                        app:typeface="Gotham_Rounded_Bold" />
-
-                    <LinearLayout
-                        android:id="@+id/candidate_vg_partidos_container"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:orientation="horizontal" />
-                </LinearLayout>
-            </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/candidate_vg_indicators"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:layout_marginBottom="15dp"
-            android:orientation="vertical"/>-->
+                android:layout_marginTop="25dp"
+                android:orientation="vertical" />
         </LinearLayout>
     </ScrollView>
 </LinearLayout>

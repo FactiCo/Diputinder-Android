@@ -112,7 +112,7 @@ public class CandidateActivity extends AppCompatActivity {
             tvName.setText(String.format(Locale.getDefault(), "%s %s %s", nombres, apellidoPaterno, apellidoMaterno));
 
             Point point = ScreenUtils.getScreenSize(getBaseContext());
-            int width = point.x / 3;
+            int width = (int) (point.x / 2.5);
             int height = point.y / 5;
 
             /*RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
@@ -127,8 +127,11 @@ public class CandidateActivity extends AppCompatActivity {
             LinearLayout.LayoutParams profileImageParams = new LinearLayout.LayoutParams(width, width);
             profileImageParams.gravity = Gravity.CENTER_HORIZONTAL;
 
+            RelativeLayout vgProfile = (RelativeLayout) findViewById(R.id.candidate_vg_profile);
+
             ImageView ivProfile = (ImageView) findViewById(R.id.candidate_iv_profile);
-            ivProfile.setLayoutParams(profileImageParams);
+            //ivProfile.setLayoutParams(profileImageParams);
+            vgProfile.setLayoutParams(profileImageParams);
 
             if (candidate.getTwitter() != null && !candidate.getTwitter().equals("") && !candidate.getTwitter().equals("no se identificó")) {
                 String twitter = candidate.getTwitter().replaceAll("\\s+", "");
@@ -148,8 +151,9 @@ public class CandidateActivity extends AppCompatActivity {
             if (candidateInfo.getCandidate() != null) {
                 // Partido
                 ImageView ivIcon = (ImageView) findViewById(R.id.candidate_iv_partido);
-                LinearLayout.LayoutParams paramsPartido = new LinearLayout.LayoutParams(width / 2, width / 2);
-                paramsPartido.gravity = Gravity.CENTER_HORIZONTAL;
+                RelativeLayout.LayoutParams paramsPartido = new RelativeLayout.LayoutParams(width / 3, width / 3);
+                paramsPartido.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+                paramsPartido.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
                 ivIcon.setLayoutParams(paramsPartido);
                 if (candidateInfo.getCandidate() != null) {
                     List<Party> parties = candidateInfo.getCandidate().getParty();
@@ -171,34 +175,6 @@ public class CandidateActivity extends AppCompatActivity {
                     }
                 }
             }
-
-            // Alianzas
-            /*LinearLayout partidosContainer = (LinearLayout) findViewById(R.id.candidate_vg_partidos_container);
-            if (candidateInfo.getCandidate().getParty() != null) {
-                List<Party> partidosEnAlianza = candidateInfo.getCandidate().getParty();
-                if (partidosEnAlianza != null && partidosEnAlianza.size() > 0) {
-
-                    boolean aliados = false;
-                    int partiesToPrint = partidosEnAlianza.size() > 2 ? 2 : partidosEnAlianza.size();
-                    for (int i = 0; i < partiesToPrint; i++) {
-                        Party party = partidosEnAlianza.get(i);
-
-                        View view = createImageParty(party, width);
-                        if (view != null) {
-                            partidosContainer.addView(view);
-
-                            aliados = true;
-                        }
-                    }
-
-                    if (partidosEnAlianza.size() > 2) {
-
-                    }
-
-                    if (aliados)
-                        findViewById(R.id.candidate_vg_alianzas_container).setVisibility(View.VISIBLE);
-                }
-            }*/
         }
     }
 
@@ -210,7 +186,7 @@ public class CandidateActivity extends AppCompatActivity {
         paramsIconsStatus.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
         paramsIconsStatus.addRule(RelativeLayout.CENTER_VERTICAL);
 
-        RelativeLayout.LayoutParams paramsIcons = new RelativeLayout.LayoutParams(sizeIcons, sizeIcons);
+        RelativeLayout.LayoutParams paramsIcons = new RelativeLayout.LayoutParams((int) (sizeIcons / 1.3), (int) (sizeIcons / 1.3));
         paramsIcons.setMargins(5, 10, 5, 10);
         paramsIcons.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
 
