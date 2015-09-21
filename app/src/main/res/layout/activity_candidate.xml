@@ -80,6 +80,18 @@
                     app:typeface="Gotham_Rounded_Bold" />
 
                 <mx.com.factico.diputinder.views.CustomTextView
+                    android:id="@+id/candidate_tv_party"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:paddingLeft="15dp"
+                    android:paddingRight="15dp"
+                    android:text=""
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:textColor="@color/colorTextContent"
+                    app:typeface="Gotham_Rounded_Book" />
+
+                <mx.com.factico.diputinder.views.CustomTextView
                     android:id="@+id/candidate_tv_cargo"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -89,7 +101,7 @@
                     android:text=""
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:textColor="@color/colorTextContent"
-                    app:typeface="Gotham_Rounded_Book" />
+                    app:typeface="Gotham_Rounded_Bold" />
 
                 <mx.com.factico.diputinder.views.CustomTextView
                     android:id="@+id/candidate_tv_entidad"

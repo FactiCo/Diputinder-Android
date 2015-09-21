@@ -16,6 +16,7 @@ public class HttpConnection {
     public static final String TAG_CLASS = HttpConnection.class.getSimpleName();
 
     public static final String URL_HOST = "http://liguepolitico-staging.herokuapp.com";
+    //158.85.249.218
     public static final String GEOCODER = "/geocoder.json?latitude=%s&longitude=%s";
 
     public static final String COUNTRIES = "/countries";

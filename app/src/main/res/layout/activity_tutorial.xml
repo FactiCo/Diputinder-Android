@@ -7,13 +7,21 @@
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:src="@drawable/bgr_tutorial_candados"
-        android:scaleType="centerCrop"/>
+        android:scaleType="centerCrop"
+        android:src="@drawable/bgr_tutorial_candados" />
 
     <android.support.v4.view.ViewPager
         android:id="@+id/tutorial_pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
+
+    <com.viewpagerindicator.CirclePageIndicator
+        android:id="@+id/tutorial_pager_indicator"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:padding="15dp" />
 
     <mx.com.factico.diputinder.views.CustomTextView
         android:id="@+id/tutorial_btn_skip"

@@ -112,7 +112,7 @@ public class CandidateActivity extends AppCompatActivity {
             tvName.setText(String.format(Locale.getDefault(), "%s %s %s", nombres, apellidoPaterno, apellidoMaterno));
 
             Point point = ScreenUtils.getScreenSize(getBaseContext());
-            int width = (int) (point.x / 2.5);
+            int width = (int) (point.x / 2.7);
             int height = point.y / 5;
 
             /*RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
@@ -149,17 +149,21 @@ public class CandidateActivity extends AppCompatActivity {
             tvEntidad.setText(candidateInfo.getTerritoryName());
 
             if (candidateInfo.getCandidate() != null) {
+                // Party Name
+                CustomTextView tvParty = (CustomTextView) findViewById(R.id.candidate_tv_party);
+
                 // Partido
                 ImageView ivIcon = (ImageView) findViewById(R.id.candidate_iv_partido);
                 RelativeLayout.LayoutParams paramsPartido = new RelativeLayout.LayoutParams(width / 3, width / 3);
                 paramsPartido.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
                 paramsPartido.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
                 ivIcon.setLayoutParams(paramsPartido);
-                if (candidateInfo.getCandidate() != null) {
-                    List<Party> parties = candidateInfo.getCandidate().getParty();
-                    if (parties != null && parties.size() > 0) {
-                        ImageLoader.getInstance().displayImage(parties.get(0).getImage(), ivIcon, options);
-                    }
+
+                List<Party> parties = candidateInfo.getCandidate().getParty();
+                if (parties != null && parties.size() > 0) {
+                    tvParty.setText(parties.get(0).getName());
+
+                    ImageLoader.getInstance().displayImage(parties.get(0).getImage(), ivIcon, options);
                 }
 
                 List<Indicator> indicators = candidateInfo.getCandidate().getIndicators();

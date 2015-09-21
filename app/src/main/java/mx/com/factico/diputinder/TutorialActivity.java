@@ -9,8 +9,11 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.animation.AnimationUtils;
 
+import com.viewpagerindicator.CirclePageIndicator;
+
 import mx.com.factico.diputinder.adapters.FragmentPagerAdapter;
 import mx.com.factico.diputinder.beans.Text;
+import mx.com.factico.diputinder.fragments.TextImagePageFragment;
 import mx.com.factico.diputinder.fragments.TextPageFragment;
 import mx.com.factico.diputinder.transformers.ParallaxTutorialPagerTransformer;
 import mx.com.factico.diputinder.utils.PreferencesUtils;
@@ -55,7 +58,7 @@ public class TutorialActivity extends AppCompatActivity implements OnClickListen
 
         mPagerAdapter.addFragment(TextPageFragment.newInstance(0,
                 new Text(res.getString(R.string.tutorial_title_1), res.getString(R.string.tutorial_message_1))));
-        mPagerAdapter.addFragment(TextPageFragment.newInstance(1,
+        mPagerAdapter.addFragment(TextImagePageFragment.newInstance(1,
                 new Text("", res.getString(R.string.tutorial_message_2))));
         mPagerAdapter.addFragment(TextPageFragment.newInstance(2,
                 new Text("", res.getString(R.string.tutorial_message_3))));
@@ -66,6 +69,11 @@ public class TutorialActivity extends AppCompatActivity implements OnClickListen
         mViewPager.setPageTransformer(false, new ParallaxTutorialPagerTransformer(R.id.text_iv_bgr));
 
         mViewPager.addOnPageChangeListener(VerticalOnPageChangeListener);
+
+        //Bind the title indicator to the adapter
+        CirclePageIndicator pagerIndicator = (CirclePageIndicator)findViewById(R.id.tutorial_pager_indicator);
+        pagerIndicator.setViewPager(mViewPager);
+        //pagerIndicator.setOnPageChangeListener(VerticalOnPageChangeListener);
 
         btnSkipTutorial = findViewById(R.id.tutorial_btn_skip);
         btnSkipTutorial.setOnClickListener(this);
