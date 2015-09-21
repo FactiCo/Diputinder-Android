@@ -671,6 +671,8 @@ public class MainFragment extends Fragment implements View.OnClickListener {
                         //Dialogues.Toast(getActivity(), "Size auxCandidates: " + auxCandidates.size(), Toast.LENGTH_SHORT);
 
                         initUI();
+                    } else {
+                        hasNoCandidates = true;
                     }
                 } catch (Exception e) {
                     hasNoCandidates = true;
