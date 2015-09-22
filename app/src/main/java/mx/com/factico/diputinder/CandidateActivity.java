@@ -112,7 +112,7 @@ public class CandidateActivity extends AppCompatActivity {
             tvName.setText(String.format(Locale.getDefault(), "%s %s %s", nombres, apellidoPaterno, apellidoMaterno));
 
             Point point = ScreenUtils.getScreenSize(getBaseContext());
-            int width = (int) (point.x / 2.7);
+            int width = (int) (point.x / 2.6);
             int height = point.y / 5;
 
             /*RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);

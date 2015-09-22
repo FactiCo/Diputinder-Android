@@ -138,7 +138,7 @@ public class MainFragment extends Fragment implements View.OnClickListener {
 
                     //Dialogues.Toast(getActivity(), "Latitude: " + userLocation.latitude + ", Longitude: " + userLocation.longitude, Toast.LENGTH_SHORT);
 
-                    showDialog(getResources().getString(R.string.getting_location));
+                    showDialog(getResources().getString(R.string.getting_info));
 
                     clientListener.stopLocationUpdates();
 
@@ -366,7 +366,7 @@ public class MainFragment extends Fragment implements View.OnClickListener {
             CustomTextView tvSubMessage = (CustomTextView) view.findViewById(R.id.dialog_tweet_tv_submessage);
 
             String userName = (candidate.getTwitter() != null && !candidate.getTwitter().equals(""))
-                    ? "@" + candidate.getTwitter()
+                    ? candidate.getTwitter().startsWith("@") ? candidate.getTwitter() : "@" + candidate.getTwitter()
                     : "#" + candidate.getNombres().replaceAll("\\s+", "")
                     + candidate.getApellidoPaterno().replaceAll("\\s+", "")
                     + candidate.getApellidoMaterno().replaceAll("\\s+", "");
@@ -394,13 +394,13 @@ public class MainFragment extends Fragment implements View.OnClickListener {
             }
 
             if (candidateInfo.getCandidate() != null) {
-                boolean hasAllIndicators = true;
+                boolean hasAllIndicators = false;
                 List<Indicator> indicators = candidateInfo.getCandidate().getIndicators();
 
                 if (indicators != null && indicators.size() > 0) {
                     for (Indicator indicator : indicators) {
                         if (indicator.getDocument() != null && !indicator.getDocument().equals("")) {
-                            //hasAllIndicators = true;
+                            hasAllIndicators = true;
                         } else {
                             hasAllIndicators = false;
                             break;
