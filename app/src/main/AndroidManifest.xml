@@ -34,12 +34,6 @@
             android:screenOrientation="portrait" />
 
         <activity
-            android:name="mx.com.factico.diputinder.PdfViewerActivity"
-            android:launchMode="singleTask"
-            android:parentActivityName=".CandidateActivity"
-            android:screenOrientation="portrait" />
-
-        <activity
             android:name="mx.com.factico.diputinder.WebViewActivity"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"

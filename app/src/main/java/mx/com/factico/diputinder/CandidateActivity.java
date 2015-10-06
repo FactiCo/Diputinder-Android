@@ -229,7 +229,7 @@ public class CandidateActivity extends AppCompatActivity {
     };
 
     private void startWebViewIntent(String url) {
-        Intent intent = new Intent(getBaseContext(), PdfViewerActivity.class);
+        Intent intent = new Intent(getBaseContext(), WebViewActivity.class);
         intent.putExtra("url", url);
         startActivity(intent);
     }

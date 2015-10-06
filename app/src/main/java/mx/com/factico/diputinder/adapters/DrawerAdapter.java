@@ -6,17 +6,12 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.List;
 
-import mx.com.factico.diputinder.PdfViewerActivity;
 import mx.com.factico.diputinder.R;
 import mx.com.factico.diputinder.WebViewActivity;
 import mx.com.factico.diputinder.beans.DrawerOption;
-import mx.com.factico.diputinder.dialogues.Dialogues;
 import mx.com.factico.diputinder.views.CustomTextView;
 
 /**

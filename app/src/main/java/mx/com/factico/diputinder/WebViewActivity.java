@@ -11,6 +11,9 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import mx.com.factico.diputinder.dialogues.Dialogues;
 
 /**
  * Created by zace3d on 18/05/15.
@@ -33,18 +36,22 @@ public class WebViewActivity extends AppCompatActivity {
 
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
-            url = bundle.getString("url", "");
-            title = bundle.getString("actionbarTitle", "");
+            url = bundle.getString("url", null);
+            title = bundle.getString("actionbarTitle", null);
 
-            if (!url.equals("")) {
-                //Dialogues.Toast(getBaseContext(), "URL: " + url, Toast.LENGTH_LONG);
+            if (url != null && !url.equals("")) {
                 loadWebView(url);
             } else {
-                finish();
+                endActivity();
             }
         } else {
-            finish();
+            endActivity();
         }
+    }
+
+    protected void endActivity() {
+        Dialogues.Toast(getBaseContext(), "No se pudo mostrar la página web", Toast.LENGTH_SHORT);
+        finish();
     }
 
     protected void setSupportActionBar() {
@@ -79,7 +86,8 @@ public class WebViewActivity extends AppCompatActivity {
         webView.getSettings().setDisplayZoomControls(false);
         webView.setScrollBarStyle(View.SCROLLBARS_INSIDE_OVERLAY);
         webView.getSettings().setSupportZoom(true);
-        webView.loadUrl(url);
+
+        webView.loadUrl(url.endsWith(".pdf") ? "http://docs.google.com/gview?embedded=true&url=" + url : url);
     }
 
     @Override
