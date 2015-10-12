@@ -78,35 +78,4 @@
             android:textColor="@color/colorBackgroundWhite"
             app:typeface="Gotham_Rounded_Book" />
     </RelativeLayout>
-
-    <RelativeLayout
-        android:id="@+id/dialog_tweet_btn_tweet_invite"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/colorCyan"
-        android:visibility="gone">
-
-        <ImageView
-            android:id="@+id/dialog_tweet_iv_tweet_invite"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:layout_gravity="center_horizontal"
-            android:padding="10dp"
-            android:scaleType="centerCrop"
-            android:src="@drawable/ic_twitter" />
-
-        <mx.com.factico.diputinder.views.CustomTextView
-            android:id="@+id/dialog_tweet_tv_submessage_invite"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignBottom="@+id/dialog_tweet_iv_tweet_invite"
-            android:layout_alignTop="@+id/dialog_tweet_iv_tweet_invite"
-            android:layout_toRightOf="@+id/dialog_tweet_iv_tweet_invite"
-            android:gravity="center_vertical"
-            android:padding="10dp"
-            android:text="@string/tweet_second_submessage_invite"
-            android:textAppearance="?android:attr/textAppearanceSmall"
-            android:textColor="@color/colorBackgroundWhite"
-            app:typeface="Gotham_Rounded_Book" />
-    </RelativeLayout>
 </LinearLayout>

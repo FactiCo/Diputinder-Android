@@ -16,7 +16,7 @@ import mx.com.factico.diputinder.beans.Text;
 import mx.com.factico.diputinder.fragments.TextImagePageFragment;
 import mx.com.factico.diputinder.fragments.TextPageFragment;
 import mx.com.factico.diputinder.transformers.ParallaxTutorialPagerTransformer;
-import mx.com.factico.diputinder.utils.PreferencesUtils;
+import mx.com.factico.diputinder.preferences.PreferencesManager;
 
 /**
  * Created by zace3d on 18/05/15.
@@ -33,7 +33,7 @@ public class TutorialActivity extends AppCompatActivity implements OnClickListen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tutorial);
 
-        boolean isFirstTime = PreferencesUtils.getBooleanPreference(getApplication(), PreferencesUtils.TUTORIAL);
+        boolean isFirstTime = PreferencesManager.getBooleanPreference(getApplication(), PreferencesManager.TUTORIAL);
         if (isFirstTime) {
             initUI();
         } else {
@@ -130,7 +130,7 @@ public class TutorialActivity extends AppCompatActivity implements OnClickListen
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.tutorial_btn_skip:
-                PreferencesUtils.putBooleanPreference(getApplication(), PreferencesUtils.TUTORIAL, false);
+                PreferencesManager.putBooleanPreference(getApplication(), PreferencesManager.TUTORIAL, false);
                 startMainIntent();
                 break;
         }

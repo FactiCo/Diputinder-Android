@@ -6,6 +6,8 @@
 
     <string name="about_name">Acerca</string>
 
+    <string name="lbl_indicator">Indicador</string>
+
     <string name="action_diputados">Diputados</string>
     <string name="action_gobernadores">Gobernadores</string>
     <string name="action_refresh">Actualizar ubicación</string>
@@ -35,16 +37,14 @@
     <string name="tweet_first_message_good">Oye %1$s, te encontré en @LiguePolitico y vi que ya presentaste tus indicadores. ¡Bien hecho!</string>
     <string name="tweet_first_message_bad">Oye %1$s, te encontré en @LiguePolitico y no has presentado tus indicadores, ¿qué esperas? http://liguepolitico.com</string>
 
-    <string name="tweet_second_submessage_invite">Invítale a firmar la Agenda Mínima Ciudadana de Por el México que Merecemos</string>
-
-    <string name="tweet_second_message_invite">Oye %1$s, ¿ya firmaste la Agenda Mínima Ciudadana de Por el México que Merecemos? #LiguePolítico http://www.mexicoquemerecemos.com/agenda.php</string>
-
     <string name="no_internet_connection">Sin conexión a Internet.\nInténtalo de nuevo.</string>
 
     <string name="error_message_default">Algo salió mal. Inténtalo de nuevo.</string>
 
     <string name="about_text">Con Ligue Político podrás conocer quiénes son tus candidatos a puestos de elección popular, de acuerdo a tu ubicación geográfica, para exigirles que se comprometan con la transparencia y la rendición de cuentas.\n\nEs una iniciativa ciudadana, abierta y colaborativa, apoyada por: Factual, Hivos, Chequeando, Yo Quiero Saber, El Tiempo y Fáctico.\n\nSi un candidato te atrae, desliza a la derecha. ¡Pero cuidado! Si no ha presentado su declaración patrimonial o jurada ¡exígela!</string>
     <string name="about_link">Para más información visita el sitio web aquí</string>
+
+    <string name="no_more_candidates">Ya no hay más candidatos que mostrar. Presiona el botón \"actualizar\" en la esquina superior derecha para volver a jugar.</string>
 
     <!-- Tutorial -->
     <string name="tutorial_title_1">¡HOLA! Bienvenido</string>

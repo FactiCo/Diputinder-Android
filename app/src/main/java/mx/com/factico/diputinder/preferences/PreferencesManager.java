@@ -1,4 +1,4 @@
-package mx.com.factico.diputinder.utils;
+package mx.com.factico.diputinder.preferences;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -6,11 +6,10 @@ import android.preference.PreferenceManager;
 
 import java.io.File;
 
-public class PreferencesUtils {
+public class PreferencesManager {
     public static final String TUTORIAL = "tutorial";
     public static final String LOCATION = "location";
-    public static final String STATE = "state";
-    public static final String JSON_PDF = "json_PDF";
+    public static final String MESSAGES = "messages";
 
     public static void putStringPreference(Context context, String key, String value) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);

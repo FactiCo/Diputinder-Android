@@ -12,19 +12,20 @@ import java.util.List;
 import mx.com.factico.diputinder.beans.Candidate;
 import mx.com.factico.diputinder.beans.Candidatos;
 import mx.com.factico.diputinder.beans.GeocoderResult;
+import mx.com.factico.diputinder.beans.Messages;
 import mx.com.factico.diputinder.beans.Territory;
 import mx.com.factico.diputinder.dialogues.Dialogues;
 
 public class GsonParser {
 	private static String TAG_CLASS = GsonParser.class.getName();
 
-	public static Candidate getDiputadoFromJSON(String json) throws Exception {
+	public static Candidate getCandidateFromJSON(String json) throws Exception {
 		Gson gson = new Gson();
 
 		return gson.fromJson(json, Candidate.class);
 	}
 
-    public static List<Candidate> getListDiputadosFromJSON(String json) {
+    public static List<Candidate> getListCandidatesFromJSON(String json) throws Exception {
         Gson gson = new Gson();
 
         Type listType = new TypeToken<List<Candidate>>(){}.getType();
@@ -32,13 +33,13 @@ public class GsonParser {
         return gson.fromJson(json, listType);
     }
 
-	public static Candidatos getCandidatosFromJSON(String json) {
+	public static Candidatos getCandidatosFromJSON(String json) throws Exception {
 		Gson gson = new Gson();
 
 		return gson.fromJson(json, Candidatos.class);
 	}
 
-	public static GeocoderResult getGeocoderResultFromJSON(String json) {
+	public static GeocoderResult getGeocoderResultFromJSON(String json) throws Exception {
 		Gson gson = new Gson();
 
 		return gson.fromJson(json, GeocoderResult.class);
@@ -48,6 +49,20 @@ public class GsonParser {
         Gson gson = new Gson();
 
         return gson.fromJson(json, Territory.class);
+    }
+
+	public static Messages getMessagesFromJSON(String json) throws Exception {
+		Gson gson = new Gson();
+
+		return gson.fromJson(json, Messages.class);
+	}
+
+    public static List<Messages> getListMessagesFromJSON(String json) throws Exception {
+        Gson gson = new Gson();
+
+        Type listType = new TypeToken<List<Messages>>(){}.getType();
+
+        return gson.fromJson(json, listType);
     }
 
 	public static String createJsonFromObject(Object object) {

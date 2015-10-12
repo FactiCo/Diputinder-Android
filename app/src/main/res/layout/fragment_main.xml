@@ -30,8 +30,8 @@
             android:background="@color/colorBackgroundWhite"
             android:gravity="center"
             android:padding="20dp"
-            android:text="Ya no hay candidatos que mostrar."
-            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="@string/no_more_candidates"
+            android:textAppearance="?android:attr/textAppearanceMedium"
             android:textColor="@color/colorBlueGrey200"
             android:visibility="invisible"
             app:typeface="Gotham_Rounded_Bold" />

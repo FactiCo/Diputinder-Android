@@ -38,10 +38,10 @@ import mx.com.factico.diputinder.R;
 import mx.com.factico.diputinder.adapters.MyArrayAdapter;
 import mx.com.factico.diputinder.beans.Candidate;
 import mx.com.factico.diputinder.beans.CandidateInfo;
-import mx.com.factico.diputinder.beans.CandidateType;
 import mx.com.factico.diputinder.beans.Candidates;
 import mx.com.factico.diputinder.beans.GeocoderResult;
 import mx.com.factico.diputinder.beans.Indicator;
+import mx.com.factico.diputinder.beans.Messages;
 import mx.com.factico.diputinder.beans.Territory;
 import mx.com.factico.diputinder.dialogues.Dialogues;
 import mx.com.factico.diputinder.httpconnection.HttpConnection;
@@ -49,7 +49,7 @@ import mx.com.factico.diputinder.httpconnection.NetworkUtils;
 import mx.com.factico.diputinder.location.LocationClientListener;
 import mx.com.factico.diputinder.location.LocationUtils;
 import mx.com.factico.diputinder.parser.GsonParser;
-import mx.com.factico.diputinder.utils.PreferencesUtils;
+import mx.com.factico.diputinder.preferences.PreferencesManager;
 import mx.com.factico.diputinder.utils.ScreenUtils;
 import mx.com.factico.diputinder.views.CustomTextView;
 
@@ -77,6 +77,12 @@ public class MainFragment extends Fragment implements View.OnClickListener {
 
     private boolean isFirstTime = true;
 
+    private ReverseGeocoderTask reverseGeocoderTask = null;
+    private GetCandidatesTask candidatesTask = null;
+    private GetMessagesFromCountry messagesTask = null;
+
+    private Messages messages = null;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -101,18 +107,20 @@ public class MainFragment extends Fragment implements View.OnClickListener {
                         //.displayer(new FadeInBitmapDisplayer(300))
                 .build();
 
+
+        String messagesJson = PreferencesManager.getStringPreference(getActivity().getApplication(), PreferencesManager.MESSAGES);
+        try {
+            messages = GsonParser.getMessagesFromJSON(messagesJson);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         createView();
 
         return rootView;
     }
 
     private void createView() {
-        /*state = PreferencesUtils.getStringPreference(getActivity().getApplication(), PreferencesUtils.STATE);
-        if ((state != null && !state.equals(""))) {
-            //Dialogues.Toast(getActivity(), "State: " + state + ", CandidateType: " + candidateType, Toast.LENGTH_SHORT);
-            loadCandidatos(candidateType);
-        } else */
-
         if (LocationUtils.isGpsOrNetworkProviderEnabled(getActivity())) {
             initLocationClientListener();
 
@@ -216,12 +224,6 @@ public class MainFragment extends Fragment implements View.OnClickListener {
 
                 initLocationClientListener();
                 startLocationListener();
-
-                /*if (state != null) {
-                    loadCandidatos(candidateType);
-                } else {
-                    initLocationClientListener();
-                }*/
             }
         });
         view.setVisibility(View.VISIBLE);
@@ -374,10 +376,6 @@ public class MainFragment extends Fragment implements View.OnClickListener {
             View btnTweet = view.findViewById(R.id.dialog_tweet_btn_tweet);
             btnTweet.setOnClickListener(TweetOnClickListener);
 
-            View btnTweetInvite = view.findViewById(R.id.dialog_tweet_btn_tweet_invite);
-            btnTweetInvite.setTag(String.format(Locale.getDefault(), getResources().getString(R.string.tweet_second_message_invite), userName));
-            btnTweetInvite.setOnClickListener(TweetOnClickListener);
-
             String nombres =  candidate.getNombres() != null ? candidate.getNombres() : "";
             String apellidoPaterno = candidate.getApellidoPaterno() != null ? candidate.getApellidoPaterno() : "";
             String apellidoMaterno = candidate.getApellidoMaterno() != null ? candidate.getApellidoMaterno() : "";
@@ -409,13 +407,27 @@ public class MainFragment extends Fragment implements View.OnClickListener {
                 }
 
                 if (hasAllIndicators) {
-                    tvMessage.setText(getResources().getString(R.string.tweet_message_good));
-                    tvSubMessage.setText(getResources().getString(R.string.tweet_submessage_good));
-                    btnTweet.setTag(String.format(Locale.getDefault(), getResources().getString(R.string.tweet_first_message_good), userName));
+                    String explanationChecked = (messages != null && messages.getExplanationChecked() != null) ?
+                            messages.getExplanationChecked() : getString(R.string.tweet_message_good);
+                    String tweetChecked = (messages != null && messages.getTweetChecked() != null) ?
+                            messages.getTweetChecked() : getString(R.string.tweet_submessage_good);
+                    String congratulation = (messages != null && messages.getCongratulation() != null) ?
+                            "%s " + messages.getCongratulation() : getString(R.string.tweet_first_message_good);
+
+                    tvMessage.setText(explanationChecked);
+                    tvSubMessage.setText(tweetChecked);
+                    btnTweet.setTag(String.format(Locale.getDefault(), congratulation, userName));
                 } else {
-                    tvMessage.setText(getResources().getString(R.string.tweet_message_bad));
-                    tvSubMessage.setText(getResources().getString(R.string.tweet_submessage_bad));
-                    btnTweet.setTag(String.format(Locale.getDefault(), getResources().getString(R.string.tweet_first_message_bad), userName));
+                    String explanationMissing = (messages != null && messages.getExplanationMissing() != null) ?
+                            messages.getExplanationMissing() : getString(R.string.tweet_message_bad);
+                    String tweetMissing = (messages != null && messages.getTweetMissing() != null) ?
+                            messages.getTweetMissing() : getString(R.string.tweet_submessage_bad);
+                    String demand = (messages != null && messages.getDemand() != null) ?
+                            "%s " + messages.getDemand() : getString(R.string.tweet_first_message_bad);
+
+                    tvMessage.setText(explanationMissing);
+                    tvSubMessage.setText(tweetMissing);
+                    btnTweet.setTag(String.format(Locale.getDefault(), demand, userName));
                 }
             }
         }
@@ -507,6 +519,42 @@ public class MainFragment extends Fragment implements View.OnClickListener {
         dialog.show();
     }
 
+    /**
+     * Shows the progress UI and hides the login form.
+     */
+    /*@TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
+    private void showProgress(final boolean show) {
+        // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
+        // for very easy animations. If available, use these APIs to fade-in
+        // the progress spinner.
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
+            int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
+
+            mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
+            mLoginFormView.animate().setDuration(shortAnimTime).alpha(
+                    show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
+                }
+            });
+
+            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+            mProgressView.animate().setDuration(shortAnimTime).alpha(
+                    show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+                }
+            });
+        } else {
+            // The ViewPropertyAnimator APIs are not available, so simply show
+            // and hide the relevant UI components.
+            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+            mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
+        }
+    }*/
+
     private void dismissDialog() {
         if (dialog != null && dialog.isShowing()) {
             dialog.dismiss();
@@ -540,19 +588,19 @@ public class MainFragment extends Fragment implements View.OnClickListener {
     protected void reverseGeocoderFromLatLng(LatLng location) {
         if (location != null) {
             if (NetworkUtils.isNetworkConnectionAvailable(getActivity())) {
-                ReverseGeocoderAsyncTask task = new ReverseGeocoderAsyncTask(location.latitude, location.longitude);
-                task.execute();
+                reverseGeocoderTask = new ReverseGeocoderTask(location.latitude, location.longitude);
+                reverseGeocoderTask.execute((String) null);
             } else {
                 setTextMessageError(getResources().getString(R.string.no_internet_connection));
             }
         }
     }
 
-    private class ReverseGeocoderAsyncTask extends AsyncTask<String, String, String> {
+    private class ReverseGeocoderTask extends AsyncTask<String, String, String> {
         private double latitude;
         private double longitude;
 
-        public ReverseGeocoderAsyncTask(double latitude, double longitude) {
+        ReverseGeocoderTask(double latitude, double longitude) {
             this.latitude = latitude;
             this.longitude = longitude;
         }
@@ -567,56 +615,71 @@ public class MainFragment extends Fragment implements View.OnClickListener {
 
         @Override
         protected void onPostExecute(String result) {
+            reverseGeocoderTask = null;
+            //showProgress(false);
+            dismissDialog();
+
             // Dialogues.Log(TAG_CLASS, "Result: " + result, Log.ERROR);
-            // Dialogues.Log(TAG_CLASS, "json_PDF: " + json_PDF, Log.ERROR);
             // Dialogues.Toast(getActivity(), "Result: " + result, Toast.LENGTH_LONG);
 
+            boolean hasError = false;
             if (result != null) {
-                String urlCandidates = HttpConnection.URL_HOST;
+                try {
+                    String urlCandidates = HttpConnection.URL_HOST;
+                    String urlMessages = HttpConnection.URL_HOST;
 
-                GeocoderResult geocoderResult = GsonParser.getGeocoderResultFromJSON(result);
+                    GeocoderResult geocoderResult = GsonParser.getGeocoderResultFromJSON(result);
 
-                if (geocoderResult != null) {
-                    if (geocoderResult.getCountry() != null) {
-                        urlCandidates += HttpConnection.COUNTRIES + File.separator + geocoderResult.getCountry().getId();
+                    if (geocoderResult != null) {
+                        if (geocoderResult.getCountry() != null) {
+                            urlCandidates += HttpConnection.COUNTRIES + File.separator + geocoderResult.getCountry().getId();
+                            urlMessages += HttpConnection.COUNTRIES + File.separator + geocoderResult.getCountry().getId() + HttpConnection.MESSAGES;
 
-                        if (geocoderResult.getState() != null) {
-                            urlCandidates += HttpConnection.STATES + File.separator + geocoderResult.getState().getId();
+                            if (geocoderResult.getState() != null) {
+                                urlCandidates += HttpConnection.STATES + File.separator + geocoderResult.getState().getId();
 
-                            if (geocoderResult.getCity() != null) {
-                                urlCandidates += HttpConnection.CITIES + File.separator + geocoderResult.getCity().getId();
+                                if (geocoderResult.getCity() != null) {
+                                    urlCandidates += HttpConnection.CITIES + File.separator + geocoderResult.getCity().getId();
+                                }
                             }
                         }
+
+                        urlCandidates += ".json";
+                        urlMessages += ".json";
+
+                        getCandidatesFromAddress(urlCandidates);
+
+                        if (messages == null)
+                            getMessagesFromCountry(urlMessages);
                     }
-
-                    urlCandidates += ".json";
-
-                    //Dialogues.Toast(getActivity(), "urlCandidates: " + urlCandidates, Toast.LENGTH_SHORT);
-                    getCandidatesFromAddress(urlCandidates);
+                } catch (Exception e) {
+                    hasError = true;
                 }
-
             } else {
+                hasError = true;
+            }
+
+            if (hasError)
                 setTextMessageError(getResources().getString(R.string.error_message_default));
-            }
+        }
 
-            if (dialog != null && dialog.isShowing()) {
-                dialog.dismiss();
-            }
-
-            if (!this.isCancelled())
-                this.cancel(true);
+        @Override
+        protected void onCancelled() {
+            reverseGeocoderTask = null;
+            //showProgress(false);
+            dismissDialog();
         }
     }
 
     protected void getCandidatesFromAddress(String url) {
-        GetCandidatesAsyncTask task = new GetCandidatesAsyncTask(url);
-        task.execute();
+        candidatesTask = new GetCandidatesTask(url);
+        candidatesTask.execute((String) null);
     }
 
-    private class GetCandidatesAsyncTask extends AsyncTask<String, String, String> {
+    private class GetCandidatesTask extends AsyncTask<String, String, String> {
         private String url;
 
-        public GetCandidatesAsyncTask(String url) {
+        GetCandidatesTask(String url) {
             this.url = url;
         }
 
@@ -630,8 +693,11 @@ public class MainFragment extends Fragment implements View.OnClickListener {
 
         @Override
         protected void onPostExecute(String result) {
+            candidatesTask = null;
+            //showProgress(false);
+            dismissDialog();
+
             // Dialogues.Log(TAG_CLASS, "Result: " + result, Log.ERROR);
-            // Dialogues.Log(TAG_CLASS, "json_PDF: " + json_PDF, Log.ERROR);
             // Dialogues.Toast(getActivity(), "Result: " + result, Toast.LENGTH_LONG);
 
             boolean hasNoCandidates = false;
@@ -647,7 +713,7 @@ public class MainFragment extends Fragment implements View.OnClickListener {
                     }
 
                     isFirstTime = false;
-                    //PreferencesUtils.putStringPreference(getActivity().getApplication(), PreferencesUtils.JSON_PDF, json_PDF);
+                    //PreferencesManager.putStringPreference(getActivity().getApplication(), PreferencesManager.JSON_PDF, json_PDF);
 
                     List<CandidateInfo> candidateInfoList = new ArrayList<>();
 
@@ -668,8 +734,6 @@ public class MainFragment extends Fragment implements View.OnClickListener {
                     if (candidateInfoList.size() > 0) {
                         auxCandidates = candidateInfoList;
 
-                        //Dialogues.Toast(getActivity(), "Size auxCandidates: " + auxCandidates.size(), Toast.LENGTH_SHORT);
-
                         initUI();
                     } else {
                         hasNoCandidates = true;
@@ -684,16 +748,74 @@ public class MainFragment extends Fragment implements View.OnClickListener {
                 //setTextMessageError(getResources().getString(R.string.error_message_default));
             }
 
-            if (dialog != null && dialog.isShowing()) {
-                dialog.dismiss();
-            }
-
             if (hasNoCandidates) {
                 Dialogues.Toast(getActivity(), "No hay candidatos en tu ubicación", Toast.LENGTH_SHORT);
             }
+        }
 
-            if (!this.isCancelled())
-                this.cancel(true);
+        @Override
+        protected void onCancelled() {
+            candidatesTask = null;
+            //showProgress(false);
+            dismissDialog();
+        }
+    }
+
+    // Get messages to show depending on Location
+    protected void getMessagesFromCountry(String url) {
+        messagesTask = new GetMessagesFromCountry(url);
+        messagesTask.execute((String) null);
+    }
+
+    private class GetMessagesFromCountry extends AsyncTask<String, String, String> {
+        private String url;
+
+        GetMessagesFromCountry(String url) {
+            this.url = url;
+        }
+
+        @Override
+        protected void onPreExecute() {}
+
+        @Override
+        protected String doInBackground(String... params) {
+            return HttpConnection.GET(url);
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            messagesTask = null;
+            //showProgress(false);
+            dismissDialog();
+
+            // Dialogues.Log(TAG_CLASS, "Result: " + result, Log.ERROR);
+            // Dialogues.Toast(getActivity(), "Result: " + result, Toast.LENGTH_LONG);
+
+            if (result != null) {
+                try {
+                    List<Messages> list = GsonParser.getListMessagesFromJSON(result);
+
+                    if (list == null || list.size() == 0) {
+                        return;
+                    }
+
+                    messages = list.get(0);
+                    String messageJson = GsonParser.createJsonFromObject(messages);
+
+                    PreferencesManager.putStringPreference(getActivity().getApplication(), PreferencesManager.MESSAGES, messageJson);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            } else {
+
+            }
+        }
+
+        @Override
+        protected void onCancelled() {
+            messagesTask = null;
+            //showProgress(false);
+            dismissDialog();
         }
     }
 }

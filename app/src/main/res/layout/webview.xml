@@ -26,7 +26,7 @@
             style="?android:attr/progressBarStyleHorizontal"
             android:progressDrawable="@drawable/custom_progressbar"
             android:layout_width="match_parent"
-            android:layout_height="10px"
+            android:layout_height="4dp"
             android:max="100"
             android:visibility="gone" />
     </RelativeLayout>

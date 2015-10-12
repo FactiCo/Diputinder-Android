@@ -13,7 +13,7 @@ import java.net.URL;
 import mx.com.factico.diputinder.dialogues.Dialogues;
 
 public class HttpConnection {
-    public static final String TAG_CLASS = HttpConnection.class.getSimpleName();
+    public static final String TAG_CLASS = HttpConnection.class.getName();
 
     //public static final String URL_HOST = "http://liguepolitico-staging.herokuapp.com";
     public static final String URL_HOST = "http://158.85.249.218";
@@ -24,6 +24,8 @@ public class HttpConnection {
     public static final String STATES = "/states";
     public static final String CITIES = "/cities";
 
+    public static final String MESSAGES = "/messages";
+
     public static final String TWITTER_IMAGE_URL = "https://twitter.com/%s/profile_image?size=original";
 
     public static String GET(String url) {
@@ -33,22 +35,24 @@ public class HttpConnection {
             URL u = new URL(url);
             urlConnection = (HttpURLConnection) u.openConnection();
             urlConnection.setRequestMethod("GET");
-            urlConnection.setConnectTimeout(60000);
-            urlConnection.setReadTimeout(60000);
+            urlConnection.setConnectTimeout(40000);
+            urlConnection.setReadTimeout(40000);
             urlConnection.connect();
 
-            if (urlConnection.getResponseCode() == HttpURLConnection.HTTP_OK) {
+            if (urlConnection.getResponseCode() == HttpURLConnection.HTTP_OK ||
+                    urlConnection.getResponseCode() == HttpURLConnection.HTTP_ACCEPTED) {
                 InputStream in = new BufferedInputStream(urlConnection.getInputStream());
                 result = convertInputStreamToString(in);
 
-                Dialogues.Log(TAG_CLASS, result, Log.DEBUG);
+                //Dialogues.Log(TAG_CLASS, result, Log.DEBUG);
             } else {
-
+                InputStream in = new BufferedInputStream(urlConnection.getErrorStream());
+                result = convertInputStreamToString(in);
             }
 
 
         } catch (IOException e) {
-
+            return null;
         } finally {
             if (urlConnection != null)
                 urlConnection.disconnect();
