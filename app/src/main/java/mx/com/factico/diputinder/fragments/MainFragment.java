@@ -12,6 +12,8 @@ import android.graphics.Point;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.util.Linkify;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -50,6 +52,7 @@ import mx.com.factico.diputinder.location.LocationClientListener;
 import mx.com.factico.diputinder.location.LocationUtils;
 import mx.com.factico.diputinder.parser.GsonParser;
 import mx.com.factico.diputinder.preferences.PreferencesManager;
+import mx.com.factico.diputinder.utils.LinkUtils;
 import mx.com.factico.diputinder.utils.ScreenUtils;
 import mx.com.factico.diputinder.views.CustomTextView;
 
@@ -294,6 +297,25 @@ public class MainFragment extends Fragment implements View.OnClickListener {
                     // Ask for more data here
 
                     if (itemsInAdapter == 0) {
+                        CustomTextView noMoreItems = (CustomTextView) rootView.findViewById(R.id.main_no_items);
+                        noMoreItems.setText(messages != null && messages.getNoCandidates() != null && !messages.getNoCandidates().equals("") ?
+                                messages.getNoCandidates() :
+                                getString(R.string.no_more_candidates));
+                        noMoreItems.setAutoLinkMask(Linkify.ALL);
+                        LinkUtils.autoLink(noMoreItems, new LinkUtils.OnClickListener() {
+                            @Override
+                            public void onLinkClicked(final String link) {
+                                //Log.i("SensibleUrlSpan", "リンククリック:" + link);
+                                //Dialogues.Toast(getActivity().getBaseContext(), "link", Toast.LENGTH_LONG);
+                            }
+
+                            @Override
+                            public void onClicked() {
+                                //Log.i("SensibleUrlSpan", "ビュークリック");
+                                //Dialogues.Toast(getActivity().getBaseContext(), "ビュークリック", Toast.LENGTH_LONG);
+                            }
+                        });
+
                         if (rootView.findViewById(R.id.main_no_items).getVisibility() != View.VISIBLE)
                             rootView.findViewById(R.id.main_no_items).setVisibility(View.VISIBLE);
 
@@ -409,25 +431,25 @@ public class MainFragment extends Fragment implements View.OnClickListener {
                 if (hasAllIndicators) {
                     String explanationChecked = (messages != null && messages.getExplanationChecked() != null) ?
                             messages.getExplanationChecked() : getString(R.string.tweet_message_good);
-                    String tweetChecked = (messages != null && messages.getTweetChecked() != null) ?
-                            messages.getTweetChecked() : getString(R.string.tweet_submessage_good);
                     String congratulation = (messages != null && messages.getCongratulation() != null) ?
-                            "%s " + messages.getCongratulation() : getString(R.string.tweet_first_message_good);
+                            messages.getCongratulation() : getString(R.string.tweet_submessage_good);
+                    String tweetChecked = (messages != null && messages.getTweetChecked() != null) ?
+                            ".%s " + messages.getTweetChecked() : getString(R.string.tweet_first_message_good);
 
                     tvMessage.setText(explanationChecked);
-                    tvSubMessage.setText(tweetChecked);
-                    btnTweet.setTag(String.format(Locale.getDefault(), congratulation, userName));
+                    tvSubMessage.setText(congratulation);
+                    btnTweet.setTag(String.format(Locale.getDefault(), tweetChecked, userName));
                 } else {
                     String explanationMissing = (messages != null && messages.getExplanationMissing() != null) ?
                             messages.getExplanationMissing() : getString(R.string.tweet_message_bad);
-                    String tweetMissing = (messages != null && messages.getTweetMissing() != null) ?
-                            messages.getTweetMissing() : getString(R.string.tweet_submessage_bad);
                     String demand = (messages != null && messages.getDemand() != null) ?
-                            "%s " + messages.getDemand() : getString(R.string.tweet_first_message_bad);
+                            messages.getDemand() : getString(R.string.tweet_submessage_bad);
+                    String tweetMissing = (messages != null && messages.getTweetMissing() != null) ?
+                            ".%s " + messages.getTweetMissing() : getString(R.string.tweet_first_message_bad);
 
                     tvMessage.setText(explanationMissing);
-                    tvSubMessage.setText(tweetMissing);
-                    btnTweet.setTag(String.format(Locale.getDefault(), demand, userName));
+                    tvSubMessage.setText(demand);
+                    btnTweet.setTag(String.format(Locale.getDefault(), tweetMissing, userName));
                 }
             }
         }
