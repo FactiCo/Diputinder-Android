@@ -60,7 +60,7 @@ public class WebViewActivity extends AppCompatActivity {
         mToolbar.setBackgroundColor(getResources().getColor(R.color.colorWhite));
         mToolbar.getBackground().setAlpha(255);
         actionbarTitle = (TextView) mToolbar.findViewById(R.id.actionbar_title);
-        actionbarTitle.setTextColor(getResources().getColor(R.color.colorPrimary));
+        actionbarTitle.setTextColor(getResources().getColor(R.color.colorTextContent));
         mToolbar.setNavigationIcon(R.drawable.ic_close_black);
 
         setSupportActionBar(mToolbar);
@@ -76,7 +76,7 @@ public class WebViewActivity extends AppCompatActivity {
         if (title != null && !title.equals(""))
             actionbarTitle.setText(title);
         else
-            actionbarTitle.setText(getString(R.string.lbl_indicator));
+            actionbarTitle.setText("");
 
         webView = (WebView) findViewById(R.id.webview);
 

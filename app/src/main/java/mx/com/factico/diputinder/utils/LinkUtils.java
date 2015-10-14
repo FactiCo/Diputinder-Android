@@ -1,5 +1,7 @@
 package mx.com.factico.diputinder.utils;
 
+import android.content.ActivityNotFoundException;
+import android.content.Intent;
 import android.text.Layout;
 import android.text.Selection;
 import android.text.Spannable;
@@ -15,6 +17,8 @@ import android.widget.TextView;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import mx.com.factico.diputinder.WebViewActivity;
 
 /**
  * Created by zace3d on 13/10/15.
@@ -81,6 +85,20 @@ public final class LinkUtils {
             mPattern = pattern;
         }
 
+        @Override
+        public void onClick(View widget) {
+            try {
+                Intent intent = new Intent(widget.getContext(), WebViewActivity.class);
+                intent.putExtra("url", getURL());
+                widget.getContext().startActivity(intent);
+
+                //super.onClick(widget);
+            }
+            catch (ActivityNotFoundException e) {
+                // do something useful here
+            }
+        }
+
         public boolean onClickSpan(View widget) {
             boolean matched = mPattern.matcher(getURL()).matches();
             if (matched) {
@@ -119,17 +137,17 @@ public final class LinkUtils {
 
                 ClickableSpan[] link = buffer.getSpans(off, off, ClickableSpan.class);
 
-                /*if (link.length != 0) {
+                if (link.length != 0) {
                     SensibleUrlSpan span = (SensibleUrlSpan) link[0];
                     mLinkClicked = span.onClickSpan(widget);
                     mClickedLink = span.getURL();
                     return mLinkClicked;
-                }*/
+                }
 
-                if (link.length != 0) {
+                /*if (link.length != 0) {
                     if (action == MotionEvent.ACTION_UP) {
                         link[0].onClick(widget);
-                    } else if (action == MotionEvent.ACTION_DOWN) {
+                    } else {
                         Selection.setSelection(buffer,
                                 buffer.getSpanStart(link[0]),
                                 buffer.getSpanEnd(link[0]));
@@ -138,11 +156,11 @@ public final class LinkUtils {
                     return true;
                 } else {
                     Selection.removeSelection(buffer);
-
-                }
+                }*/
             }
+            super.onTouchEvent(widget, buffer, event);
 
-            return super.onTouchEvent(widget, buffer, event);
+            return false;
         }
 
         public boolean isLinkClicked() {
@@ -153,6 +171,21 @@ public final class LinkUtils {
             return mClickedLink;
         }
 
+    }
+
+    public static void fixTextView(TextView tv) {
+        SpannableString current = (SpannableString) tv.getText();
+        URLSpan[] spans = current.getSpans(0, current.length(), URLSpan.class);
+
+        if (spans != null && spans.length > 0) {
+            for (URLSpan span : spans) {
+                int start = current.getSpanStart(span);
+                int end = current.getSpanEnd(span);
+
+                current.removeSpan(span);
+                current.setSpan(new SensibleUrlSpan(span.getURL(), URL_PATTERN), start, end, 0);
+            }
+        }
     }
 
     public static void autoLink(final TextView view, final OnClickListener listener) {

@@ -26,6 +26,8 @@
             android:id="@+id/main_no_items"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:autoLink="web"
+            android:linksClickable="true"
             android:layout_above="@+id/main_btn_container"
             android:background="@color/colorBackgroundWhite"
             android:gravity="center"

@@ -37,6 +37,7 @@ import java.util.Locale;
 
 import mx.com.factico.diputinder.CandidateActivity;
 import mx.com.factico.diputinder.R;
+import mx.com.factico.diputinder.WebViewActivity;
 import mx.com.factico.diputinder.adapters.MyArrayAdapter;
 import mx.com.factico.diputinder.beans.Candidate;
 import mx.com.factico.diputinder.beans.CandidateInfo;
@@ -295,26 +296,26 @@ public class MainFragment extends Fragment implements View.OnClickListener {
                 @Override
                 public void onAdapterAboutToEmpty(int itemsInAdapter) {
                     // Ask for more data here
-
                     if (itemsInAdapter == 0) {
                         CustomTextView noMoreItems = (CustomTextView) rootView.findViewById(R.id.main_no_items);
                         noMoreItems.setText(messages != null && messages.getNoCandidates() != null && !messages.getNoCandidates().equals("") ?
                                 messages.getNoCandidates() :
                                 getString(R.string.no_more_candidates));
-                        noMoreItems.setAutoLinkMask(Linkify.ALL);
-                        LinkUtils.autoLink(noMoreItems, new LinkUtils.OnClickListener() {
+                        LinkUtils.fixTextView(noMoreItems);
+                        // noMoreItems.setAutoLinkMask(Linkify.ALL);
+                        /*LinkUtils.autoLink(noMoreItems, new LinkUtils.OnClickListener() {
                             @Override
                             public void onLinkClicked(final String link) {
-                                //Log.i("SensibleUrlSpan", "リンククリック:" + link);
-                                //Dialogues.Toast(getActivity().getBaseContext(), "link", Toast.LENGTH_LONG);
+                                // Log.i("SensibleUrlSpan", "リンククリック:" + link);
+                                // Dialogues.Toast(getActivity().getBaseContext(), "link", Toast.LENGTH_LONG);
                             }
 
                             @Override
                             public void onClicked() {
-                                //Log.i("SensibleUrlSpan", "ビュークリック");
-                                //Dialogues.Toast(getActivity().getBaseContext(), "ビュークリック", Toast.LENGTH_LONG);
+                                // Log.i("SensibleUrlSpan", "ビュークリック");
+                                // Dialogues.Toast(getActivity().getBaseContext(), "ビュークリック", Toast.LENGTH_LONG);
                             }
-                        });
+                        });*/
 
                         if (rootView.findViewById(R.id.main_no_items).getVisibility() != View.VISIBLE)
                             rootView.findViewById(R.id.main_no_items).setVisibility(View.VISIBLE);

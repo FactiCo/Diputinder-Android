@@ -231,6 +231,7 @@ public class CandidateActivity extends AppCompatActivity {
     private void startWebViewIntent(String url) {
         Intent intent = new Intent(getBaseContext(), WebViewActivity.class);
         intent.putExtra("url", url);
+        intent.putExtra("actionbarTitle", getString(R.string.lbl_document));
         startActivity(intent);
     }
 
