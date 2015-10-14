@@ -23,6 +23,12 @@ public class AboutActivity extends AppCompatActivity implements View.OnClickList
         initUI();
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Runtime.getRuntime().gc();
+    }
+
     protected void setSupportActionBar() {
         Toolbar mToolbar = (Toolbar) findViewById(R.id.actionbar);
         mToolbar.setTitle("");

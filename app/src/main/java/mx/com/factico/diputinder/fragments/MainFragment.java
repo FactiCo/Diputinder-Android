@@ -53,6 +53,7 @@ import mx.com.factico.diputinder.location.LocationClientListener;
 import mx.com.factico.diputinder.location.LocationUtils;
 import mx.com.factico.diputinder.parser.GsonParser;
 import mx.com.factico.diputinder.preferences.PreferencesManager;
+import mx.com.factico.diputinder.utils.CacheUtils;
 import mx.com.factico.diputinder.utils.LinkUtils;
 import mx.com.factico.diputinder.utils.ScreenUtils;
 import mx.com.factico.diputinder.views.CustomTextView;
@@ -95,31 +96,42 @@ public class MainFragment extends Fragment implements View.OnClickListener {
     }
 
     @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        CacheUtils.unbindDrawables(rootView);
+        rootView = null;
+        Runtime.getRuntime().gc();
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        rootView = inflater.inflate(R.layout.fragment_main, container, false);
-        int i = getArguments().getInt(INDEX);
+        if (rootView == null) {
+            rootView = inflater.inflate(R.layout.fragment_main, container, false);
+            int i = getArguments().getInt(INDEX);
 
-        options = new DisplayImageOptions.Builder()
-                //.showImageOnLoading(null)
-                .showImageForEmptyUri(R.drawable.drawable_bgr_gray)
-                .showImageOnFail(R.drawable.drawable_bgr_gray)
-                .resetViewBeforeLoading(true)
-                .cacheOnDisk(true)
-                .imageScaleType(ImageScaleType.EXACTLY)
-                .bitmapConfig(Bitmap.Config.RGB_565)
-                .considerExifParams(true)
-                        //.displayer(new FadeInBitmapDisplayer(300))
-                .build();
+            options = new DisplayImageOptions.Builder()
+                    //.showImageOnLoading(null)
+                    .showImageForEmptyUri(R.drawable.drawable_bgr_gray)
+                    .showImageOnFail(R.drawable.drawable_bgr_gray)
+                    .resetViewBeforeLoading(true)
+                    .cacheOnDisk(true)
+                    .imageScaleType(ImageScaleType.EXACTLY)
+                    .bitmapConfig(Bitmap.Config.RGB_565)
+                    .considerExifParams(true)
+                    //.displayer(new FadeInBitmapDisplayer(300))
+                    .build();
 
 
-        String messagesJson = PreferencesManager.getStringPreference(getActivity().getApplication(), PreferencesManager.MESSAGES);
-        try {
-            messages = GsonParser.getMessagesFromJSON(messagesJson);
-        } catch (Exception e) {
-            e.printStackTrace();
+            String messagesJson = PreferencesManager.getStringPreference(getActivity().getApplication(), PreferencesManager.MESSAGES);
+            try {
+                messages = GsonParser.getMessagesFromJSON(messagesJson);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            createView();
         }
-
-        createView();
 
         return rootView;
     }
@@ -147,6 +159,7 @@ public class MainFragment extends Fragment implements View.OnClickListener {
                 @Override
                 public void onLocationChanged(Location location) {
                     userLocation = LocationUtils.getLatLngFromLocation(location);
+                    dismissDialog();
 
                     //Dialogues.Toast(getActivity(), "Latitude: " + userLocation.latitude + ", Longitude: " + userLocation.longitude, Toast.LENGTH_SHORT);
 

@@ -16,7 +16,7 @@ public class CacheUtils {
             if (view.getBackground() != null) {
                 view.getBackground().setCallback(null);
             }
-            if (view instanceof ViewGroup) {
+            if (view instanceof ViewGroup && !(view instanceof AdapterView)) {
                 for (int i = 0; i < ((ViewGroup) view).getChildCount(); i++) {
                     unbindDrawables(((ViewGroup) view).getChildAt(i));
                 }

@@ -17,6 +17,7 @@ import mx.com.factico.diputinder.fragments.TextImagePageFragment;
 import mx.com.factico.diputinder.fragments.TextPageFragment;
 import mx.com.factico.diputinder.transformers.ParallaxTutorialPagerTransformer;
 import mx.com.factico.diputinder.preferences.PreferencesManager;
+import mx.com.factico.diputinder.utils.CacheUtils;
 
 /**
  * Created by zace3d on 18/05/15.
@@ -39,6 +40,14 @@ public class TutorialActivity extends AppCompatActivity implements OnClickListen
         } else {
             startMainIntent();
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        CacheUtils.unbindDrawables(findViewById(R.id.container));
+        Runtime.getRuntime().gc();
     }
 
     private void startMainIntent() {

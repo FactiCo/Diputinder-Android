@@ -55,6 +55,7 @@ public class MainActivity extends AppCompatActivity {
         super.onPause();
 
         CacheUtils.clearMemoryCache();
+        Runtime.getRuntime().gc();
     }
 
     @Override

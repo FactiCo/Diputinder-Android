@@ -95,8 +95,6 @@ public class WebViewActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
-
         if (webView != null) {
             webView.clearCache(true);
             webView.clearHistory();
@@ -105,6 +103,9 @@ public class WebViewActivity extends AppCompatActivity {
             webView.loadData("", "text/html", "utf-8");
             webView.destroy();
         }
+
+        super.onDestroy();
+        Runtime.getRuntime().gc();
     }
 
     @Override

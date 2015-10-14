@@ -62,8 +62,8 @@ public class CandidateActivity extends AppCompatActivity {
     @Override
     public void onDestroy() {
         super.onDestroy();
-
         CacheUtils.unbindDrawables(findViewById(R.id.container));
+        Runtime.getRuntime().gc();
     }
 
     @Override
