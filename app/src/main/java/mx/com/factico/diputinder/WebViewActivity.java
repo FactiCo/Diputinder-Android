@@ -6,14 +6,17 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import mx.com.factico.diputinder.dialogues.Dialogues;
+import mx.com.factico.diputinder.utils.CacheUtils;
 
 /**
  * Created by zace3d on 18/05/15.
@@ -26,6 +29,7 @@ public class WebViewActivity extends AppCompatActivity {
     private TextView actionbarTitle;
     private String title;
     private ProgressBar progressBar;
+    private ViewGroup container;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,6 +77,8 @@ public class WebViewActivity extends AppCompatActivity {
         progressBar.setProgress(0);
         progressBar.setVisibility(View.VISIBLE);
 
+        container =  (ViewGroup) findViewById(R.id.container);
+
         if (title != null && !title.equals(""))
             actionbarTitle.setText(title);
         else
@@ -95,17 +101,31 @@ public class WebViewActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
+        super.onDestroy();
+
+        container.removeAllViews();
+        container = null;
+        progressBar = null;
+
         if (webView != null) {
             webView.clearCache(true);
             webView.clearHistory();
+            webView.removeAllViews();
 
             webView.stopLoading();
             webView.loadData("", "text/html", "utf-8");
+            webView.loadUrl("about:blank");
+            webView.freeMemory();
+            webView.pauseTimers();
             webView.destroy();
         }
 
-        super.onDestroy();
         Runtime.getRuntime().gc();
+    }
+
+    @Override
+    public void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
     }
 
     @Override

@@ -31,16 +31,20 @@ public class TypefaceFactory {
         synchronized (cacheTypefaces) {
             if (!cacheTypefaces.containsKey(type)) {
                 Typeface typeface;
-                if (type == Gotham_Rounded_Bold) {
-                    typeface = Typeface.createFromAsset(context.getAssets(), typefaceDirGothamRounded + "Gotham-Rounded-Bold.ttf");
-                    cacheTypefaces.put(type, typeface);
-                    //return typeface;
-                } else if (type == Gotham_Rounded_Book) {
-                    typeface = Typeface.createFromAsset(context.getAssets(), typefaceDirGothamRounded + "Gotham-Rounded-Book.ttf");
-                    cacheTypefaces.put(type, typeface);
-                    //return typeface;
-                } else {
-                    //return typeface;
+                try {
+                    if (type == Gotham_Rounded_Bold) {
+                        typeface = Typeface.createFromAsset(context.getAssets(), typefaceDirGothamRounded + "Gotham-Rounded-Bold.ttf");
+                        cacheTypefaces.put(type, typeface);
+                        //return typeface;
+                    } else if (type == Gotham_Rounded_Book) {
+                        typeface = Typeface.createFromAsset(context.getAssets(), typefaceDirGothamRounded + "Gotham-Rounded-Book.ttf");
+                        cacheTypefaces.put(type, typeface);
+                        //return typeface;
+                    } else {
+                        //return typeface;
+                    }
+                } catch (Exception e) {
+                    return null;
                 }
             }
             return cacheTypefaces.get(type);
