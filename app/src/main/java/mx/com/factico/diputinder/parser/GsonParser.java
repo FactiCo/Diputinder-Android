@@ -10,6 +10,7 @@ import java.lang.reflect.Type;
 import java.util.List;
 
 import mx.com.factico.diputinder.beans.Candidate;
+import mx.com.factico.diputinder.beans.CandidateInfo;
 import mx.com.factico.diputinder.beans.Candidatos;
 import mx.com.factico.diputinder.beans.GeocoderResult;
 import mx.com.factico.diputinder.beans.Messages;
@@ -24,6 +25,14 @@ public class GsonParser {
 
 		return gson.fromJson(json, Candidate.class);
 	}
+
+    public static List<CandidateInfo> getListCandidatesInfoFromJSON(String json) throws Exception {
+        Gson gson = new Gson();
+
+        Type listType = new TypeToken<List<CandidateInfo>>(){}.getType();
+
+        return gson.fromJson(json, listType);
+    }
 
     public static List<Candidate> getListCandidatesFromJSON(String json) throws Exception {
         Gson gson = new Gson();
@@ -67,19 +76,13 @@ public class GsonParser {
 
 	public static String createJsonFromObject(Object object) {
 		Gson gson = new Gson();
-		String json = gson.toJson(object);
-		
-		Dialogues.Log(TAG_CLASS, "Json: " + json, Log.INFO);
-		
-		return json;
+
+		return gson.toJson(object);
 	}
 	
 	public static String createJsonFromObjectWithoutExposeAnnotations(Object object) {
 		Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
-		String json = gson.toJson(object);
-		
-		Dialogues.Log(TAG_CLASS, "Json: " + json, Log.INFO);
-		
-		return json;
+
+		return gson.toJson(object);
 	}
 }

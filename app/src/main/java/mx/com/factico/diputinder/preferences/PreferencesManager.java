@@ -10,6 +10,10 @@ public class PreferencesManager {
     public static final String TUTORIAL = "tutorial";
     public static final String LOCATION = "location";
     public static final String MESSAGES = "messages";
+    public static final String CANDIDATES = "candidates";
+
+    public static final String DATE_MESSAGES = "date_messages";
+    public static final String DATE_CANDIDATES = "date_candidates";
 
     public static void putStringPreference(Context context, String key, String value) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);

@@ -54,6 +54,7 @@ import mx.com.factico.diputinder.location.LocationUtils;
 import mx.com.factico.diputinder.parser.GsonParser;
 import mx.com.factico.diputinder.preferences.PreferencesManager;
 import mx.com.factico.diputinder.utils.CacheUtils;
+import mx.com.factico.diputinder.utils.DateUtils;
 import mx.com.factico.diputinder.utils.LinkUtils;
 import mx.com.factico.diputinder.utils.ScreenUtils;
 import mx.com.factico.diputinder.views.CustomTextView;
@@ -80,7 +81,7 @@ public class MainFragment extends Fragment implements View.OnClickListener {
 
     private View rootView;
 
-    private boolean isFirstTime = true;
+    private boolean isRefreshing = false;
 
     private ReverseGeocoderTask reverseGeocoderTask = null;
     private GetCandidatesTask candidatesTask = null;
@@ -105,6 +106,19 @@ public class MainFragment extends Fragment implements View.OnClickListener {
     }
 
     @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (isVisibleToUser) {
+            // you are visible to user now - so set whatever you need
+            // initResources();
+        }
+        else {
+            // you are no longer visible to the user so cleanup whatever you need
+            // cleanupResources();
+        }
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         if (rootView == null) {
             rootView = inflater.inflate(R.layout.fragment_main, container, false);
@@ -125,7 +139,22 @@ public class MainFragment extends Fragment implements View.OnClickListener {
 
             String messagesJson = PreferencesManager.getStringPreference(getActivity().getApplication(), PreferencesManager.MESSAGES);
             try {
-                messages = GsonParser.getMessagesFromJSON(messagesJson);
+                String oldDate = PreferencesManager.getStringPreference(getActivity().getApplication(), PreferencesManager.DATE_MESSAGES);
+                String currentDate = DateUtils.getCurrentDateTime();
+                if (DateUtils.getDifferencesBetweenDates(oldDate, currentDate) > 10800) { // 3 horas
+                    messages = GsonParser.getMessagesFromJSON(messagesJson);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            String candidatesJson = PreferencesManager.getStringPreference(getActivity().getApplication(), PreferencesManager.CANDIDATES);
+            try {
+                String oldDate = PreferencesManager.getStringPreference(getActivity().getApplication(), PreferencesManager.DATE_CANDIDATES);
+                String currentDate = DateUtils.getCurrentDateTime();
+                if (DateUtils.getDifferencesBetweenDates(oldDate, currentDate) > 10800) { // 3 horas
+                    auxCandidates = GsonParser.getListCandidatesInfoFromJSON(candidatesJson);
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -137,7 +166,9 @@ public class MainFragment extends Fragment implements View.OnClickListener {
     }
 
     private void createView() {
-        if (LocationUtils.isGpsOrNetworkProviderEnabled(getActivity())) {
+        if (auxCandidates != null && auxCandidates.size() > 0 && !isRefreshing) {
+            initUI();
+        } else {
             initLocationClientListener();
 
             if (NetworkUtils.isNetworkConnectionAvailable(getActivity())) {
@@ -145,8 +176,6 @@ public class MainFragment extends Fragment implements View.OnClickListener {
             } else {
                 setTextMessageError(getResources().getString(R.string.no_internet_connection));
             }
-        } else {
-            setTextMessageError(getResources().getString(R.string.no_gps_enabled));
         }
     }
 
@@ -203,31 +232,6 @@ public class MainFragment extends Fragment implements View.OnClickListener {
         }
     }
 
-    /*protected void loadCandidatos() {
-        showDialog(getResources().getString(R.string.getting_info));
-
-        if (rootView.findViewById(R.id.main_btn_refresh).getVisibility() != View.GONE)
-            rootView.findViewById(R.id.main_btn_refresh).setVisibility(View.GONE);
-
-        String url = null;
-
-        if (url != null) {
-            if (NetworkUtils.isNetworkConnectionAvailable(getActivity())) {
-                GetCandidatesAsyncTask task = new GetCandidatesAsyncTask(url);
-                task.execute();
-
-                if (arrayAdapter != null) {
-                    arrayAdapter.clear();
-                    arrayAdapter.notifyDataSetChanged();
-                }
-            } else {
-                setTextMessageError(getResources().getString(R.string.no_internet_connection));
-            }
-        } else {
-            dismissDialog();
-        }
-    }*/
-
     private void setTextMessageError(String messageError) {
         if (dialog != null && dialog.isShowing()) {
             dialog.dismiss();
@@ -238,7 +242,7 @@ public class MainFragment extends Fragment implements View.OnClickListener {
             @Override
             public void onClick(View v) {
                 showSwipeContainer();
-
+                isRefreshing = true;
                 initLocationClientListener();
                 startLocationListener();
             }
@@ -264,6 +268,17 @@ public class MainFragment extends Fragment implements View.OnClickListener {
     }
 
     protected void initUI() {
+        if (arrayAdapter != null) {
+            arrayAdapter.clear();
+            arrayAdapter.notifyDataSetChanged();
+        }
+
+        if (flingContainer != null) {
+            flingContainer.requestLayout();
+            flingContainer = null;
+            arrayAdapter = null;
+        }
+
         flingContainer = (SwipeFlingAdapterView) rootView.findViewById(R.id.main_swipe_tinder);
 
         Point point = ScreenUtils.getScreenSize(getActivity());
@@ -309,7 +324,7 @@ public class MainFragment extends Fragment implements View.OnClickListener {
                 @Override
                 public void onAdapterAboutToEmpty(int itemsInAdapter) {
                     // Ask for more data here
-                    if (itemsInAdapter == 0) {
+                    if (itemsInAdapter == 0 && !isRefreshing) {
                         CustomTextView noMoreItems = (CustomTextView) rootView.findViewById(R.id.main_no_items);
                         noMoreItems.setText(messages != null && messages.getNoCandidates() != null && !messages.getNoCandidates().equals("") ?
                                 messages.getNoCandidates() :
@@ -355,6 +370,8 @@ public class MainFragment extends Fragment implements View.OnClickListener {
                 }
             });
         }
+
+        isRefreshing = false;
     }
 
     @Override
@@ -613,6 +630,7 @@ public class MainFragment extends Fragment implements View.OnClickListener {
         if (id == R.id.action_refresh) {
             showSwipeContainer();
 
+            isRefreshing = true;
             initLocationClientListener();
             startLocationListener();
             return true;
@@ -748,7 +766,6 @@ public class MainFragment extends Fragment implements View.OnClickListener {
                         return;
                     }
 
-                    isFirstTime = false;
                     //PreferencesManager.putStringPreference(getActivity().getApplication(), PreferencesManager.JSON_PDF, json_PDF);
 
                     List<CandidateInfo> candidateInfoList = new ArrayList<>();
@@ -769,6 +786,12 @@ public class MainFragment extends Fragment implements View.OnClickListener {
 
                     if (candidateInfoList.size() > 0) {
                         auxCandidates = candidateInfoList;
+
+                        String jsonCandidates = GsonParser.createJsonFromObject(auxCandidates);
+                        PreferencesManager.putStringPreference(getActivity().getApplication(), PreferencesManager.CANDIDATES, jsonCandidates);
+
+                        String currentDate = DateUtils.getCurrentDateTime();
+                        PreferencesManager.putStringPreference(getActivity().getApplication(), PreferencesManager.DATE_CANDIDATES, currentDate);
 
                         initUI();
                     } else {
@@ -837,8 +860,10 @@ public class MainFragment extends Fragment implements View.OnClickListener {
 
                     messages = list.get(0);
                     String messageJson = GsonParser.createJsonFromObject(messages);
-
                     PreferencesManager.putStringPreference(getActivity().getApplication(), PreferencesManager.MESSAGES, messageJson);
+
+                    String currentDate = DateUtils.getCurrentDateTime();
+                    PreferencesManager.putStringPreference(getActivity().getApplication(), PreferencesManager.DATE_MESSAGES, currentDate);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
