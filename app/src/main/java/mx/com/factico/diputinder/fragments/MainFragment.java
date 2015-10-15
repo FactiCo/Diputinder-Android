@@ -12,6 +12,9 @@ import android.graphics.Point;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v4.util.Pair;
 import android.text.util.Linkify;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -387,9 +390,32 @@ public class MainFragment extends Fragment implements View.OnClickListener {
     }
 
     private void startIntentCandidate(CandidateInfo candidate) {
+        /*Intent intent = new Intent(getActivity(), CandidateActivity.class);
+        intent.putExtra(CandidateActivity.TAG_CANDIDATE, candidate);
+        startActivity(intent);*/
+
+        // Construct an Intent as normal
         Intent intent = new Intent(getActivity(), CandidateActivity.class);
         intent.putExtra(CandidateActivity.TAG_CANDIDATE, candidate);
-        startActivity(intent);
+
+        // BEGIN_INCLUDE(start_activity)
+        /**
+         * Now create an {@link android.app.ActivityOptions} instance using the
+         * {@link ActivityOptionsCompat#makeSceneTransitionAnimation(Activity, Pair[])} factory
+         * method.
+         */
+        ActivityOptionsCompat activityOptions = ActivityOptionsCompat.makeSceneTransitionAnimation(
+                getActivity(),
+                // Now we provide a list of Pair items which contain the view we can transitioning
+                // from, and the name of the view it is transitioning to, in the launched activity
+                new Pair<View, String>(flingContainer.getSelectedView().findViewById(R.id.item_candidate_iv_profile),
+                        CandidateActivity.VIEW_NAME_HEADER_IMAGE),
+                new Pair<View, String>(flingContainer.getSelectedView().findViewById(R.id.item_candidate_tv_name),
+                        CandidateActivity.VIEW_NAME_HEADER_TITLE));
+
+        // Now we can start the Activity, providing the activity options as a bundle
+        ActivityCompat.startActivity(getActivity(), intent, activityOptions.toBundle());
+        // END_INCLUDE(start_activity)
     }
 
     private void swipeLeft() {
@@ -628,11 +654,13 @@ public class MainFragment extends Fragment implements View.OnClickListener {
         int id = item.getItemId();
 
         if (id == R.id.action_refresh) {
-            showSwipeContainer();
+            if (!isRefreshing) {
+                showSwipeContainer();
 
-            isRefreshing = true;
-            initLocationClientListener();
-            startLocationListener();
+                isRefreshing = true;
+                initLocationClientListener();
+                startLocationListener();
+            }
             return true;
         }
 

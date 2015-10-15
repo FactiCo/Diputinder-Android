@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.os.Bundle;
+import android.support.v4.view.ViewCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
@@ -40,6 +41,12 @@ public class CandidateActivity extends AppCompatActivity {
     public static final String TAG_CANDIDATE = "candidate";
     private CandidateInfo candidateInfo;
     private DisplayImageOptions options;
+
+    // View name of the header image. Used for activity scene transitions
+    public static final String VIEW_NAME_HEADER_IMAGE = "detail:header:image";
+
+    // View name of the header title. Used for activity scene transitions
+    public static final String VIEW_NAME_HEADER_TITLE = "detail:header:title";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -132,6 +139,16 @@ public class CandidateActivity extends AppCompatActivity {
             ImageView ivProfile = (ImageView) findViewById(R.id.candidate_iv_profile);
             //ivProfile.setLayoutParams(profileImageParams);
             vgProfile.setLayoutParams(profileImageParams);
+
+            // BEGIN_INCLUDE(detail_set_view_name)
+            /**
+             * Set the name of the view's which will be transition to, using the static values above.
+             * This could be done in the layout XML, but exposing it via static variables allows easy
+             * querying from other Activities
+             */
+            //ViewCompat.setTransitionName(ivProfile, VIEW_NAME_HEADER_IMAGE);
+            ViewCompat.setTransitionName(tvName, VIEW_NAME_HEADER_TITLE);
+            // END_INCLUDE(detail_set_view_name)
 
             if (candidate.getTwitter() != null && !candidate.getTwitter().equals("") && !candidate.getTwitter().equals("no se identificó")) {
                 String twitter = candidate.getTwitter().replaceAll("\\s+", "");
