@@ -22,7 +22,7 @@ public class DateUtils {
     //2 hour = 60 x 60 x 2 = 7200
     //3 hour = 60 x 60 x 3 = 10800
     //1 day = 3600 x 24 = 86400
-    public static long getDifferencesBetweenDates(String oldDate, String currentDate) {
+    public static long getDifferencesInHoursBetweenDates(String oldDate, String currentDate) {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(TEMPLATE_DATE_TIME, Locale.getDefault());
         Date startDate = null;
         Date endDate = null;
@@ -58,6 +58,8 @@ public class DateUtils {
                     "%d days, %d hours, %d minutes, %d seconds%n",
                     elapsedDays,
                     elapsedHours, elapsedMinutes, elapsedSeconds);
+
+            return elapsedHours;
         } catch (ParseException e) {
             e.printStackTrace();
         }

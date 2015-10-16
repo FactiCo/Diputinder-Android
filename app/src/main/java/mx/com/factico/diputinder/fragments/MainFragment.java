@@ -144,7 +144,8 @@ public class MainFragment extends Fragment implements View.OnClickListener {
             try {
                 String oldDate = PreferencesManager.getStringPreference(getActivity().getApplication(), PreferencesManager.DATE_MESSAGES);
                 String currentDate = DateUtils.getCurrentDateTime();
-                if (DateUtils.getDifferencesBetweenDates(oldDate, currentDate) > 10800) { // 3 horas
+                long difference = DateUtils.getDifferencesInHoursBetweenDates(oldDate, currentDate);
+                if (difference < 3) { // 3 horas
                     messages = GsonParser.getMessagesFromJSON(messagesJson);
                 }
             } catch (Exception e) {
@@ -155,7 +156,8 @@ public class MainFragment extends Fragment implements View.OnClickListener {
             try {
                 String oldDate = PreferencesManager.getStringPreference(getActivity().getApplication(), PreferencesManager.DATE_CANDIDATES);
                 String currentDate = DateUtils.getCurrentDateTime();
-                if (DateUtils.getDifferencesBetweenDates(oldDate, currentDate) > 10800) { // 3 horas
+                long difference = DateUtils.getDifferencesInHoursBetweenDates(oldDate, currentDate);
+                if (difference < 3) { // 3 horas
                     auxCandidates = GsonParser.getListCandidatesInfoFromJSON(candidatesJson);
                 }
             } catch (Exception e) {
