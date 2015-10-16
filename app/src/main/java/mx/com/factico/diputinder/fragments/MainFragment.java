@@ -595,6 +595,11 @@ public class MainFragment extends Fragment implements View.OnClickListener {
             @Override
             public void onCancel(DialogInterface dialog) {
                 dialog.dismiss();
+                isRefreshing = false;
+
+                if (reverseGeocoderTask != null) reverseGeocoderTask.cancel(true);
+                if (candidatesTask != null) candidatesTask.cancel(true);
+                if (messagesTask != null) messagesTask.cancel(true);
             }
         });
         dialog.show();
