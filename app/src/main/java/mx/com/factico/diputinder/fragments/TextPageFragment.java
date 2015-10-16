@@ -77,9 +77,9 @@ public class TextPageFragment extends Fragment {
     private View createView(View view) {
         if (view != null) {
             Point point = ScreenUtils.getScreenSize(getActivity());
-            int width = point.x / 8 * 7;
+            int width = point.x / 8 * 6;
             //int height = (int) ScreenUtils.convertDpToPixel(200, getActivity());
-            int height = point.y / 10 * 4;
+            int height = point.y / 10 * 3;
 
             int marginTop = (int) ScreenUtils.convertDpToPixel(50, getActivity());
 
