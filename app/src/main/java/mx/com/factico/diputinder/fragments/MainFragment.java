@@ -1,5 +1,6 @@
 package mx.com.factico.diputinder.fragments;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.ProgressDialog;
@@ -14,9 +15,8 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.util.Pair;
-import android.text.util.Linkify;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -27,6 +27,9 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.model.LatLng;
 import com.lorentzos.flingswipe.SwipeFlingAdapterView;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -40,7 +43,6 @@ import java.util.Locale;
 
 import mx.com.factico.diputinder.CandidateActivity;
 import mx.com.factico.diputinder.R;
-import mx.com.factico.diputinder.WebViewActivity;
 import mx.com.factico.diputinder.adapters.MyArrayAdapter;
 import mx.com.factico.diputinder.beans.Candidate;
 import mx.com.factico.diputinder.beans.CandidateInfo;
@@ -71,6 +73,7 @@ public class MainFragment extends Fragment implements View.OnClickListener {
     public static final String CANDIDATE_TYPE = "candidate_type";
 
     public static final String TAG_CLASS = MainFragment.class.getSimpleName();
+    private static final int MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 123;
 
     private List<CandidateInfo> auxCandidates = new ArrayList<>();
     private MyArrayAdapter arrayAdapter;
@@ -97,6 +100,31 @@ public class MainFragment extends Fragment implements View.OnClickListener {
         super.onCreate(savedInstanceState);
 
         setHasOptionsMenu(true);
+
+        if (GooglePlayServicesUtil.isGooglePlayServicesAvailable(getActivity()) == ConnectionResult.SUCCESS) {
+            Dialogues.Toast(getActivity(), "GooglePlayServicesAvailable", Toast.LENGTH_SHORT);
+        } else {
+            GooglePlayServicesUtil.showErrorDialogFragment(321, getActivity(), 9000);
+            Dialogues.Toast(getActivity(), "GooglePlayServicesNOTAvailable", Toast.LENGTH_SHORT);
+        }
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        if (clientListener != null && userLocation == null) {
+            startLocationListener();
+        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        if (clientListener != null) {
+            clientListener.stopLocationUpdates();
+        }
     }
 
     @Override
@@ -185,28 +213,33 @@ public class MainFragment extends Fragment implements View.OnClickListener {
     }
 
     protected void initLocationClientListener() {
-        if (LocationUtils.isGpsOrNetworkProviderEnabled(getActivity())) {
-            showDialog(getResources().getString(R.string.getting_location));
+        if (!isAccessFineLocationPermissionGranted())
+            requestAccessFineLocationPermission();
+        else
+            if (LocationUtils.isGpsOrNetworkProviderEnabled(getActivity())) {
+                //Dialogues.Toast(getActivity(), "initLocationClientListener", Toast.LENGTH_SHORT);
+                isRefreshing = true;
+                showDialog(getResources().getString(R.string.getting_location));
 
-            clientListener = new LocationClientListener(getActivity());
-            clientListener.setOnLocationClientListener(new LocationClientListener.OnLocationClientListener() {
-                @Override
-                public void onLocationChanged(Location location) {
-                    userLocation = LocationUtils.getLatLngFromLocation(location);
-                    dismissDialog();
+                clientListener = new LocationClientListener(getActivity());
+                clientListener.setOnLocationClientListener(new LocationClientListener.OnLocationClientListener() {
+                    @Override
+                    public void onLocationChanged(Location location) {
+                        userLocation = LocationUtils.getLatLngFromLocation(location);
+                        dismissDialog();
 
-                    //Dialogues.Toast(getActivity(), "Latitude: " + userLocation.latitude + ", Longitude: " + userLocation.longitude, Toast.LENGTH_SHORT);
+                        Dialogues.Toast(getActivity(), "Latitude: " + userLocation.latitude + ", Longitude: " + userLocation.longitude, Toast.LENGTH_SHORT);
 
-                    showDialog(getResources().getString(R.string.getting_info));
+                        showDialog(getResources().getString(R.string.getting_info));
 
-                    clientListener.stopLocationUpdates();
+                        clientListener.stopLocationUpdates();
 
-                    reverseGeocoderFromLatLng(userLocation);
-                }
-            });
-        } else {
-            setTextMessageError(getResources().getString(R.string.no_gps_enabled));
-        }
+                        reverseGeocoderFromLatLng(userLocation);
+                    }
+                });
+            } else {
+                setTextMessageError(getResources().getString(R.string.no_gps_enabled));
+            }
     }
 
     public void startLocationListener() {
@@ -219,21 +252,57 @@ public class MainFragment extends Fragment implements View.OnClickListener {
             clientListener.disconnect();
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
+    protected void requestAccessFineLocationPermission() {
+        // Here, thisActivity is the current activity
+        if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+            // Should we show an explanation?
+            if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),
+                    Manifest.permission.ACCESS_FINE_LOCATION)) {
+                // Show an expanation to the user *asynchronously* -- don't block
+                // this thread waiting for the user's response! After the user
+                // sees the explanation, try again to request the permission.
 
-        if (clientListener != null && userLocation == null) {
-            startLocationListener();
+            } else {
+                // No explanation needed, we can request the permission.
+                ActivityCompat.requestPermissions(getActivity(),
+                        new String[]{ Manifest.permission.ACCESS_FINE_LOCATION },
+                        MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
+
+                // MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION is an
+                // app-defined int constant. The callback method gets the
+                // result of the request.
+            }
         }
     }
 
-    @Override
-    public void onPause() {
-        super.onPause();
+    protected boolean isAccessFineLocationPermissionGranted() {
+        return ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED;
+    }
 
-        if (clientListener != null) {
-            clientListener.stopLocationUpdates();
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // permission was granted, yay! Do the
+                    // location-related task you need to do.
+                    if (!isRefreshing) {
+                        showSwipeContainer();
+                        initLocationClientListener();
+                        startLocationListener();
+                    }
+                } else {
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                }
+                return;
+            }
+            // other 'case' lines to check for other
+            // permissions this app might request
         }
     }
 
@@ -247,7 +316,6 @@ public class MainFragment extends Fragment implements View.OnClickListener {
             @Override
             public void onClick(View v) {
                 showSwipeContainer();
-                isRefreshing = true;
                 initLocationClientListener();
                 startLocationListener();
             }
@@ -663,8 +731,6 @@ public class MainFragment extends Fragment implements View.OnClickListener {
         if (id == R.id.action_refresh) {
             if (!isRefreshing) {
                 showSwipeContainer();
-
-                isRefreshing = true;
                 initLocationClientListener();
                 startLocationListener();
             }
