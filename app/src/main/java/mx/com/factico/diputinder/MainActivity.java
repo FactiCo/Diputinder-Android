@@ -1,8 +1,17 @@
 package mx.com.factico.diputinder;
 
+import android.Manifest;
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.app.DialogFragment;
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.os.Bundle;
@@ -12,9 +21,13 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
+
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +43,7 @@ import mx.com.factico.diputinder.views.CustomTextView;
  * Created by zace3d on 18/05/15.
  */
 public class MainActivity extends AppCompatActivity {
-    public static final String TAG_CLASS = MainActivity.class.getSimpleName();
+    public static final String TAG = MainActivity.class.getSimpleName();
 
     private DrawerLayout mDrawerLayout;
     private RecyclerView mDrawerList;
@@ -46,8 +59,6 @@ public class MainActivity extends AppCompatActivity {
 
         setSupportActionBar();
         initUI();
-
-        //LocationUtils.getStateFromLatLong(getBaseContext());
     }
 
     @Override

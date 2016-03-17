@@ -1,7 +1,10 @@
 package mx.com.factico.diputinder.fragments;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
+import android.app.DialogFragment;
 import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
@@ -13,10 +16,12 @@ import android.graphics.Point;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.util.Pair;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -28,6 +33,7 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.model.LatLng;
@@ -69,11 +75,10 @@ import mx.com.factico.diputinder.views.CustomTextView;
  */
 
 public class MainFragment extends Fragment implements View.OnClickListener {
+    private static final String TAG = MainFragment.class.getName();
+
     public static final String INDEX = "index";
     public static final String CANDIDATE_TYPE = "candidate_type";
-
-    public static final String TAG_CLASS = MainFragment.class.getSimpleName();
-    private static final int MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 123;
 
     private List<CandidateInfo> auxCandidates = new ArrayList<>();
     private MyArrayAdapter arrayAdapter;
@@ -95,17 +100,26 @@ public class MainFragment extends Fragment implements View.OnClickListener {
 
     private Messages messages = null;
 
+    private static final String[] LOCATION_PERMISSIONS = {
+            Manifest.permission.ACCESS_FINE_LOCATION
+    };
+
+    private static final int REQUEST_LOCATION_PERMISSIONS = 1;
+    private static final String FRAGMENT_DIALOG = "dialog";
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setHasOptionsMenu(true);
 
+        startRegistrationService();
+
         if (GooglePlayServicesUtil.isGooglePlayServicesAvailable(getActivity()) == ConnectionResult.SUCCESS) {
-            Dialogues.Toast(getActivity(), "GooglePlayServicesAvailable", Toast.LENGTH_SHORT);
+            //Dialogues.Toast(getActivity(), "GooglePlayServicesAvailable", Toast.LENGTH_SHORT);
         } else {
             GooglePlayServicesUtil.showErrorDialogFragment(321, getActivity(), 9000);
-            Dialogues.Toast(getActivity(), "GooglePlayServicesNOTAvailable", Toast.LENGTH_SHORT);
+            //Dialogues.Toast(getActivity(), "GooglePlayServicesNOTAvailable", Toast.LENGTH_SHORT);
         }
     }
 
@@ -213,8 +227,8 @@ public class MainFragment extends Fragment implements View.OnClickListener {
     }
 
     protected void initLocationClientListener() {
-        if (!isAccessFineLocationPermissionGranted())
-            requestAccessFineLocationPermission();
+        if (!hasPermissionsGranted(LOCATION_PERMISSIONS))
+            requestLocationPermissions();
         else
             if (LocationUtils.isGpsOrNetworkProviderEnabled(getActivity())) {
                 //Dialogues.Toast(getActivity(), "initLocationClientListener", Toast.LENGTH_SHORT);
@@ -225,21 +239,25 @@ public class MainFragment extends Fragment implements View.OnClickListener {
                 clientListener.setOnLocationClientListener(new LocationClientListener.OnLocationClientListener() {
                     @Override
                     public void onLocationChanged(Location location) {
-                        userLocation = LocationUtils.getLatLngFromLocation(location);
-                        dismissDialog();
-
-                        Dialogues.Toast(getActivity(), "Latitude: " + userLocation.latitude + ", Longitude: " + userLocation.longitude, Toast.LENGTH_SHORT);
-
-                        showDialog(getResources().getString(R.string.getting_info));
-
-                        clientListener.stopLocationUpdates();
-
-                        reverseGeocoderFromLatLng(userLocation);
+                        updateUserLocation(location);
                     }
                 });
             } else {
                 setTextMessageError(getResources().getString(R.string.no_gps_enabled));
             }
+    }
+
+    private void updateUserLocation(Location location) {
+        userLocation = LocationUtils.getLatLngFromLocation(location);
+        dismissDialog();
+
+        //Dialogues.Toast(getActivity(), "Latitude: " + userLocation.latitude + ", Longitude: " + userLocation.longitude, Toast.LENGTH_SHORT);
+
+        showDialog(getResources().getString(R.string.getting_info));
+
+        clientListener.stopLocationUpdates();
+
+        reverseGeocoderFromLatLng(userLocation);
     }
 
     public void startLocationListener() {
@@ -250,60 +268,6 @@ public class MainFragment extends Fragment implements View.OnClickListener {
     public void stopLocationListener() {
         if (clientListener != null)
             clientListener.disconnect();
-    }
-
-    protected void requestAccessFineLocationPermission() {
-        // Here, thisActivity is the current activity
-        if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED) {
-            // Should we show an explanation?
-            if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),
-                    Manifest.permission.ACCESS_FINE_LOCATION)) {
-                // Show an expanation to the user *asynchronously* -- don't block
-                // this thread waiting for the user's response! After the user
-                // sees the explanation, try again to request the permission.
-
-            } else {
-                // No explanation needed, we can request the permission.
-                ActivityCompat.requestPermissions(getActivity(),
-                        new String[]{ Manifest.permission.ACCESS_FINE_LOCATION },
-                        MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
-
-                // MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION is an
-                // app-defined int constant. The callback method gets the
-                // result of the request.
-            }
-        }
-    }
-
-    protected boolean isAccessFineLocationPermissionGranted() {
-        return ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
-                == PackageManager.PERMISSION_GRANTED;
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
-        switch (requestCode) {
-            case MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION: {
-                // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    // permission was granted, yay! Do the
-                    // location-related task you need to do.
-                    if (!isRefreshing) {
-                        showSwipeContainer();
-                        initLocationClientListener();
-                        startLocationListener();
-                    }
-                } else {
-                    // permission denied, boo! Disable the
-                    // functionality that depends on this permission.
-                }
-                return;
-            }
-            // other 'case' lines to check for other
-            // permissions this app might request
-        }
     }
 
     private void setTextMessageError(String messageError) {
@@ -403,20 +367,6 @@ public class MainFragment extends Fragment implements View.OnClickListener {
                                 messages.getNoCandidates() :
                                 getString(R.string.no_more_candidates));
                         LinkUtils.fixTextView(noMoreItems);
-                        // noMoreItems.setAutoLinkMask(Linkify.ALL);
-                        /*LinkUtils.autoLink(noMoreItems, new LinkUtils.OnClickListener() {
-                            @Override
-                            public void onLinkClicked(final String link) {
-                                // Log.i("SensibleUrlSpan", "リンククリック:" + link);
-                                // Dialogues.Toast(getActivity().getBaseContext(), "link", Toast.LENGTH_LONG);
-                            }
-
-                            @Override
-                            public void onClicked() {
-                                // Log.i("SensibleUrlSpan", "ビュークリック");
-                                // Dialogues.Toast(getActivity().getBaseContext(), "ビュークリック", Toast.LENGTH_LONG);
-                            }
-                        });*/
 
                         if (rootView.findViewById(R.id.main_no_items).getVisibility() != View.VISIBLE)
                             rootView.findViewById(R.id.main_no_items).setVisibility(View.VISIBLE);
@@ -460,10 +410,6 @@ public class MainFragment extends Fragment implements View.OnClickListener {
     }
 
     private void startIntentCandidate(CandidateInfo candidate) {
-        /*Intent intent = new Intent(getActivity(), CandidateActivity.class);
-        intent.putExtra(CandidateActivity.TAG_CANDIDATE, candidate);
-        startActivity(intent);*/
-
         // Construct an Intent as normal
         Intent intent = new Intent(getActivity(), CandidateActivity.class);
         intent.putExtra(CandidateActivity.TAG_CANDIDATE, candidate);
@@ -978,6 +924,180 @@ public class MainFragment extends Fragment implements View.OnClickListener {
             messagesTask = null;
             //showProgress(false);
             dismissDialog();
+        }
+    }
+
+    ////////////////////////////////////// LOCATION SERVICES //////////////////////////////////////
+    public static final int REQUEST_GOOGLE_PLAY_SERVICES = 1972;
+    private void startRegistrationService() {
+        Activity activity = getActivity();
+        if (activity == null)
+            return;
+
+        GoogleApiAvailability api = GoogleApiAvailability.getInstance();
+        int code = api.isGooglePlayServicesAvailable(activity);
+        if (code == ConnectionResult.SUCCESS) {
+            onActivityResult(REQUEST_GOOGLE_PLAY_SERVICES, Activity.RESULT_OK, null);
+        } else if (api.isUserResolvableError(code) &&
+                api.showErrorDialogFragment(activity, code, REQUEST_GOOGLE_PLAY_SERVICES)) {
+        } else {
+            String str = GoogleApiAvailability.getInstance().getErrorString(code);
+            Dialogues.Toast(activity, str, Toast.LENGTH_LONG);
+        }
+    }
+
+    protected void startLocationService() {
+        if (!hasPermissionsGranted(LOCATION_PERMISSIONS)) {
+            requestLocationPermissions();
+            return;
+        }
+
+        if (!isRefreshing) {
+            showSwipeContainer();
+            initLocationClientListener();
+            startLocationListener();
+        }
+        //Intent locationService = new Intent(this, LocationService.class);
+        //startService(locationService);
+    }
+
+    /**
+     * Gets whether you should show UI with rationale for requesting permissions.
+     *
+     * @param permissions The permissions your app wants to request.
+     * @return Whether you can show permission rationale UI.
+     */
+    private boolean shouldShowRequestPermissionRationale(String[] permissions) {
+        Activity activity = getActivity();
+        if (activity == null)
+            return false;
+
+        for (String permission : permissions) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(activity, permission)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Requests permissions needed for recording video.
+     */
+    private void requestLocationPermissions() {
+        Activity activity = getActivity();
+        if (activity == null)
+            return;
+
+        if (shouldShowRequestPermissionRationale(LOCATION_PERMISSIONS)) {
+            ConfirmationDialog.newInstance(getString(R.string.location_permission_request))
+                    .show(getFragmentManager(), FRAGMENT_DIALOG);
+        } else {
+            ActivityCompat.requestPermissions(activity, LOCATION_PERMISSIONS, REQUEST_LOCATION_PERMISSIONS);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        Log.d(TAG, "onRequestPermissionsResult");
+        if (requestCode == REQUEST_LOCATION_PERMISSIONS) {
+            if (grantResults.length == LOCATION_PERMISSIONS.length) {
+                for (int result : grantResults) {
+                    if (result != PackageManager.PERMISSION_GRANTED) {
+                        ErrorDialog.newInstance(getString(R.string.location_permission_request))
+                                .show(getFragmentManager(), FRAGMENT_DIALOG);
+                        break;
+                    } else {
+                        startLocationService();
+                        break;
+                    }
+                }
+            } else {
+                ErrorDialog.newInstance(getString(R.string.location_permission_request))
+                        .show(getFragmentManager(), FRAGMENT_DIALOG);
+            }
+        } else {
+            super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
+    }
+
+    private boolean hasPermissionsGranted(String[] permissions) {
+        Activity activity = getActivity();
+        if (activity == null)
+            return false;
+
+        for (String permission : permissions) {
+            if (ActivityCompat.checkSelfPermission(activity, permission)
+                    != PackageManager.PERMISSION_GRANTED) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public static class ErrorDialog extends DialogFragment {
+
+        private static final String ARG_MESSAGE = "message";
+
+        public static ErrorDialog newInstance(String message) {
+            ErrorDialog dialog = new ErrorDialog();
+            Bundle args = new Bundle();
+            args.putString(ARG_MESSAGE, message);
+            dialog.setArguments(args);
+            return dialog;
+        }
+
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            final Activity activity = getActivity();
+            if (activity == null)
+                return null;
+
+            return new AlertDialog.Builder(activity)
+                    .setMessage(getArguments().getString(ARG_MESSAGE))
+                    .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            if (isAdded())
+                                dismiss();
+                        }
+                    })
+                    .create();
+        }
+    }
+
+    public static class ConfirmationDialog extends DialogFragment {
+
+        private static final String ARG_MESSAGE = "message";
+
+        public static ConfirmationDialog newInstance(String message) {
+            ConfirmationDialog dialog = new ConfirmationDialog();
+            Bundle args = new Bundle();
+            args.putString(ARG_MESSAGE, message);
+            dialog.setArguments(args);
+            return dialog;
+        }
+
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            final Activity parent = getActivity();
+            return new AlertDialog.Builder(parent)
+                    .setMessage(getArguments().getString(ARG_MESSAGE))
+                    .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            ActivityCompat.requestPermissions(parent, LOCATION_PERMISSIONS,
+                                    REQUEST_LOCATION_PERMISSIONS);
+                        }
+                    })
+                    .setNegativeButton(android.R.string.cancel,
+                            new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    if (isAdded())
+                                        dismiss();
+                                }
+                            })
+                    .create();
         }
     }
 }

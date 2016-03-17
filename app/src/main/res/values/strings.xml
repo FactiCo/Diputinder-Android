@@ -12,6 +12,8 @@
     <string name="action_gobernadores">Gobernadores</string>
     <string name="action_refresh">Actualizar ubicación</string>
 
+    <string name="location_permission_request">Se necesitan permisos de ubicación para mostrate contenido cerca de ti.</string>
+
     <string name="drawer_open">Open</string>
     <string name="drawer_close">Close</string>
 
