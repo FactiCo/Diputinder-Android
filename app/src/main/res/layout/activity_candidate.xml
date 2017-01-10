@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorBackgroundWhite"
@@ -22,10 +23,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:paddingTop="20dp"
             android:paddingBottom="10dp"
             android:paddingLeft="10dp"
-            android:paddingRight="10dp">
+            android:paddingRight="10dp"
+            android:paddingTop="20dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -38,7 +39,7 @@
                     android:layout_height="120dp"
                     android:layout_gravity="center_horizontal">
 
-                    <com.makeramen.roundedimageview.RoundedImageView
+                    <!--<com.makeramen.roundedimageview.RoundedImageView
                         android:id="@+id/candidate_iv_profile"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
@@ -48,20 +49,46 @@
                         android:padding="3dp"
                         android:scaleType="centerCrop"
                         app:riv_mutate_background="true"
-                        app:riv_oval="true" />
+                        app:riv_oval="true" />-->
 
-                    <com.makeramen.roundedimageview.RoundedImageView
+                    <de.hdodenhof.circleimageview.CircleImageView
+                        android:id="@+id/candidate_iv_profile"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_centerInParent="true"
+                        android:layout_gravity="center_horizontal"
+                        android:padding="3dp"
+                        android:scaleType="centerCrop"
+                        android:src="@android:color/black"
+                        app:civ_border_color="@android:color/black"
+                        app:civ_border_width="4dp"
+                        tools:ignore="RtlHardcoded" />
+
+                    <!--<com.makeramen.roundedimageview.RoundedImageView
                         android:id="@+id/candidate_iv_partido"
                         android:layout_width="50dp"
                         android:layout_height="50dp"
+                        android:layout_alignParentBottom="true"
+                        android:layout_alignParentRight="true"
+                        android:background="@drawable/drawable_bgr_circle"
+                        android:padding="2dp"
                         android:scaleType="centerCrop"
+                        android:src="@drawable/drawable_bgr_circle"
+                        app:riv_mutate_background="true"
+                        app:riv_oval="true" />-->
+
+                    <de.hdodenhof.circleimageview.CircleImageView
+                        android:id="@+id/candidate_iv_partido"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
                         android:layout_alignParentBottom="true"
                         android:layout_alignParentRight="true"
                         android:padding="2dp"
-                        android:background="@drawable/drawable_bgr_circle"
-                        android:src="@drawable/drawable_bgr_circle"
-                        app:riv_mutate_background="true"
-                        app:riv_oval="true" />
+                        android:scaleType="centerCrop"
+                        android:src="@android:color/white"
+                        app:civ_border_color="@android:color/white"
+                        app:civ_border_width="2dp"
+                        tools:ignore="RtlHardcoded" />
                 </RelativeLayout>
 
                 <mx.com.factico.diputinder.views.CustomTextView

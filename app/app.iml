@@ -148,8 +148,9 @@
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.google.firebase/firebase-messaging/10.0.1/jars" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.google.firebase/firebase-storage-common/10.0.1/jars" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.google.firebase/firebase-storage/10.0.1/jars" />
-      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.makeramen/roundedimageview/2.0.1/jars" />
+      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.lorentzos.swipecards/library/1.0.9/jars" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.viewpagerindicator/library/2.4.1/jars" />
+      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/de.hdodenhof/circleimageview/2.1.0/jars" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/incremental" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/incremental-classes" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/incremental-runtime-classes" />
@@ -159,8 +160,6 @@
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/instant-run-support" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/jniLibs" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/manifests" />
-      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/multi-dex" />
-      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/pre-dexed" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/reload-dex" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/res" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/restart-dex" />
@@ -193,8 +192,9 @@
     <orderEntry type="library" exported="" name="support-annotations-25.1.0" level="project" />
     <orderEntry type="library" exported="" name="library-2.4.1" level="project" />
     <orderEntry type="library" exported="" name="play-services-plus-10.0.1" level="project" />
-    <orderEntry type="library" exported="" name="universal-image-loader-1.9.3" level="project" />
+    <orderEntry type="library" exported="" name="universal-image-loader-1.9.5" level="project" />
     <orderEntry type="library" exported="" name="firebase-common-10.0.1" level="project" />
+    <orderEntry type="library" exported="" name="circleimageview-2.1.0" level="project" />
     <orderEntry type="library" exported="" name="play-services-analytics-impl-10.0.1" level="project" />
     <orderEntry type="library" exported="" name="support-compat-25.1.0" level="project" />
     <orderEntry type="library" exported="" name="play-services-basement-10.0.1" level="project" />
@@ -210,6 +210,7 @@
     <orderEntry type="library" exported="" name="play-services-identity-10.0.1" level="project" />
     <orderEntry type="library" exported="" name="play-services-base-10.0.1" level="project" />
     <orderEntry type="library" exported="" name="support-fragment-25.1.0" level="project" />
+    <orderEntry type="library" exported="" name="library-1.0.9" level="project" />
     <orderEntry type="library" exported="" name="firebase-appindexing-10.0.1" level="project" />
     <orderEntry type="library" exported="" name="play-services-awareness-10.0.1" level="project" />
     <orderEntry type="library" exported="" name="play-services-clearcut-10.0.1" level="project" />
@@ -227,7 +228,6 @@
     <orderEntry type="library" exported="" name="play-services-iid-10.0.1" level="project" />
     <orderEntry type="library" exported="" name="play-services-tagmanager-10.0.1" level="project" />
     <orderEntry type="library" exported="" name="firebase-analytics-impl-10.0.1" level="project" />
-    <orderEntry type="library" exported="" name="roundedimageview-2.0.1" level="project" />
     <orderEntry type="library" exported="" name="play-services-ads-10.0.1" level="project" />
     <orderEntry type="library" exported="" name="firebase-messaging-10.0.1" level="project" />
     <orderEntry type="library" exported="" name="play-services-instantapps-10.0.1" level="project" />
@@ -239,6 +239,5 @@
     <orderEntry type="library" exported="" name="appcompat-v7-25.1.0" level="project" />
     <orderEntry type="library" exported="" name="mediarouter-v7-24.0.0" level="project" />
     <orderEntry type="library" exported="" name="recyclerview-v7-25.1.0" level="project" />
-    <orderEntry type="module" module-name="TinderLibrary" exported="" />
   </component>
 </module>

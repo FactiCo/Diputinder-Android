@@ -1,2 +1,1 @@
-include ':app', ':TinderLibrary'
-project(':TinderLibrary').projectDir = new File('libs/TinderLibrary')
+include ':app'
