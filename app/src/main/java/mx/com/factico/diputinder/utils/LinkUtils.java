@@ -1,5 +1,6 @@
 package mx.com.factico.diputinder.utils;
 
+import android.annotation.SuppressLint;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.text.Layout;
@@ -74,6 +75,7 @@ public final class LinkUtils {
         void onClicked();
     }
 
+    @SuppressLint("ParcelCreator")
     public static class SensibleUrlSpan extends URLSpan {
         /**
          * Pattern to match.
@@ -174,6 +176,7 @@ public final class LinkUtils {
     }
 
     public static void fixTextView(TextView tv) {
+        try {
         SpannableString current = (SpannableString) tv.getText();
         URLSpan[] spans = current.getSpans(0, current.length(), URLSpan.class);
 
@@ -185,6 +188,9 @@ public final class LinkUtils {
                 current.removeSpan(span);
                 current.setSpan(new SensibleUrlSpan(span.getURL(), URL_PATTERN), start, end, 0);
             }
+        }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

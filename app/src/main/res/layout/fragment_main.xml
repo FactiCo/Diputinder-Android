@@ -7,19 +7,16 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginBottom="@dimen/activity_vertical_margin"
-        android:layout_marginLeft="@dimen/activity_horizontal_margin"
-        android:layout_marginRight="@dimen/activity_horizontal_margin"
-        android:layout_marginTop="@dimen/activity_vertical_margin">
+        android:layout_height="match_parent">
 
         <com.lorentzos.flingswipe.SwipeFlingAdapterView
             android:id="@+id/main_swipe_tinder"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_above="@+id/main_btn_container"
-            android:background="@color/colorBackgroundWhite"
             app:rotation_degrees="15.5"
+            app:max_visible="4"
+            app:min_adapter_stack="6"
             tools:context=".MyActivity" />
 
         <mx.com.factico.diputinder.views.CustomTextView

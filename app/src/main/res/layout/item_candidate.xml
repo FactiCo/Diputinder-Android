@@ -3,7 +3,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_gravity="center">
+    android:layout_gravity="center"
+    android:layout_marginBottom="@dimen/activity_vertical_margin"
+    android:layout_marginEnd="@dimen/activity_horizontal_margin"
+    android:layout_marginStart="@dimen/activity_horizontal_margin"
+    android:layout_marginTop="@dimen/activity_vertical_margin">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -22,13 +26,13 @@
         <mx.com.factico.diputinder.views.CustomTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_margin="1dp"
+            android:background="@drawable/drawable_box_indicators"
             android:gravity="end"
             android:padding="10dp"
-            android:layout_margin="1dp"
             android:text="Ver indicadores"
-            android:background="@drawable/drawable_box_indicators"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:textColor="@color/colorWhite"
             app:typeface="Gotham_Rounded_Book" />
