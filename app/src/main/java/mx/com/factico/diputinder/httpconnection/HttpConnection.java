@@ -15,10 +15,9 @@ import mx.com.factico.diputinder.dialogues.Dialogues;
 public class HttpConnection {
     public static final String TAG_CLASS = HttpConnection.class.getName();
 
-    //public static final String URL_HOST = "http://liguepolitico-staging.herokuapp.com";
-    //public static final String URL_HOST = "http://158.85.249.218";
-    public static final String URL_HOST = "https://liguepolitico-2016.herokuapp.com";
-    //158.85.249.218
+    //public static final String URL_HOST = "https://liguepolitico-2016.herokuapp.com";
+    public static final String URL_HOST = "http://13.82.98.12/";
+
     public static final String GEOCODER = "/geocoder.json?latitude=%s&longitude=%s";
 
     public static final String COUNTRIES = "/countries";
