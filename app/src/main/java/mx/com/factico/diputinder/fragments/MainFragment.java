@@ -19,7 +19,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.util.Pair;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -35,7 +34,6 @@ import android.widget.Toast;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.GooglePlayServicesUtil;
-import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.model.LatLng;
 import com.lorentzos.flingswipe.SwipeFlingAdapterView;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -156,8 +154,7 @@ public class MainFragment extends Fragment implements View.OnClickListener {
         if (isVisibleToUser) {
             // you are visible to user now - so set whatever you need
             // initResources();
-        }
-        else {
+        } else {
             // you are no longer visible to the user so cleanup whatever you need
             // cleanupResources();
         }
@@ -229,22 +226,21 @@ public class MainFragment extends Fragment implements View.OnClickListener {
     protected void initLocationClientListener() {
         if (!hasPermissionsGranted(LOCATION_PERMISSIONS))
             requestLocationPermissions();
-        else
-            if (LocationUtils.isGpsOrNetworkProviderEnabled(getActivity())) {
-                //Dialogues.Toast(getActivity(), "initLocationClientListener", Toast.LENGTH_SHORT);
-                isRefreshing = true;
-                showDialog(getResources().getString(R.string.getting_location));
+        else if (LocationUtils.isGpsOrNetworkProviderEnabled(getActivity())) {
+            //Dialogues.Toast(getActivity(), "initLocationClientListener", Toast.LENGTH_SHORT);
+            isRefreshing = true;
+            showDialog(getResources().getString(R.string.getting_location));
 
-                clientListener = new LocationClientListener(getActivity());
-                clientListener.setOnLocationClientListener(new LocationClientListener.OnLocationClientListener() {
-                    @Override
-                    public void onLocationChanged(Location location) {
-                        updateUserLocation(location);
-                    }
-                });
-            } else {
-                setTextMessageError(getResources().getString(R.string.no_gps_enabled));
-            }
+            clientListener = new LocationClientListener(getActivity());
+            clientListener.setOnLocationClientListener(new LocationClientListener.OnLocationClientListener() {
+                @Override
+                public void onLocationChanged(Location location) {
+                    updateUserLocation(location);
+                }
+            });
+        } else {
+            setTextMessageError(getResources().getString(R.string.no_gps_enabled));
+        }
     }
 
     private void updateUserLocation(Location location) {
@@ -349,7 +345,8 @@ public class MainFragment extends Fragment implements View.OnClickListener {
                 }
 
                 @Override
-                public void onLeftCardExit(Object dataObject) {}
+                public void onLeftCardExit(Object dataObject) {
+                }
 
                 @Override
                 public void onRightCardExit(Object dataObject) {
@@ -451,6 +448,7 @@ public class MainFragment extends Fragment implements View.OnClickListener {
     }
 
     private AlertDialog alertDialog;
+
     private void showDialogSwipe(CandidateInfo candidateInfo) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
@@ -471,7 +469,7 @@ public class MainFragment extends Fragment implements View.OnClickListener {
             View btnTweet = view.findViewById(R.id.dialog_tweet_btn_tweet);
             btnTweet.setOnClickListener(TweetOnClickListener);
 
-            String nombres =  candidate.getNombres() != null ? candidate.getNombres() : "";
+            String nombres = candidate.getNombres() != null ? candidate.getNombres() : "";
             String apellidoPaterno = candidate.getApellidoPaterno() != null ? candidate.getApellidoPaterno() : "";
             String apellidoMaterno = candidate.getApellidoMaterno() != null ? candidate.getApellidoMaterno() : "";
 
@@ -597,6 +595,7 @@ public class MainFragment extends Fragment implements View.OnClickListener {
     }
 
     private ProgressDialog dialog;
+
     private void showDialog(String message) {
         if (dialog != null && dialog.isShowing())
             dialog.dismiss();
@@ -654,7 +653,6 @@ public class MainFragment extends Fragment implements View.OnClickListener {
             mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
         }
     }*/
-
     private void dismissDialog() {
         if (dialog != null && dialog.isShowing()) {
             dialog.dismiss();
@@ -707,7 +705,8 @@ public class MainFragment extends Fragment implements View.OnClickListener {
         }
 
         @Override
-        protected void onPreExecute() {}
+        protected void onPreExecute() {
+        }
 
         @Override
         protected String doInBackground(String... params) {
@@ -785,7 +784,8 @@ public class MainFragment extends Fragment implements View.OnClickListener {
         }
 
         @Override
-        protected void onPreExecute() {}
+        protected void onPreExecute() {
+        }
 
         @Override
         protected String doInBackground(String... params) {
@@ -881,7 +881,8 @@ public class MainFragment extends Fragment implements View.OnClickListener {
         }
 
         @Override
-        protected void onPreExecute() {}
+        protected void onPreExecute() {
+        }
 
         @Override
         protected String doInBackground(String... params) {
@@ -929,6 +930,7 @@ public class MainFragment extends Fragment implements View.OnClickListener {
 
     ////////////////////////////////////// LOCATION SERVICES //////////////////////////////////////
     public static final int REQUEST_GOOGLE_PLAY_SERVICES = 1972;
+
     private void startRegistrationService() {
         Activity activity = getActivity();
         if (activity == null)
