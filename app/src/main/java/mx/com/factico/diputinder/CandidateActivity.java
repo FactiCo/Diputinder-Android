@@ -1,9 +1,13 @@
 package mx.com.factico.diputinder;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v4.util.Pair;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -47,6 +51,12 @@ public class CandidateActivity extends AppCompatActivity {
 
     // View name of the header title. Used for activity scene transitions
     public static final String VIEW_NAME_HEADER_TITLE = "detail:header:title";
+
+    public static void startActivity(Activity activity, CandidateInfo candidate) {
+        Intent intent = new Intent(activity, CandidateActivity.class);
+        intent.putExtra(CandidateActivity.TAG_CANDIDATE, candidate);
+        activity.startActivity(intent);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,7 +121,7 @@ public class CandidateActivity extends AppCompatActivity {
 
         Candidate candidate = candidateInfo.getCandidate().getCandidate();
         if (candidate != null) {
-            String nombres =  candidate.getNombres() != null ? candidate.getNombres() : "";
+            String nombres = candidate.getNombres() != null ? candidate.getNombres() : "";
             String apellidoPaterno = candidate.getApellidoPaterno() != null ? candidate.getApellidoPaterno() : "";
             String apellidoMaterno = candidate.getApellidoMaterno() != null ? candidate.getApellidoMaterno() : "";
 

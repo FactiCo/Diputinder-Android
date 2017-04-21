@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Point;
+import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -55,8 +56,9 @@ public class MyArrayAdapter extends ArrayAdapter<CandidateInfo> {
                 .build();
     }
 
+    @NonNull
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(int position, View convertView, @NonNull ViewGroup parent) {
         View rowView = convertView;
         ViewHolder holder;
 
@@ -128,7 +130,7 @@ public class MyArrayAdapter extends ArrayAdapter<CandidateInfo> {
         return values.get(position);
     }
 
-    View.OnClickListener InfoOnClickListener = new View.OnClickListener() {
+    private View.OnClickListener InfoOnClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
             CandidateInfo candidate = v.getTag() != null ? (CandidateInfo) v.getTag() : null;
@@ -144,10 +146,10 @@ public class MyArrayAdapter extends ArrayAdapter<CandidateInfo> {
         getContext().startActivity(intent);
     }
 
-    static class ViewHolder {
+    private static class ViewHolder {
         public TextView name;
-        public ImageView imageProfile;
-        public ImageView imagePartido;
-        public ImageView imageInfo;
+        ImageView imageProfile;
+        ImageView imagePartido;
+        ImageView imageInfo;
     }
 }

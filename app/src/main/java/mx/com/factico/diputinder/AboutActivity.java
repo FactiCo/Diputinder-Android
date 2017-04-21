@@ -14,6 +14,11 @@ import mx.com.factico.diputinder.views.CustomTextView;
  */
 public class AboutActivity extends AppCompatActivity implements View.OnClickListener {
 
+    public static void startActivity(Context context) {
+        Intent intent = new Intent(context, AboutActivity.class);
+        context.startActivity(intent);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

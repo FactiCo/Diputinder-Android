@@ -29,7 +29,7 @@ public class TutorialActivity extends AppCompatActivity implements OnClickListen
 
     private ViewPager mViewPager;
     private CirclePageIndicator mPageIndicator;
-    private Button mSkipButton;
+    private View mSkipButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,7 +57,7 @@ public class TutorialActivity extends AppCompatActivity implements OnClickListen
     private void createViews() {
         mViewPager = (ViewPager) findViewById(R.id.tutorial_pager);
         mPageIndicator = (CirclePageIndicator) findViewById(R.id.tutorial_pager_indicator);
-        mSkipButton = (Button) findViewById(R.id.tutorial_btn_skip);
+        mSkipButton = findViewById(R.id.tutorial_btn_skip);
     }
 
     private void initViews() {
