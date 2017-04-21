@@ -4,7 +4,7 @@ import android.graphics.Bitmap;
 
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
-import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
+import com.nostra13.universalimageloader.core.display.SimpleBitmapDisplayer;
 
 /**
  * Created by Edgar Z. on 21/04/17.
@@ -23,7 +23,7 @@ public class ImageUtils {
                 .imageScaleType(ImageScaleType.EXACTLY)
                 .bitmapConfig(Bitmap.Config.RGB_565)
                 .considerExifParams(true)
-                //.displayer(new FadeInBitmapDisplayer(200))
+                .displayer(new SimpleBitmapDisplayer())
                 .build();
     }
 }

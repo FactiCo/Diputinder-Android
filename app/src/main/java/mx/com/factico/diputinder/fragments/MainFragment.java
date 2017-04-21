@@ -121,17 +121,19 @@ public class MainFragment extends Fragment implements View.OnClickListener {
     }
 
     @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        rootView = inflater.inflate(R.layout.fragment_main, container, false);
+        return rootView;
+    }
+
+    @Override
     public void onDestroyView() {
         super.onDestroyView();
 
         CacheUtils.unbindDrawables(rootView);
         rootView = null;
-    }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        rootView = inflater.inflate(R.layout.fragment_main, container, false);
-        return rootView;
+        if (mAdapter != null) mAdapter.clearAnimateFirstDisplayListener();
     }
 
     @Override

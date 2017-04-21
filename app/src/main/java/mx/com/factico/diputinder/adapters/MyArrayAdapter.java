@@ -15,8 +15,12 @@ import android.widget.TextView;
 
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.assist.ImageScaleType;
+import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
+import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
+import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 
+import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 
@@ -26,6 +30,7 @@ import mx.com.factico.diputinder.beans.Candidate;
 import mx.com.factico.diputinder.beans.CandidateInfo;
 import mx.com.factico.diputinder.beans.Party;
 import mx.com.factico.diputinder.httpconnection.HttpConnection;
+import mx.com.factico.diputinder.utils.ImageUtils;
 import mx.com.factico.diputinder.utils.ScreenUtils;
 
 /**
@@ -33,46 +38,37 @@ import mx.com.factico.diputinder.utils.ScreenUtils;
  */
 public class MyArrayAdapter extends ArrayAdapter<CandidateInfo> {
     private final Activity activity;
-    private final List<CandidateInfo> values;
+    private final List<CandidateInfo> items;
 
     private final DisplayImageOptions options;
 
-    public MyArrayAdapter(Activity activity, List<CandidateInfo> values) {
-        super(activity, R.layout.item_candidate, values);
-        this.activity = activity;
-        this.values = values;
+    private ImageLoadingListener animateFirstListener = new AnimateFirstDisplayListener();
 
-        options = new DisplayImageOptions.Builder()
-                //.showImageOnLoading(R.drawable.drawable_bgr_gray)
-                .showImageForEmptyUri(R.drawable.drawable_bgr_gray)
-                .showImageOnFail(R.drawable.drawable_bgr_gray)
-                .resetViewBeforeLoading(true)
-                //.cacheInMemory(false)
-                .cacheOnDisk(true)
-                .imageScaleType(ImageScaleType.EXACTLY)
-                .bitmapConfig(Bitmap.Config.RGB_565)
-                .considerExifParams(true)
-                //.displayer(new FadeInBitmapDisplayer(100))
-                .build();
+    public MyArrayAdapter(Activity activity, List<CandidateInfo> items) {
+        super(activity, R.layout.item_candidate, items);
+        this.activity = activity;
+        this.items = items;
+
+        options = ImageUtils.buildDisplayImageOptions();
     }
 
     @NonNull
     @Override
     public View getView(int position, View convertView, @NonNull ViewGroup parent) {
-        View rowView = convertView;
-        ViewHolder holder;
+        View view = convertView;
+        final ViewHolder holder;
 
         // reuse views
-        if (rowView == null) {
+        if (convertView == null) {
             LayoutInflater inflater = activity.getLayoutInflater();
-            rowView = inflater.inflate(R.layout.item_candidate, parent, false);
+            view = inflater.inflate(R.layout.item_candidate, parent, false);
             holder = new ViewHolder();
 
             // configure view holder
-            holder.name = (TextView) rowView.findViewById(R.id.item_candidate_tv_name);
-            holder.imageProfile = (ImageView) rowView.findViewById(R.id.item_candidate_iv_profile);
-            holder.imagePartido = (ImageView) rowView.findViewById(R.id.item_candidate_iv_partido);
-            holder.imageInfo = (ImageView) rowView.findViewById(R.id.item_candidate_iv_profile_info);
+            holder.name = (TextView) view.findViewById(R.id.item_candidate_tv_name);
+            holder.imageProfile = (ImageView) view.findViewById(R.id.item_candidate_iv_profile);
+            holder.imagePartido = (ImageView) view.findViewById(R.id.item_candidate_iv_partido);
+            holder.imageInfo = (ImageView) view.findViewById(R.id.item_candidate_iv_profile_info);
 
             Point point = ScreenUtils.getScreenSize(getContext());
             int sizeIcon = point.x / 5;
@@ -84,19 +80,25 @@ public class MyArrayAdapter extends ArrayAdapter<CandidateInfo> {
             paramsIcon.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
             holder.imagePartido.setLayoutParams(paramsIcon);
 
-            rowView.setTag(holder);
+            view.setTag(holder);
         } else {
-            holder = (ViewHolder) rowView.getTag();
+            holder = (ViewHolder) view.getTag();
         }
 
+        fillCandidate(holder, position);
+
+        return view;
+    }
+
+    private void fillCandidate(ViewHolder holder, int position) {
         holder.imageInfo.setTag(getItem(position));
         holder.imageInfo.setOnClickListener(InfoOnClickListener);
 
         CandidateInfo candidateInfo = getItem(position);
 
-        Candidate candidate = candidateInfo.getCandidate().getCandidate();
+        Candidate candidate = candidateInfo != null ? candidateInfo.getCandidate().getCandidate() : null;
         if (candidate != null) {
-            String nombres =  candidate.getNombres() != null ? candidate.getNombres() : "";
+            String nombres = candidate.getNombres() != null ? candidate.getNombres() : "";
             String apellidoPaterno = candidate.getApellidoPaterno() != null ? candidate.getApellidoPaterno() : "";
             String apellidoMaterno = candidate.getApellidoMaterno() != null ? candidate.getApellidoMaterno() : "";
 
@@ -104,30 +106,49 @@ public class MyArrayAdapter extends ArrayAdapter<CandidateInfo> {
 
             if (candidate.getTwitter() != null && !candidate.getTwitter().equals("") && !candidate.getTwitter().equals("no se identificó")) {
                 String twitter = candidate.getTwitter().replaceAll("\\s+", "");
-                ImageLoader.getInstance().displayImage(String.format(Locale.getDefault(), HttpConnection.TWITTER_IMAGE_URL, twitter), holder.imageProfile, options);
+                ImageLoader.getInstance().displayImage(String.format(Locale.getDefault(), HttpConnection.TWITTER_IMAGE_URL, twitter), holder.imageProfile, options, animateFirstListener);
             } else {
                 holder.imageProfile.setImageResource(R.drawable.drawable_bgr_gray);
             }
         }
 
-        if (candidateInfo.getCandidate() != null) {
+        if (candidateInfo != null && candidateInfo.getCandidate() != null) {
             List<Party> parties = candidateInfo.getCandidate().getParty();
             if (parties != null && parties.size() > 0) {
                 ImageLoader.getInstance().displayImage(parties.get(0).getImage(), holder.imagePartido, options);
             }
         }
+    }
 
-        return rowView;
+    public void clearAnimateFirstDisplayListener() {
+        AnimateFirstDisplayListener.displayedImages.clear();
+    }
+
+    private static class AnimateFirstDisplayListener extends SimpleImageLoadingListener {
+
+        static final List<String> displayedImages = Collections.synchronizedList(new LinkedList<String>());
+
+        @Override
+        public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+            if (loadedImage != null) {
+                ImageView imageView = (ImageView) view;
+                boolean firstDisplay = !displayedImages.contains(imageUri);
+                if (firstDisplay) {
+                    FadeInBitmapDisplayer.animate(imageView, 500);
+                    displayedImages.add(imageUri);
+                }
+            }
+        }
     }
 
     @Override
     public int getCount() {
-        return values.size();
+        return items.size();
     }
 
     @Override
     public CandidateInfo getItem(int position) {
-        return values.get(position);
+        return items.get(position);
     }
 
     private View.OnClickListener InfoOnClickListener = new View.OnClickListener() {
@@ -147,7 +168,7 @@ public class MyArrayAdapter extends ArrayAdapter<CandidateInfo> {
     }
 
     private static class ViewHolder {
-        public TextView name;
+        TextView name;
         ImageView imageProfile;
         ImageView imagePartido;
         ImageView imageInfo;
