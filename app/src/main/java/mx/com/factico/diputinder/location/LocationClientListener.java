@@ -4,9 +4,12 @@ package mx.com.factico.diputinder.location;
  * Created by zace3d on 1/26/15.
  */
 
+import android.Manifest;
 import android.app.Activity;
+import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -57,7 +60,7 @@ public class LocationClientListener implements GoogleApiClient.ConnectionCallbac
         mGoogleApiClient.disconnect();
     }
 
-    protected void createLocationRequest() {
+    private void createLocationRequest() {
         // Get last known location
         // LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
 
@@ -70,6 +73,11 @@ public class LocationClientListener implements GoogleApiClient.ConnectionCallbac
             startLocationUpdates();
         } else {
             Dialogues.Toast(activity, activity.getResources().getString(R.string.no_gps_enabled), Toast.LENGTH_LONG);
+
+            if (ActivityCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                    ActivityCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                return;
+            }
 
             mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
 
@@ -107,7 +115,12 @@ public class LocationClientListener implements GoogleApiClient.ConnectionCallbac
         setOnLocationChanged(location);
     }
 
-    public void startLocationUpdates() {
+    private void startLocationUpdates() {
+        if (ActivityCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+
         LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
     }
 

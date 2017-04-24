@@ -232,29 +232,13 @@ public class MainFragment extends Fragment implements View.OnClickListener {
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showSwipeContainer();
+                mSwipeFlingView.setVisibility(View.VISIBLE);
                 initLocationClientListener();
                 startLocationListener();
             }
         });
         view.setVisibility(View.VISIBLE);
         ((CustomTextView) rootView.findViewById(R.id.main_tv_error_message)).setText(messageError);
-    }
-
-    protected void showSwipeContainer() {
-        getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                if (mSwipeFlingView.getVisibility() != View.VISIBLE)
-                    mSwipeFlingView.setVisibility(View.VISIBLE);
-
-                if (mSwipeFlingView.getVisibility() != View.INVISIBLE)
-                    mSwipeFlingView.setVisibility(View.INVISIBLE);
-
-                if (mSwipeFlingView.getVisibility() != View.GONE)
-                    mSwipeFlingView.setVisibility(View.GONE);
-            }
-        });
     }
 
     private void clearAdapter() {
@@ -426,7 +410,7 @@ public class MainFragment extends Fragment implements View.OnClickListener {
 
         if (id == R.id.action_refresh) {
             if (!isRefreshing) {
-                showSwipeContainer();
+                mSwipeFlingView.setVisibility(View.VISIBLE);
                 initLocationClientListener();
                 startLocationListener();
             }
@@ -593,17 +577,19 @@ public class MainFragment extends Fragment implements View.OnClickListener {
                 if (candidateInfoList.size() > 0) {
                     if (auxCandidates != null) {
                         auxCandidates.clear();
+                        mAdapter.notifyDataSetChanged();
 
                         auxCandidates.addAll(candidateInfoList);
+                        mAdapter.notifyDataSetChanged();
+                        isRefreshing = false;
 
                         String jsonCandidates = GsonParser.createJsonFromObject(auxCandidates);
                         PreferencesManager.putStringPreference(getActivity().getApplication(), PreferencesManager.CANDIDATES, jsonCandidates);
 
                         String currentDate = DateUtils.getCurrentDateTime();
                         PreferencesManager.putStringPreference(getActivity().getApplication(), PreferencesManager.DATE_CANDIDATES, currentDate);
-
-                        mAdapter.notifyDataSetChanged();
-                        isRefreshing = false;
+                    } else {
+                        hasNoCandidates = true;
                     }
                 } else {
                     hasNoCandidates = true;
@@ -685,31 +671,11 @@ public class MainFragment extends Fragment implements View.OnClickListener {
         }
     }
 
-    protected void startLocationService() {
-        if (!hasPermissionsGranted(Constants.LOCATION_PERMISSIONS)) {
-            return;
-        }
-
+    private void startLocationService() {
         if (!isRefreshing) {
-            showSwipeContainer();
+            mSwipeFlingView.setVisibility(View.VISIBLE);
             initLocationClientListener();
             startLocationListener();
         }
-        //Intent locationService = new Intent(this, LocationService.class);
-        //startService(locationService);
-    }
-
-    private boolean hasPermissionsGranted(String[] permissions) {
-        Activity activity = getActivity();
-        if (activity == null)
-            return false;
-
-        for (String permission : permissions) {
-            if (ActivityCompat.checkSelfPermission(activity, permission)
-                    != PackageManager.PERMISSION_GRANTED) {
-                return false;
-            }
-        }
-        return true;
     }
 }
