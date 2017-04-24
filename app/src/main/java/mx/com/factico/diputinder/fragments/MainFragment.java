@@ -546,7 +546,7 @@ public class MainFragment extends Fragment implements View.OnClickListener {
     private void handleCandidatesResult(String result) {
         boolean hasNoCandidates = false;
 
-        Dialogues.Log(TAG, "CANDIDATE RESULT: " + result, Log.ERROR);
+        //Dialogues.Log(TAG, "CANDIDATE RESULT: " + result, Log.ERROR);
 
         if (result != null) {
             try {
@@ -555,8 +555,6 @@ public class MainFragment extends Fragment implements View.OnClickListener {
                 if (territory == null) {
                     return;
                 }
-
-                Dialogues.Log(TAG, "Territory: " + territory.getName(), Log.ERROR);
 
                 List<CandidateInfo> candidateInfoList = new ArrayList<>();
 
@@ -570,13 +568,9 @@ public class MainFragment extends Fragment implements View.OnClickListener {
                             candidateInfo.setCandidate(candidates);
 
                             candidateInfoList.add(candidateInfo);
-
-                            Dialogues.Log(TAG, "Candidate Name: " + candidates.getCandidate().getNombres(), Log.ERROR);
                         }
                     }
                 }
-
-                Dialogues.Log(TAG, "Candidates count: " + candidateInfoList.size(), Log.ERROR);
 
                 if (candidateInfoList.size() > 0) {
                     if (auxCandidates != null) {
