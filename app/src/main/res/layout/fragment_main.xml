@@ -2,7 +2,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorGray">
+    android:background="@color/colorWhite">
 
     <android.support.percent.PercentRelativeLayout
         android:layout_width="match_parent"
@@ -34,12 +34,12 @@
                 android:layout_centerVertical="true"
                 android:background="@drawable/selector_btn_no"
                 android:contentDescription="@string/app_name"
-                android:padding="30dp"
+                android:padding="25dp"
                 android:scaleType="centerCrop"
                 android:src="@drawable/ic_no"
                 app:layout_aspectRatio="100%"
-                app:layout_marginLeftPercent="15%"
-                app:layout_widthPercent="30%" />
+                app:layout_marginLeftPercent="18%"
+                app:layout_widthPercent="25%" />
 
             <ImageView
                 android:id="@+id/main_btn_swipe_right"
@@ -50,12 +50,12 @@
                 android:layout_centerVertical="true"
                 android:background="@drawable/selector_btn_yes"
                 android:contentDescription="@string/app_name"
-                android:padding="30dp"
+                android:padding="25dp"
                 android:scaleType="centerCrop"
                 android:src="@drawable/ic_yes"
                 app:layout_aspectRatio="100%"
-                app:layout_marginRightPercent="15%"
-                app:layout_widthPercent="30%" />
+                app:layout_marginRightPercent="18%"
+                app:layout_widthPercent="25%" />
         </android.support.percent.PercentRelativeLayout>
     </android.support.percent.PercentRelativeLayout>
 
