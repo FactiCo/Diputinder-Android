@@ -34,9 +34,9 @@
                 android:layout_centerVertical="true"
                 android:background="@drawable/selector_btn_no"
                 android:contentDescription="@string/app_name"
-                android:padding="25dp"
+                android:padding="30dp"
                 android:scaleType="centerCrop"
-                android:src="@drawable/ic_btn_no"
+                android:src="@drawable/ic_no"
                 app:layout_aspectRatio="100%"
                 app:layout_marginLeftPercent="15%"
                 app:layout_widthPercent="30%" />
@@ -50,9 +50,9 @@
                 android:layout_centerVertical="true"
                 android:background="@drawable/selector_btn_yes"
                 android:contentDescription="@string/app_name"
-                android:padding="25dp"
+                android:padding="30dp"
                 android:scaleType="centerCrop"
-                android:src="@drawable/ic_btn_yes"
+                android:src="@drawable/ic_yes"
                 app:layout_aspectRatio="100%"
                 app:layout_marginRightPercent="15%"
                 app:layout_widthPercent="30%" />
