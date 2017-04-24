@@ -1,26 +1,18 @@
 package mx.com.factico.diputinder.fragments;
 
-import android.Manifest;
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.Dialog;
 import android.app.DialogFragment;
 import android.app.Fragment;
+import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
-import android.graphics.Bitmap;
-import android.graphics.Point;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.ActivityOptionsCompat;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.util.Pair;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -28,19 +20,11 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GoogleApiAvailability;
-import com.google.android.gms.common.GooglePlayServicesUtil;
-import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.model.LatLng;
 import com.lorentzos.flingswipe.SwipeFlingAdapterView;
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -50,11 +34,9 @@ import java.util.Locale;
 import mx.com.factico.diputinder.CandidateActivity;
 import mx.com.factico.diputinder.R;
 import mx.com.factico.diputinder.adapters.MyArrayAdapter;
-import mx.com.factico.diputinder.beans.Candidate;
 import mx.com.factico.diputinder.beans.CandidateInfo;
 import mx.com.factico.diputinder.beans.Candidates;
 import mx.com.factico.diputinder.beans.GeocoderResult;
-import mx.com.factico.diputinder.beans.Indicator;
 import mx.com.factico.diputinder.beans.Messages;
 import mx.com.factico.diputinder.beans.Territory;
 import mx.com.factico.diputinder.dialogues.Dialogues;
@@ -65,9 +47,9 @@ import mx.com.factico.diputinder.location.LocationUtils;
 import mx.com.factico.diputinder.parser.GsonParser;
 import mx.com.factico.diputinder.preferences.PreferencesManager;
 import mx.com.factico.diputinder.utils.CacheUtils;
+import mx.com.factico.diputinder.utils.Constants;
 import mx.com.factico.diputinder.utils.DateUtils;
 import mx.com.factico.diputinder.utils.LinkUtils;
-import mx.com.factico.diputinder.utils.ScreenUtils;
 import mx.com.factico.diputinder.views.CustomTextView;
 
 /**
@@ -77,18 +59,18 @@ import mx.com.factico.diputinder.views.CustomTextView;
 public class MainFragment extends Fragment implements View.OnClickListener {
     private static final String TAG = MainFragment.class.getName();
 
-    public static final String INDEX = "index";
-    public static final String CANDIDATE_TYPE = "candidate_type";
+    private static final String TWITTER_DIALOG_TAG = "twitter_dialog_tag";
 
     private List<CandidateInfo> auxCandidates = new ArrayList<>();
-    private MyArrayAdapter arrayAdapter;
-    private int i;
+    private MyArrayAdapter mAdapter;
 
-    private SwipeFlingAdapterView flingContainer;
+    private SwipeFlingAdapterView mSwipeFlingView;
+    private View mSwipeLeftButton;
+    private View mSwipeRightButton;
+    private TextView mNoItems;
 
     private LocationClientListener clientListener;
     private LatLng userLocation;
-    private DisplayImageOptions options;
 
     private View rootView;
 
@@ -99,28 +81,20 @@ public class MainFragment extends Fragment implements View.OnClickListener {
     private GetMessagesFromCountry messagesTask = null;
 
     private Messages messages = null;
+    private boolean isFirstTime = true;
 
-    private static final String[] LOCATION_PERMISSIONS = {
-            Manifest.permission.ACCESS_FINE_LOCATION
-    };
-
-    private static final int REQUEST_LOCATION_PERMISSIONS = 1;
-    private static final String FRAGMENT_DIALOG = "dialog";
+    public static Fragment newInstance() {
+        Bundle args = new Bundle();
+        Fragment fragment = new MainFragment();
+        fragment.setArguments(args);
+        return fragment;
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setHasOptionsMenu(true);
-
-        startRegistrationService();
-
-        if (GooglePlayServicesUtil.isGooglePlayServicesAvailable(getActivity()) == ConnectionResult.SUCCESS) {
-            //Dialogues.Toast(getActivity(), "GooglePlayServicesAvailable", Toast.LENGTH_SHORT);
-        } else {
-            GooglePlayServicesUtil.showErrorDialogFragment(321, getActivity(), 9000);
-            //Dialogues.Toast(getActivity(), "GooglePlayServicesNOTAvailable", Toast.LENGTH_SHORT);
-        }
     }
 
     @Override
@@ -142,116 +116,98 @@ public class MainFragment extends Fragment implements View.OnClickListener {
     }
 
     @Override
-    public void onDestroy() {
-        super.onDestroy();
-
-        CacheUtils.unbindDrawables(rootView);
-        rootView = null;
-        Runtime.getRuntime().gc();
-    }
-
-    @Override
-    public void setUserVisibleHint(boolean isVisibleToUser) {
-        super.setUserVisibleHint(isVisibleToUser);
-        if (isVisibleToUser) {
-            // you are visible to user now - so set whatever you need
-            // initResources();
-        }
-        else {
-            // you are no longer visible to the user so cleanup whatever you need
-            // cleanupResources();
-        }
-    }
-
-    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        if (rootView == null) {
-            rootView = inflater.inflate(R.layout.fragment_main, container, false);
-            int i = getArguments().getInt(INDEX);
-
-            options = new DisplayImageOptions.Builder()
-                    //.showImageOnLoading(null)
-                    .showImageForEmptyUri(R.drawable.drawable_bgr_gray)
-                    .showImageOnFail(R.drawable.drawable_bgr_gray)
-                    .resetViewBeforeLoading(true)
-                    .cacheOnDisk(true)
-                    .imageScaleType(ImageScaleType.EXACTLY)
-                    .bitmapConfig(Bitmap.Config.RGB_565)
-                    .considerExifParams(true)
-                    //.displayer(new FadeInBitmapDisplayer(300))
-                    .build();
-
-
-            String messagesJson = PreferencesManager.getStringPreference(getActivity().getApplication(), PreferencesManager.MESSAGES);
-            try {
-                String oldDate = PreferencesManager.getStringPreference(getActivity().getApplication(), PreferencesManager.DATE_MESSAGES);
-                String currentDate = DateUtils.getCurrentDateTime();
-                long difference = DateUtils.getDifferencesInHoursBetweenDates(oldDate, currentDate);
-                if (difference < 3) { // 3 horas
-                    messages = GsonParser.getMessagesFromJSON(messagesJson);
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-            String candidatesJson = PreferencesManager.getStringPreference(getActivity().getApplication(), PreferencesManager.CANDIDATES);
-            try {
-                String oldDate = PreferencesManager.getStringPreference(getActivity().getApplication(), PreferencesManager.DATE_CANDIDATES);
-                String currentDate = DateUtils.getCurrentDateTime();
-                long difference = DateUtils.getDifferencesInHoursBetweenDates(oldDate, currentDate);
-                if (difference < 3) { // 3 horas
-                    auxCandidates = GsonParser.getListCandidatesInfoFromJSON(candidatesJson);
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-            createView();
-        }
-
+        rootView = inflater.inflate(R.layout.fragment_main, container, false);
         return rootView;
     }
 
-    private void createView() {
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+
+        CacheUtils.unbindDrawables(rootView);
+        rootView = null;
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        mSwipeFlingView = (SwipeFlingAdapterView) view.findViewById(R.id.main_swipe_tinder);
+        mSwipeLeftButton = view.findViewById(R.id.main_btn_swipe_left);
+        mSwipeRightButton = view.findViewById(R.id.main_btn_swipe_right);
+        mNoItems = (TextView) view.findViewById(R.id.main_no_items);
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        //retrieveMessagesCache();
+        //retrieveCandidatesCache();
+        initViews();
+
         if (auxCandidates != null && auxCandidates.size() > 0 && !isRefreshing) {
-            initUI();
+            mAdapter.notifyDataSetChanged();
         } else {
             initLocationClientListener();
-
-            if (NetworkUtils.isNetworkConnectionAvailable(getActivity())) {
-                initUI();
-            } else {
-                setTextMessageError(getResources().getString(R.string.no_internet_connection));
-            }
         }
     }
 
-    protected void initLocationClientListener() {
-        if (!hasPermissionsGranted(LOCATION_PERMISSIONS))
-            requestLocationPermissions();
-        else
-            if (LocationUtils.isGpsOrNetworkProviderEnabled(getActivity())) {
-                //Dialogues.Toast(getActivity(), "initLocationClientListener", Toast.LENGTH_SHORT);
-                isRefreshing = true;
-                showDialog(getResources().getString(R.string.getting_location));
+    private void retrieveMessagesCache() {
+        Activity activity = getActivity();
+        if (activity == null)
+            return;
 
-                clientListener = new LocationClientListener(getActivity());
-                clientListener.setOnLocationClientListener(new LocationClientListener.OnLocationClientListener() {
-                    @Override
-                    public void onLocationChanged(Location location) {
-                        updateUserLocation(location);
-                    }
-                });
-            } else {
-                setTextMessageError(getResources().getString(R.string.no_gps_enabled));
+        String messagesJson = PreferencesManager.getStringPreference(activity.getApplication(), PreferencesManager.MESSAGES);
+        try {
+            String oldDate = PreferencesManager.getStringPreference(activity.getApplication(), PreferencesManager.DATE_MESSAGES);
+            String currentDate = DateUtils.getCurrentDateTime();
+            long difference = DateUtils.getDifferencesInHoursBetweenDates(oldDate, currentDate);
+            if (difference < 3) { // 3 horas
+                messages = GsonParser.getMessagesFromJSON(messagesJson);
             }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void retrieveCandidatesCache() {
+        Activity activity = getActivity();
+        if (activity == null)
+            return;
+
+        String candidatesJson = PreferencesManager.getStringPreference(activity.getApplication(), PreferencesManager.CANDIDATES);
+        try {
+            String oldDate = PreferencesManager.getStringPreference(activity.getApplication(), PreferencesManager.DATE_CANDIDATES);
+            String currentDate = DateUtils.getCurrentDateTime();
+            long difference = DateUtils.getDifferencesInHoursBetweenDates(oldDate, currentDate);
+            if (difference < 3) { // 3 horas
+                auxCandidates = GsonParser.getListCandidatesInfoFromJSON(candidatesJson);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void initLocationClientListener() {
+        if (LocationUtils.isGpsOrNetworkProviderEnabled(getActivity())) {
+            isRefreshing = true;
+            showDialog(getResources().getString(R.string.getting_location));
+
+            clientListener = new LocationClientListener(getActivity());
+            clientListener.setOnLocationClientListener(new LocationClientListener.OnLocationClientListener() {
+                @Override
+                public void onLocationChanged(Location location) {
+                    updateUserLocation(location);
+                }
+            });
+        }
     }
 
     private void updateUserLocation(Location location) {
         userLocation = LocationUtils.getLatLngFromLocation(location);
         dismissDialog();
-
-        //Dialogues.Toast(getActivity(), "Latitude: " + userLocation.latitude + ", Longitude: " + userLocation.longitude, Toast.LENGTH_SHORT);
 
         showDialog(getResources().getString(R.string.getting_info));
 
@@ -279,7 +235,8 @@ public class MainFragment extends Fragment implements View.OnClickListener {
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showSwipeContainer();
+                mSwipeFlingView.setVisibility(View.VISIBLE);
+                mNoItems.setVisibility(View.GONE);
                 initLocationClientListener();
                 startLocationListener();
             }
@@ -288,113 +245,27 @@ public class MainFragment extends Fragment implements View.OnClickListener {
         ((CustomTextView) rootView.findViewById(R.id.main_tv_error_message)).setText(messageError);
     }
 
-    protected void showSwipeContainer() {
-        getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                if (rootView.findViewById(R.id.main_swipe_tinder).getVisibility() != View.VISIBLE)
-                    rootView.findViewById(R.id.main_swipe_tinder).setVisibility(View.VISIBLE);
-
-                if (rootView.findViewById(R.id.main_no_items).getVisibility() != View.INVISIBLE)
-                    rootView.findViewById(R.id.main_no_items).setVisibility(View.INVISIBLE);
-
-                if (rootView.findViewById(R.id.main_btn_refresh).getVisibility() != View.GONE)
-                    rootView.findViewById(R.id.main_btn_refresh).setVisibility(View.GONE);
-            }
-        });
+    private void clearAdapter() {
+        if (mAdapter != null) {
+            mAdapter.clear();
+            mAdapter.notifyDataSetChanged();
+        }
     }
 
-    protected void initUI() {
-        if (arrayAdapter != null) {
-            arrayAdapter.clear();
-            arrayAdapter.notifyDataSetChanged();
-        }
+    private void initViews() {
+        mSwipeLeftButton.setOnClickListener(this);
+        mSwipeRightButton.setOnClickListener(this);
 
-        if (flingContainer != null) {
-            flingContainer.requestLayout();
-            flingContainer = null;
-            arrayAdapter = null;
-        }
+        mAdapter = new MyArrayAdapter(getActivity(), auxCandidates);
 
-        flingContainer = (SwipeFlingAdapterView) rootView.findViewById(R.id.main_swipe_tinder);
-
-        Point point = ScreenUtils.getScreenSize(getActivity());
-        int width = point.x / 4;
-
-        View btnSwipeLeft = rootView.findViewById(R.id.main_btn_swipe_left);
-        LinearLayout.LayoutParams paramsLeft = new LinearLayout.LayoutParams(width, width);
-        paramsLeft.setMargins(0, 0, width / 3, 0);
-        btnSwipeLeft.setLayoutParams(paramsLeft);
-        btnSwipeLeft.setOnClickListener(this);
-
-        View btnSwipeRight = rootView.findViewById(R.id.main_btn_swipe_right);
-        LinearLayout.LayoutParams paramsRight = new LinearLayout.LayoutParams(width, width);
-        paramsRight.setMargins(width / 3, 0, 0, 0);
-        btnSwipeRight.setLayoutParams(paramsRight);
-        btnSwipeRight.setOnClickListener(this);
-
-        if (auxCandidates != null && auxCandidates.size() > 0) {
-            arrayAdapter = new MyArrayAdapter(getActivity(), auxCandidates);
-
-            flingContainer.setAdapter(arrayAdapter);
-            arrayAdapter.notifyDataSetChanged();
-
-            flingContainer.setFlingListener(new SwipeFlingAdapterView.onFlingListener() {
-                @Override
-                public void removeFirstObjectInAdapter() {
-                    // this is the simplest way to delete an object from the Adapter (/AdapterView)
-                    //Log.d("LIST", "removed object!");
-                    auxCandidates.remove(0);
-                    arrayAdapter.notifyDataSetChanged();
-                }
-
-                @Override
-                public void onLeftCardExit(Object dataObject) {}
-
-                @Override
-                public void onRightCardExit(Object dataObject) {
-                    CandidateInfo candidateInfo = (CandidateInfo) dataObject;
-                    if (candidateInfo != null)
-                        showDialogSwipe(candidateInfo);
-                }
-
-                @Override
-                public void onAdapterAboutToEmpty(int itemsInAdapter) {
-                    // Ask for more data here
-                    if (itemsInAdapter == 0 && !isRefreshing) {
-                        CustomTextView noMoreItems = (CustomTextView) rootView.findViewById(R.id.main_no_items);
-                        noMoreItems.setText(messages != null && messages.getNoCandidates() != null && !messages.getNoCandidates().equals("") ?
-                                messages.getNoCandidates() :
-                                getString(R.string.no_more_candidates));
-                        LinkUtils.fixTextView(noMoreItems);
-
-                        if (rootView.findViewById(R.id.main_no_items).getVisibility() != View.VISIBLE)
-                            rootView.findViewById(R.id.main_no_items).setVisibility(View.VISIBLE);
-
-                        if (rootView.findViewById(R.id.main_swipe_tinder).getVisibility() != View.GONE)
-                            rootView.findViewById(R.id.main_swipe_tinder).setVisibility(View.GONE);
-                    }
-                }
-
-                @Override
-                public void onScroll(float scrollProgressPercent) {
-                    View view = flingContainer.getSelectedView();
-                    if (view != null) {
-                        view.findViewById(R.id.item_swipe_right_indicator).setAlpha(scrollProgressPercent < 0 ? -scrollProgressPercent : 0);
-                        view.findViewById(R.id.item_swipe_left_indicator).setAlpha(scrollProgressPercent > 0 ? scrollProgressPercent : 0);
-                    }
-                }
-            });
-
-            flingContainer.setOnItemClickListener(new SwipeFlingAdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClicked(int itemPosition, Object dataObject) {
-                    startIntentCandidate((CandidateInfo) dataObject);
-                }
-            });
-        }
-
-        isRefreshing = false;
+        mSwipeFlingView.setAdapter(mAdapter);
+        mSwipeFlingView.setFlingListener(new MyOnFlingListener());
+        mSwipeFlingView.setOnItemClickListener(new SwipeFlingAdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClicked(int itemPosition, Object dataObject) {
+                CandidateActivity.startActivity(getActivity(), (CandidateInfo) dataObject);
+            }
+        });
     }
 
     @Override
@@ -409,194 +280,99 @@ public class MainFragment extends Fragment implements View.OnClickListener {
         }
     }
 
-    private void startIntentCandidate(CandidateInfo candidate) {
-        // Construct an Intent as normal
-        Intent intent = new Intent(getActivity(), CandidateActivity.class);
-        intent.putExtra(CandidateActivity.TAG_CANDIDATE, candidate);
+    private class MyOnFlingListener implements SwipeFlingAdapterView.onFlingListener {
+        @Override
+        public void removeFirstObjectInAdapter() {
+            if (auxCandidates == null || auxCandidates.size() == 0)
+                return;
 
-        // BEGIN_INCLUDE(start_activity)
-        /**
-         * Now create an {@link android.app.ActivityOptions} instance using the
-         * {@link ActivityOptionsCompat#makeSceneTransitionAnimation(Activity, Pair[])} factory
-         * method.
-         */
-        ActivityOptionsCompat activityOptions = ActivityOptionsCompat.makeSceneTransitionAnimation(
-                getActivity(),
-                // Now we provide a list of Pair items which contain the view we can transitioning
-                // from, and the name of the view it is transitioning to, in the launched activity
-                new Pair<View, String>(flingContainer.getSelectedView().findViewById(R.id.item_candidate_iv_profile),
-                        CandidateActivity.VIEW_NAME_HEADER_IMAGE),
-                new Pair<View, String>(flingContainer.getSelectedView().findViewById(R.id.item_candidate_tv_name),
-                        CandidateActivity.VIEW_NAME_HEADER_TITLE));
+            auxCandidates.remove(0);
+            mAdapter.notifyDataSetChanged();
+        }
 
-        // Now we can start the Activity, providing the activity options as a bundle
-        ActivityCompat.startActivity(getActivity(), intent, activityOptions.toBundle());
-        // END_INCLUDE(start_activity)
+        @Override
+        public void onLeftCardExit(Object dataObject) {
+        }
+
+        @Override
+        public void onRightCardExit(Object dataObject) {
+            CandidateInfo candidateInfo = (CandidateInfo) dataObject;
+
+            Dialogues.Log(TAG, "Adapter Count: " + mAdapter.getCount(), Log.ERROR);
+            Dialogues.Log(TAG, "Aux Candidates Count: " + auxCandidates.size(), Log.ERROR);
+
+            Dialogues.Log(TAG, "CandidateInfo TerritoryName: " + candidateInfo.getTerritoryName(), Log.ERROR);
+            Dialogues.Log(TAG, "CandidateInfo Position: " + candidateInfo.getPosition(), Log.ERROR);
+
+            Dialogues.Log(TAG, "CandidateInfo Nombres: " + candidateInfo.getCandidate().getCandidate().getNombres(), Log.ERROR);
+            Dialogues.Log(TAG, "CandidateInfo ApellidoPaterno: " + candidateInfo.getCandidate().getCandidate().getApellidoPaterno(), Log.ERROR);
+            Dialogues.Log(TAG, "CandidateInfo ApellidoMaterno: " + candidateInfo.getCandidate().getCandidate().getApellidoMaterno(), Log.ERROR);
+            Dialogues.Log(TAG, "CandidateInfo Twitter: " + candidateInfo.getCandidate().getCandidate().getTwitter(), Log.ERROR);
+
+            showTwitterDialog(candidateInfo, messages);
+        }
+
+        @Override
+        public void onAdapterAboutToEmpty(int itemsInAdapter) {
+            if (isFirstTime)
+                return;
+
+            // Ask for more data here
+            if (itemsInAdapter == 0 && !isRefreshing) {
+                mNoItems.setText(messages != null && messages.getNoCandidates() != null && !messages.getNoCandidates().equals("") ?
+                        messages.getNoCandidates() :
+                        getString(R.string.no_more_candidates));
+                LinkUtils.fixTextView(mNoItems);
+
+                if (mNoItems.getVisibility() != View.VISIBLE)
+                    mNoItems.setVisibility(View.VISIBLE);
+
+                if (mSwipeFlingView.getVisibility() != View.GONE)
+                    mSwipeFlingView.setVisibility(View.GONE);
+            }
+        }
+
+        @Override
+        public void onScroll(float scrollProgressPercent) {
+            View view = mSwipeFlingView.getSelectedView();
+            if (view != null) {
+                view.findViewById(R.id.item_swipe_right_indicator).setAlpha(scrollProgressPercent < 0 ? -scrollProgressPercent : 0);
+                view.findViewById(R.id.item_swipe_left_indicator).setAlpha(scrollProgressPercent > 0 ? scrollProgressPercent : 0);
+            }
+        }
+    }
+
+    private void showTwitterDialog(CandidateInfo candidateInfo, Messages messages) {
+        FragmentTransaction ft = getChildFragmentManager().beginTransaction();
+        Fragment prev = getChildFragmentManager().findFragmentByTag(TWITTER_DIALOG_TAG);
+        if (prev != null) {
+            ft.remove(prev);
+        }
+        ft.addToBackStack(null);
+
+        // Create and show the dialog.
+        DialogFragment dialogFragment = TwitterFragmentDialog.newInstance(candidateInfo, messages);
+        dialogFragment.show(ft, TWITTER_DIALOG_TAG);
     }
 
     private void swipeLeft() {
         /**
          * Trigger the left event manually.
          */
-        if (flingContainer != null && flingContainer.getChildCount() > 0)
-            flingContainer.getTopCardListener().selectLeft();
+        if (mSwipeFlingView != null && mSwipeFlingView.getChildCount() > 0)
+            mSwipeFlingView.getTopCardListener().selectLeft();
     }
 
     private void swipeRight() {
         /**
          * Trigger the right event manually.
          */
-        if (flingContainer != null && flingContainer.getChildCount() > 0)
-            flingContainer.getTopCardListener().selectRight();
-    }
-
-    private AlertDialog alertDialog;
-    private void showDialogSwipe(CandidateInfo candidateInfo) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-
-        View view = getActivity().getLayoutInflater().inflate(R.layout.dialog_tweet, null, false);
-
-        Candidate candidate = candidateInfo.getCandidate().getCandidate();
-
-        if (candidate != null) {
-            CustomTextView tvMessage = (CustomTextView) view.findViewById(R.id.dialog_tweet_tv_message);
-            CustomTextView tvSubMessage = (CustomTextView) view.findViewById(R.id.dialog_tweet_tv_submessage);
-
-            String userName = (candidate.getTwitter() != null && !candidate.getTwitter().equals(""))
-                    ? candidate.getTwitter().startsWith("@") ? candidate.getTwitter() : "@" + candidate.getTwitter()
-                    : "#" + candidate.getNombres().replaceAll("\\s+", "")
-                    + candidate.getApellidoPaterno().replaceAll("\\s+", "")
-                    + candidate.getApellidoMaterno().replaceAll("\\s+", "");
-
-            View btnTweet = view.findViewById(R.id.dialog_tweet_btn_tweet);
-            btnTweet.setOnClickListener(TweetOnClickListener);
-
-            String nombres =  candidate.getNombres() != null ? candidate.getNombres() : "";
-            String apellidoPaterno = candidate.getApellidoPaterno() != null ? candidate.getApellidoPaterno() : "";
-            String apellidoMaterno = candidate.getApellidoMaterno() != null ? candidate.getApellidoMaterno() : "";
-
-            CustomTextView tvName = (CustomTextView) view.findViewById(R.id.dialog_tweet_tv_name);
-            tvName.setText(String.format(Locale.getDefault(), "%s %s %s", nombres, apellidoPaterno, apellidoMaterno));
-
-            ImageView ivProfile = (ImageView) view.findViewById(R.id.dialog_tweet_iv_profile);
-            if (candidate.getTwitter() != null && !candidate.getTwitter().equals("")) {
-                String twitter = candidate.getTwitter().replaceAll("\\s+", "");
-                ImageLoader.getInstance().displayImage(String.format(Locale.getDefault(), HttpConnection.TWITTER_IMAGE_URL, twitter), ivProfile, options);
-            } else {
-                ivProfile.setImageResource(R.drawable.drawable_bgr_gray);
-            }
-
-            if (candidateInfo.getCandidate() != null) {
-                boolean hasAllIndicators = false;
-                List<Indicator> indicators = candidateInfo.getCandidate().getIndicators();
-
-                if (indicators != null && indicators.size() > 0) {
-                    for (Indicator indicator : indicators) {
-                        if (indicator.getDocument() != null && !indicator.getDocument().equals("")) {
-                            hasAllIndicators = true;
-                        } else {
-                            hasAllIndicators = false;
-                            break;
-                        }
-                    }
-                }
-
-                if (hasAllIndicators) {
-                    String explanationChecked = (messages != null && messages.getExplanationChecked() != null) ?
-                            messages.getExplanationChecked() : getString(R.string.tweet_message_good);
-                    String congratulation = (messages != null && messages.getCongratulation() != null) ?
-                            messages.getCongratulation() : getString(R.string.tweet_submessage_good);
-                    String tweetChecked = (messages != null && messages.getTweetChecked() != null) ?
-                            ".%s " + messages.getTweetChecked() : getString(R.string.tweet_first_message_good);
-
-                    tvMessage.setText(explanationChecked);
-                    tvSubMessage.setText(congratulation);
-                    btnTweet.setTag(String.format(Locale.getDefault(), tweetChecked, userName));
-                } else {
-                    String explanationMissing = (messages != null && messages.getExplanationMissing() != null) ?
-                            messages.getExplanationMissing() : getString(R.string.tweet_message_bad);
-                    String demand = (messages != null && messages.getDemand() != null) ?
-                            messages.getDemand() : getString(R.string.tweet_submessage_bad);
-                    String tweetMissing = (messages != null && messages.getTweetMissing() != null) ?
-                            ".%s " + messages.getTweetMissing() : getString(R.string.tweet_first_message_bad);
-
-                    tvMessage.setText(explanationMissing);
-                    tvSubMessage.setText(demand);
-                    btnTweet.setTag(String.format(Locale.getDefault(), tweetMissing, userName));
-                }
-            }
-        }
-
-        builder.setView(view);
-
-        alertDialog = builder.create();
-        alertDialog.setCancelable(true);
-        alertDialog.setCanceledOnTouchOutside(true);
-        alertDialog.show();
-    }
-
-    View.OnClickListener TweetOnClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            String messageTweet = v.getTag() != null ? v.getTag().toString() : null;
-
-            if (messageTweet != null && !messageTweet.equals(""))
-                startShareIntent(messageTweet);
-        }
-    };
-
-    private void startShareIntent(String messageTweet) {
-        if (appInstalledOrNot("com.twitter.android")) {
-            /*if (dialog != null && dialog.isShowing())
-                dialog.dismiss();*/
-
-            Intent shareIntent = findTwitterClient();
-            shareIntent.putExtra(Intent.EXTRA_TEXT, messageTweet);
-            startActivity(Intent.createChooser(shareIntent, "Compartir"));
-        } else {
-            Dialogues.Toast(getActivity(), "Necesitas tener instalada la app de Twitter para poder compartir", Toast.LENGTH_LONG);
-        }
-    }
-
-    public Intent findTwitterClient() {
-        final String[] twitterApps = {
-                // package // name - nb installs (thousands)
-                "com.twitter.android", // official - 10 000
-                //"com.twidroid", // twidroid - 5 000
-                //"com.handmark.tweetcaster", // Tweecaster - 5 000
-                //"com.thedeck.android"
-        }; // TweetDeck - 5 000 };
-        Intent tweetIntent = new Intent();
-        tweetIntent.setType("text/plain");
-        final PackageManager packageManager = getActivity().getPackageManager();
-        List<ResolveInfo> list = packageManager.queryIntentActivities(tweetIntent, PackageManager.MATCH_DEFAULT_ONLY);
-
-        for (int i = 0; i < twitterApps.length; i++) {
-            for (ResolveInfo resolveInfo : list) {
-                String p = resolveInfo.activityInfo.packageName;
-                if (p != null && p.startsWith(twitterApps[i])) {
-                    tweetIntent.setPackage(p);
-                    return tweetIntent;
-                }
-            }
-        }
-
-        return null;
-    }
-
-    private boolean appInstalledOrNot(String uri) {
-        PackageManager pm = getActivity().getPackageManager();
-        boolean app_installed;
-        try {
-            pm.getPackageInfo(uri, PackageManager.GET_ACTIVITIES);
-            app_installed = true;
-        } catch (PackageManager.NameNotFoundException e) {
-            app_installed = false;
-        }
-        return app_installed;
+        if (mSwipeFlingView != null && mSwipeFlingView.getChildCount() > 0)
+            mSwipeFlingView.getTopCardListener().selectRight();
     }
 
     private ProgressDialog dialog;
+
     private void showDialog(String message) {
         if (dialog != null && dialog.isShowing())
             dialog.dismiss();
@@ -619,42 +395,6 @@ public class MainFragment extends Fragment implements View.OnClickListener {
         dialog.show();
     }
 
-    /**
-     * Shows the progress UI and hides the login form.
-     */
-    /*@TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
-    private void showProgress(final boolean show) {
-        // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
-        // for very easy animations. If available, use these APIs to fade-in
-        // the progress spinner.
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
-            int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
-
-            mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-            mLoginFormView.animate().setDuration(shortAnimTime).alpha(
-                    show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-                }
-            });
-
-            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-            mProgressView.animate().setDuration(shortAnimTime).alpha(
-                    show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-                }
-            });
-        } else {
-            // The ViewPropertyAnimator APIs are not available, so simply show
-            // and hide the relevant UI components.
-            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-            mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-        }
-    }*/
-
     private void dismissDialog() {
         if (dialog != null && dialog.isShowing()) {
             dialog.dismiss();
@@ -669,14 +409,12 @@ public class MainFragment extends Fragment implements View.OnClickListener {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
         if (id == R.id.action_refresh) {
             if (!isRefreshing) {
-                showSwipeContainer();
+                mSwipeFlingView.setVisibility(View.VISIBLE);
+                mNoItems.setVisibility(View.GONE);
                 initLocationClientListener();
                 startLocationListener();
             }
@@ -707,7 +445,8 @@ public class MainFragment extends Fragment implements View.OnClickListener {
         }
 
         @Override
-        protected void onPreExecute() {}
+        protected void onPreExecute() {
+        }
 
         @Override
         protected String doInBackground(String... params) {
@@ -717,51 +456,9 @@ public class MainFragment extends Fragment implements View.OnClickListener {
         @Override
         protected void onPostExecute(String result) {
             reverseGeocoderTask = null;
-            //showProgress(false);
             dismissDialog();
 
-            // Dialogues.Log(TAG_CLASS, "Result: " + result, Log.ERROR);
-            // Dialogues.Toast(getActivity(), "Result: " + result, Toast.LENGTH_LONG);
-
-            boolean hasError = false;
-            if (result != null) {
-                try {
-                    String urlCandidates = HttpConnection.URL_HOST;
-                    String urlMessages = HttpConnection.URL_HOST;
-
-                    GeocoderResult geocoderResult = GsonParser.getGeocoderResultFromJSON(result);
-
-                    if (geocoderResult != null) {
-                        if (geocoderResult.getCountry() != null) {
-                            urlCandidates += HttpConnection.COUNTRIES + File.separator + geocoderResult.getCountry().getId();
-                            urlMessages += HttpConnection.COUNTRIES + File.separator + geocoderResult.getCountry().getId() + HttpConnection.MESSAGES;
-
-                            if (geocoderResult.getState() != null) {
-                                urlCandidates += HttpConnection.STATES + File.separator + geocoderResult.getState().getId();
-
-                                if (geocoderResult.getCity() != null) {
-                                    urlCandidates += HttpConnection.CITIES + File.separator + geocoderResult.getCity().getId();
-                                }
-                            }
-                        }
-
-                        urlCandidates += ".json";
-                        urlMessages += ".json";
-
-                        getCandidatesFromAddress(urlCandidates);
-
-                        if (messages == null)
-                            getMessagesFromCountry(urlMessages);
-                    }
-                } catch (Exception e) {
-                    hasError = true;
-                }
-            } else {
-                hasError = true;
-            }
-
-            if (hasError)
-                setTextMessageError(getResources().getString(R.string.error_message_default));
+            handleReverseGeocoderResult(result);
         }
 
         @Override
@@ -772,7 +469,49 @@ public class MainFragment extends Fragment implements View.OnClickListener {
         }
     }
 
-    protected void getCandidatesFromAddress(String url) {
+    private void handleReverseGeocoderResult(String result) {
+        boolean hasError = false;
+        if (result != null) {
+            try {
+                String urlCandidates = HttpConnection.URL_HOST;
+                String urlMessages = HttpConnection.URL_HOST;
+
+                GeocoderResult geocoderResult = GsonParser.getGeocoderResultFromJSON(result);
+
+                if (geocoderResult != null) {
+                    if (geocoderResult.getCountry() != null) {
+                        urlCandidates += HttpConnection.COUNTRIES + File.separator + geocoderResult.getCountry().getId();
+                        urlMessages += HttpConnection.COUNTRIES + File.separator + geocoderResult.getCountry().getId() + HttpConnection.MESSAGES;
+
+                        if (geocoderResult.getState() != null) {
+                            urlCandidates += HttpConnection.STATES + File.separator + geocoderResult.getState().getId();
+
+                            if (geocoderResult.getCity() != null) {
+                                urlCandidates += HttpConnection.CITIES + File.separator + geocoderResult.getCity().getId();
+                            }
+                        }
+                    }
+
+                    urlCandidates += ".json";
+                    urlMessages += ".json";
+
+                    getCandidatesFromAddress(urlCandidates);
+
+                    if (messages == null)
+                        getMessagesFromCountry(urlMessages);
+                }
+            } catch (Exception e) {
+                hasError = true;
+            }
+        } else {
+            hasError = true;
+        }
+
+        if (hasError)
+            setTextMessageError(getResources().getString(R.string.error_message_default));
+    }
+
+    private void getCandidatesFromAddress(String url) {
         candidatesTask = new GetCandidatesTask(url);
         candidatesTask.execute((String) null);
     }
@@ -785,9 +524,6 @@ public class MainFragment extends Fragment implements View.OnClickListener {
         }
 
         @Override
-        protected void onPreExecute() {}
-
-        @Override
         protected String doInBackground(String... params) {
             return HttpConnection.GET(url);
         }
@@ -795,75 +531,82 @@ public class MainFragment extends Fragment implements View.OnClickListener {
         @Override
         protected void onPostExecute(String result) {
             candidatesTask = null;
-            //showProgress(false);
             dismissDialog();
 
-            // Dialogues.Log(TAG_CLASS, "Result: " + result, Log.ERROR);
-            // Dialogues.Toast(getActivity(), "Result: " + result, Toast.LENGTH_LONG);
+            handleCandidatesResult(result);
+        }
 
-            boolean hasNoCandidates = false;
+        @Override
+        protected void onCancelled() {
+            candidatesTask = null;
+            dismissDialog();
+        }
+    }
 
-            if (result != null) {
-                //Dialogues.Toast(getActivity(), "Result: " + result, Toast.LENGTH_LONG);
+    private void handleCandidatesResult(String result) {
+        boolean hasNoCandidates = false;
 
-                try {
-                    Territory territory = GsonParser.getTerritoryJSON(result);
+        //Dialogues.Log(TAG, "CANDIDATE RESULT: " + result, Log.ERROR);
 
-                    if (territory == null) {
-                        return;
-                    }
+        if (result != null) {
+            try {
+                Territory territory = GsonParser.getTerritoryJSON(result);
 
-                    //PreferencesManager.putStringPreference(getActivity().getApplication(), PreferencesManager.JSON_PDF, json_PDF);
+                if (territory == null) {
+                    return;
+                }
 
-                    List<CandidateInfo> candidateInfoList = new ArrayList<>();
+                List<CandidateInfo> candidateInfoList = new ArrayList<>();
 
-                    if (territory.getPositions() != null && territory.getPositions().size() > 0) {
-                        for (Territory.Positions positions : territory.getPositions()) {
+                if (territory.getPositions() != null && territory.getPositions().size() > 0) {
+                    for (Territory.Positions positions : territory.getPositions()) {
 
-                            for (Candidates candidates : positions.getCandidates()) {
-                                CandidateInfo candidateInfo = new CandidateInfo();
-                                candidateInfo.setTerritoryName(positions.getTerritory());
-                                candidateInfo.setPosition(positions.getTitle());
-                                candidateInfo.setCandidate(candidates);
+                        for (Candidates candidates : positions.getCandidates()) {
+                            CandidateInfo candidateInfo = new CandidateInfo();
+                            candidateInfo.setTerritoryName(positions.getTerritory());
+                            candidateInfo.setPosition(positions.getTitle());
+                            candidateInfo.setCandidate(candidates);
 
-                                candidateInfoList.add(candidateInfo);
-                            }
+                            candidateInfoList.add(candidateInfo);
                         }
                     }
+                }
 
-                    if (candidateInfoList.size() > 0) {
-                        auxCandidates = candidateInfoList;
+                if (candidateInfoList.size() > 0) {
+                    if (auxCandidates != null) {
+                        auxCandidates.clear();
+                        mAdapter.clear();
+                        mAdapter.notifyDataSetChanged();
+
+                        auxCandidates.addAll(candidateInfoList);
+                        mAdapter.notifyDataSetChanged();
+
+                        isRefreshing = false;
 
                         String jsonCandidates = GsonParser.createJsonFromObject(auxCandidates);
                         PreferencesManager.putStringPreference(getActivity().getApplication(), PreferencesManager.CANDIDATES, jsonCandidates);
 
                         String currentDate = DateUtils.getCurrentDateTime();
                         PreferencesManager.putStringPreference(getActivity().getApplication(), PreferencesManager.DATE_CANDIDATES, currentDate);
-
-                        initUI();
                     } else {
                         hasNoCandidates = true;
                     }
-                } catch (Exception e) {
+                } else {
                     hasNoCandidates = true;
-
-                    e.printStackTrace();
                 }
-            } else {
+            } catch (Exception e) {
                 hasNoCandidates = true;
-                //setTextMessageError(getResources().getString(R.string.error_message_default));
-            }
 
-            if (hasNoCandidates) {
-                Dialogues.Toast(getActivity(), "No hay candidatos en tu ubicación", Toast.LENGTH_SHORT);
+                e.printStackTrace();
             }
+        } else {
+            hasNoCandidates = true;
         }
 
-        @Override
-        protected void onCancelled() {
-            candidatesTask = null;
-            //showProgress(false);
-            dismissDialog();
+        isFirstTime = false;
+
+        if (hasNoCandidates) {
+            Dialogues.Toast(getActivity(), "No hay candidatos en tu ubicación", Toast.LENGTH_SHORT);
         }
     }
 
@@ -881,7 +624,8 @@ public class MainFragment extends Fragment implements View.OnClickListener {
         }
 
         @Override
-        protected void onPreExecute() {}
+        protected void onPreExecute() {
+        }
 
         @Override
         protected String doInBackground(String... params) {
@@ -894,29 +638,7 @@ public class MainFragment extends Fragment implements View.OnClickListener {
             //showProgress(false);
             dismissDialog();
 
-            // Dialogues.Log(TAG_CLASS, "Result: " + result, Log.ERROR);
-            // Dialogues.Toast(getActivity(), "Result: " + result, Toast.LENGTH_LONG);
-
-            if (result != null) {
-                try {
-                    List<Messages> list = GsonParser.getListMessagesFromJSON(result);
-
-                    if (list == null || list.size() == 0) {
-                        return;
-                    }
-
-                    messages = list.get(0);
-                    String messageJson = GsonParser.createJsonFromObject(messages);
-                    PreferencesManager.putStringPreference(getActivity().getApplication(), PreferencesManager.MESSAGES, messageJson);
-
-                    String currentDate = DateUtils.getCurrentDateTime();
-                    PreferencesManager.putStringPreference(getActivity().getApplication(), PreferencesManager.DATE_MESSAGES, currentDate);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            } else {
-
-            }
+            handleMessagesResult(result);
         }
 
         @Override
@@ -927,177 +649,34 @@ public class MainFragment extends Fragment implements View.OnClickListener {
         }
     }
 
-    ////////////////////////////////////// LOCATION SERVICES //////////////////////////////////////
-    public static final int REQUEST_GOOGLE_PLAY_SERVICES = 1972;
-    private void startRegistrationService() {
-        Activity activity = getActivity();
-        if (activity == null)
+    private void handleMessagesResult(String result) {
+        if (!TextUtils.isEmpty(result))
             return;
 
-        GoogleApiAvailability api = GoogleApiAvailability.getInstance();
-        int code = api.isGooglePlayServicesAvailable(activity);
-        if (code == ConnectionResult.SUCCESS) {
-            onActivityResult(REQUEST_GOOGLE_PLAY_SERVICES, Activity.RESULT_OK, null);
-        } else if (api.isUserResolvableError(code) &&
-                api.showErrorDialogFragment(activity, code, REQUEST_GOOGLE_PLAY_SERVICES)) {
-        } else {
-            String str = GoogleApiAvailability.getInstance().getErrorString(code);
-            Dialogues.Toast(activity, str, Toast.LENGTH_LONG);
+        try {
+            List<Messages> list = GsonParser.getListMessagesFromJSON(result);
+
+            if (list == null || list.size() == 0) {
+                return;
+            }
+
+            messages = list.get(0);
+            String messageJson = GsonParser.createJsonFromObject(messages);
+            PreferencesManager.putStringPreference(getActivity().getApplication(), PreferencesManager.MESSAGES, messageJson);
+
+            String currentDate = DateUtils.getCurrentDateTime();
+            PreferencesManager.putStringPreference(getActivity().getApplication(), PreferencesManager.DATE_MESSAGES, currentDate);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
-    protected void startLocationService() {
-        if (!hasPermissionsGranted(LOCATION_PERMISSIONS)) {
-            requestLocationPermissions();
-            return;
-        }
-
+    private void startLocationService() {
         if (!isRefreshing) {
-            showSwipeContainer();
+            mSwipeFlingView.setVisibility(View.VISIBLE);
+            mNoItems.setVisibility(View.GONE);
             initLocationClientListener();
             startLocationListener();
-        }
-        //Intent locationService = new Intent(this, LocationService.class);
-        //startService(locationService);
-    }
-
-    /**
-     * Gets whether you should show UI with rationale for requesting permissions.
-     *
-     * @param permissions The permissions your app wants to request.
-     * @return Whether you can show permission rationale UI.
-     */
-    private boolean shouldShowRequestPermissionRationale(String[] permissions) {
-        Activity activity = getActivity();
-        if (activity == null)
-            return false;
-
-        for (String permission : permissions) {
-            if (ActivityCompat.shouldShowRequestPermissionRationale(activity, permission)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
-     * Requests permissions needed for recording video.
-     */
-    private void requestLocationPermissions() {
-        Activity activity = getActivity();
-        if (activity == null)
-            return;
-
-        if (shouldShowRequestPermissionRationale(LOCATION_PERMISSIONS)) {
-            ConfirmationDialog.newInstance(getString(R.string.location_permission_request))
-                    .show(getFragmentManager(), FRAGMENT_DIALOG);
-        } else {
-            ActivityCompat.requestPermissions(activity, LOCATION_PERMISSIONS, REQUEST_LOCATION_PERMISSIONS);
-        }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        Log.d(TAG, "onRequestPermissionsResult");
-        if (requestCode == REQUEST_LOCATION_PERMISSIONS) {
-            if (grantResults.length == LOCATION_PERMISSIONS.length) {
-                for (int result : grantResults) {
-                    if (result != PackageManager.PERMISSION_GRANTED) {
-                        ErrorDialog.newInstance(getString(R.string.location_permission_request))
-                                .show(getFragmentManager(), FRAGMENT_DIALOG);
-                        break;
-                    } else {
-                        startLocationService();
-                        break;
-                    }
-                }
-            } else {
-                ErrorDialog.newInstance(getString(R.string.location_permission_request))
-                        .show(getFragmentManager(), FRAGMENT_DIALOG);
-            }
-        } else {
-            super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        }
-    }
-
-    private boolean hasPermissionsGranted(String[] permissions) {
-        Activity activity = getActivity();
-        if (activity == null)
-            return false;
-
-        for (String permission : permissions) {
-            if (ActivityCompat.checkSelfPermission(activity, permission)
-                    != PackageManager.PERMISSION_GRANTED) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    public static class ErrorDialog extends DialogFragment {
-
-        private static final String ARG_MESSAGE = "message";
-
-        public static ErrorDialog newInstance(String message) {
-            ErrorDialog dialog = new ErrorDialog();
-            Bundle args = new Bundle();
-            args.putString(ARG_MESSAGE, message);
-            dialog.setArguments(args);
-            return dialog;
-        }
-
-        @Override
-        public Dialog onCreateDialog(Bundle savedInstanceState) {
-            final Activity activity = getActivity();
-            if (activity == null)
-                return null;
-
-            return new AlertDialog.Builder(activity)
-                    .setMessage(getArguments().getString(ARG_MESSAGE))
-                    .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            if (isAdded())
-                                dismiss();
-                        }
-                    })
-                    .create();
-        }
-    }
-
-    public static class ConfirmationDialog extends DialogFragment {
-
-        private static final String ARG_MESSAGE = "message";
-
-        public static ConfirmationDialog newInstance(String message) {
-            ConfirmationDialog dialog = new ConfirmationDialog();
-            Bundle args = new Bundle();
-            args.putString(ARG_MESSAGE, message);
-            dialog.setArguments(args);
-            return dialog;
-        }
-
-        @Override
-        public Dialog onCreateDialog(Bundle savedInstanceState) {
-            final Activity parent = getActivity();
-            return new AlertDialog.Builder(parent)
-                    .setMessage(getArguments().getString(ARG_MESSAGE))
-                    .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            ActivityCompat.requestPermissions(parent, LOCATION_PERMISSIONS,
-                                    REQUEST_LOCATION_PERMISSIONS);
-                        }
-                    })
-                    .setNegativeButton(android.R.string.cancel,
-                            new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    if (isAdded())
-                                        dismiss();
-                                }
-                            })
-                    .create();
         }
     }
 }

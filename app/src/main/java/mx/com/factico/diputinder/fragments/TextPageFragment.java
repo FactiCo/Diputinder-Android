@@ -1,21 +1,23 @@
 package mx.com.factico.diputinder.fragments;
 
-import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import java.util.Locale;
 
 import mx.com.factico.diputinder.R;
 import mx.com.factico.diputinder.beans.Text;
+import mx.com.factico.diputinder.utils.CacheUtils;
 import mx.com.factico.diputinder.utils.ScreenUtils;
 import mx.com.factico.diputinder.views.CustomTextView;
 
@@ -23,13 +25,18 @@ import mx.com.factico.diputinder.views.CustomTextView;
  * Created by zace3d on 18/05/15.
  */
 public class TextPageFragment extends Fragment {
-    public static final String TAG_CLASS = TextPageFragment.class.getName();
+    public static final String TAG = TextPageFragment.class.getName();
 
     private static final String TEXT = "text";
     private static final String INDEX = "index";
 
     private Text text;
     private int index;
+
+    private ViewGroup mRoot;
+    private ImageView mLogoImage;
+    private TextView mTitleLabel;
+    private TextView mContentLabel;
 
     /**
      * Instances a new fragment with a background color and an index page.
@@ -39,77 +46,77 @@ public class TextPageFragment extends Fragment {
      * @return a new page
      */
     public static Fragment newInstance(int index, Text text) {
-
-        // Instantiate a new fragment
         Fragment fragment = new TextPageFragment();
-
-        // Save the parameters
         Bundle bundle = new Bundle();
         bundle.putInt(INDEX, index);
         bundle.putSerializable(TEXT, text);
         fragment.setArguments(bundle);
-        fragment.setRetainInstance(true);
-
         return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
+        super.onCreate(savedInstanceState);
 
         // Load parameters when the initial creation of the fragment is done
         this.text = (getArguments() != null) ? (Text) getArguments().getSerializable(TEXT) : null;
         this.index = (getArguments() != null) ? getArguments().getInt(INDEX) : -1;
     }
 
-    private ViewGroup rootView;
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
-        rootView = (ViewGroup) inflater.inflate(R.layout.fragment_text, container, false);
-
-        createView(rootView);
-
-        return rootView;
+        mRoot = (ViewGroup) inflater.inflate(R.layout.fragment_text, container, false);
+        return mRoot;
     }
 
-    private View createView(View view) {
-        if (view != null) {
-            Point point = ScreenUtils.getScreenSize(getActivity());
-            int width = point.x / 8 * 6;
-            //int height = (int) ScreenUtils.convertDpToPixel(200, getActivity());
-            int height = point.y / 10 * 3;
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
 
-            int marginTop = (int) ScreenUtils.convertDpToPixel(50, getActivity());
+        CacheUtils.unbindDrawables(mRoot);
+    }
 
-            ImageView imageLogo = (ImageView) view.findViewById(R.id.text_image_logo);
-            LinearLayout.LayoutParams paramsLogo = new LinearLayout.LayoutParams(width, height);
-            //paramsLogo.addRule(RelativeLayout.CENTER_IN_PARENT);
-            paramsLogo.setMargins(0, marginTop, 0, 0);
-            paramsLogo.gravity = Gravity.CENTER_HORIZONTAL;
-            imageLogo.setLayoutParams(paramsLogo);
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
 
-            if (index == 0)
-                imageLogo.setImageResource(R.drawable.ic_tutorial_1);
-            else if (index == 1)
-                imageLogo.setImageResource(R.drawable.ic_tutorial_2);
-            else if (index == 2)
-                imageLogo.setImageResource(R.drawable.ic_tutorial_3);
+        mLogoImage = (ImageView) view.findViewById(R.id.text_image_logo);
+        mTitleLabel = (TextView) view.findViewById(R.id.text_tv_title);
+        mContentLabel = (TextView) view.findViewById(R.id.text_tv_content);
+    }
 
-            CustomTextView tvTitle = (CustomTextView) view.findViewById(R.id.text_tv_title);
-            if (text.getTitle() != null && !text.getTitle().equals(""))
-                tvTitle.setText(text.getTitle().toUpperCase(Locale.getDefault()));
-            else
-                tvTitle.setVisibility(View.GONE);
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
 
-            CustomTextView tvContent = (CustomTextView) view.findViewById(R.id.text_tv_content);
-            if (text.getContent() != null && !text.getContent().equals(""))
-                tvContent.setText(text.getContent());
+        createView();
+    }
 
-            ImageView ivBgr = (ImageView) view.findViewById(R.id.text_iv_bgr);
-        }
+    private void createView() {
+        Point point = ScreenUtils.getScreenSize(getActivity());
+        int width = point.x / 8 * 6;
+        int height = point.y / 10 * 3;
 
-        return view;
+        int marginTop = (int) ScreenUtils.convertDpToPixel(50, getActivity());
+
+        LinearLayout.LayoutParams paramsLogo = new LinearLayout.LayoutParams(width, height);
+        paramsLogo.setMargins(0, marginTop, 0, 0);
+        paramsLogo.gravity = Gravity.CENTER_HORIZONTAL;
+        mLogoImage.setLayoutParams(paramsLogo);
+
+        if (index == 0)
+            mLogoImage.setImageResource(R.drawable.ic_tutorial_1);
+        else if (index == 1)
+            mLogoImage.setImageResource(R.drawable.ic_tutorial_2);
+        else if (index == 2)
+            mLogoImage.setImageResource(R.drawable.ic_tutorial_3);
+
+        if (!TextUtils.isEmpty(text.getTitle()))
+            mTitleLabel.setText(text.getTitle().toUpperCase(Locale.getDefault()));
+        else
+            mTitleLabel.setVisibility(View.GONE);
+
+        if (!TextUtils.isEmpty(text.getContent()))
+            mContentLabel.setText(text.getContent());
     }
 }

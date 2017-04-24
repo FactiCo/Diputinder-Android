@@ -1,13 +1,12 @@
 package mx.com.factico.diputinder;
 
-import android.content.Intent;
-import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.animation.AnimationUtils;
+import android.widget.Button;
 
 import com.viewpagerindicator.CirclePageIndicator;
 
@@ -23,11 +22,14 @@ import mx.com.factico.diputinder.utils.CacheUtils;
  * Created by zace3d on 18/05/15.
  */
 public class TutorialActivity extends AppCompatActivity implements OnClickListener {
-    public static final String TAG_CLASS = TutorialActivity.class.getSimpleName();
-    private View btnSkipTutorial;
+    public static final String TAG = TutorialActivity.class.getName();
+
+    private static final int COUNT_PAGES = 3;
     private int CURRENT_POSITION = 0;
-    private int COUNT_PAGES = 3;
+
     private ViewPager mViewPager;
+    private CirclePageIndicator mPageIndicator;
+    private View mSkipButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,9 +38,11 @@ public class TutorialActivity extends AppCompatActivity implements OnClickListen
 
         boolean isFirstTime = PreferencesManager.getBooleanPreference(getApplication(), PreferencesManager.TUTORIAL);
         if (isFirstTime) {
-            initUI();
+            createViews();
+            initViews();
         } else {
-            startMainIntent();
+            MainActivity.startActivity(this);
+            supportFinishAfterTransition();
         }
     }
 
@@ -50,42 +54,29 @@ public class TutorialActivity extends AppCompatActivity implements OnClickListen
         Runtime.getRuntime().gc();
     }
 
-    private void startMainIntent() {
-        Intent intent = new Intent(getBaseContext(), MainActivity.class);
-        startActivity(intent);
-        // overridePendingTransition(0, 0);
-        finish();
+    private void createViews() {
+        mViewPager = (ViewPager) findViewById(R.id.tutorial_pager);
+        mPageIndicator = (CirclePageIndicator) findViewById(R.id.tutorial_pager_indicator);
+        mSkipButton = findViewById(R.id.tutorial_btn_skip);
     }
 
-    private void initUI() {
-        mViewPager = (ViewPager) findViewById(R.id.tutorial_pager);
-
-        // Creating an instance of PagerAdapter
+    private void initViews() {
         FragmentPagerAdapter mPagerAdapter = new FragmentPagerAdapter(getSupportFragmentManager());
 
-        Resources res = getResources();
-
         mPagerAdapter.addFragment(TextPageFragment.newInstance(0,
-                new Text(res.getString(R.string.tutorial_title_1), res.getString(R.string.tutorial_message_1))));
+                new Text(getString(R.string.tutorial_title_1), getString(R.string.tutorial_message_1))));
         mPagerAdapter.addFragment(TextImagePageFragment.newInstance(1,
-                new Text("", res.getString(R.string.tutorial_message_2))));
+                new Text("", getString(R.string.tutorial_message_2))));
         mPagerAdapter.addFragment(TextPageFragment.newInstance(2,
-                new Text("", res.getString(R.string.tutorial_message_3))));
+                new Text("", getString(R.string.tutorial_message_3))));
 
-        // Setting the PagerAdapter object to the viewPager object
         mViewPager.setAdapter(mPagerAdapter);
-        //mViewPager.setOffscreenPageLimit(mPagerAdapter.getCount());
         mViewPager.setPageTransformer(false, new ParallaxTutorialPagerTransformer(R.id.text_iv_bgr));
-
         mViewPager.addOnPageChangeListener(VerticalOnPageChangeListener);
 
-        //Bind the title indicator to the adapter
-        CirclePageIndicator pagerIndicator = (CirclePageIndicator)findViewById(R.id.tutorial_pager_indicator);
-        pagerIndicator.setViewPager(mViewPager);
-        //pagerIndicator.setOnPageChangeListener(VerticalOnPageChangeListener);
+        mPageIndicator.setViewPager(mViewPager);
 
-        btnSkipTutorial = findViewById(R.id.tutorial_btn_skip);
-        btnSkipTutorial.setOnClickListener(this);
+        mSkipButton.setOnClickListener(this);
     }
 
     ViewPager.OnPageChangeListener VerticalOnPageChangeListener = new ViewPager.OnPageChangeListener() {
@@ -96,22 +87,22 @@ public class TutorialActivity extends AppCompatActivity implements OnClickListen
         public void onPageSelected(int position) {
             if (position == COUNT_PAGES - 1) {
                 if (CURRENT_POSITION < position) {
-                    btnSkipTutorial.setVisibility(View.VISIBLE);
-                    btnSkipTutorial.setClickable(true);
-                    btnSkipTutorial.startAnimation(AnimationUtils.loadAnimation(getBaseContext(), R.anim.slide_right2left));
+                    mSkipButton.setVisibility(View.VISIBLE);
+                    mSkipButton.setClickable(true);
+                    mSkipButton.startAnimation(AnimationUtils.loadAnimation(getBaseContext(), R.anim.slide_right2left));
                 } else {
-                    btnSkipTutorial.setVisibility(View.GONE);
-                    btnSkipTutorial.setClickable(false);
+                    mSkipButton.setVisibility(View.GONE);
+                    mSkipButton.setClickable(false);
                 }
             } else if (position == COUNT_PAGES - 2) {
-                btnSkipTutorial.setVisibility(View.GONE);
-                btnSkipTutorial.setClickable(false);
+                mSkipButton.setVisibility(View.GONE);
+                mSkipButton.setClickable(false);
                 if (CURRENT_POSITION > position) {
-                    btnSkipTutorial.startAnimation(AnimationUtils.loadAnimation(getBaseContext(), R.anim.slide_left2right));
+                    mSkipButton.startAnimation(AnimationUtils.loadAnimation(getBaseContext(), R.anim.slide_left2right));
                 }
             } else {
-                btnSkipTutorial.setVisibility(View.GONE);
-                btnSkipTutorial.setClickable(false);
+                mSkipButton.setVisibility(View.GONE);
+                mSkipButton.setClickable(false);
             }
 
             CURRENT_POSITION = position;
@@ -140,7 +131,9 @@ public class TutorialActivity extends AppCompatActivity implements OnClickListen
         switch (v.getId()) {
             case R.id.tutorial_btn_skip:
                 PreferencesManager.putBooleanPreference(getApplication(), PreferencesManager.TUTORIAL, false);
-                startMainIntent();
+
+                MainActivity.startActivity(this);
+                supportFinishAfterTransition();
                 break;
         }
     }

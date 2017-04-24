@@ -1,11 +1,10 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorGray">
 
-    <RelativeLayout
+    <android.support.percent.PercentRelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -13,84 +12,67 @@
             android:id="@+id/main_swipe_tinder"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_above="@+id/main_btn_container"
-            app:rotation_degrees="15.5"
             app:max_visible="4"
             app:min_adapter_stack="6"
-            tools:context=".MyActivity" />
+            app:rotation_degrees="15.5" />
 
-        <mx.com.factico.diputinder.views.CustomTextView
-            android:id="@+id/main_no_items"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_above="@+id/main_btn_container"
-            android:autoLink="web"
-            android:background="@color/colorBackgroundWhite"
-            android:gravity="center"
-            android:linksClickable="true"
-            android:padding="20dp"
-            android:text="@string/no_more_candidates"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textColor="@color/colorBlueGrey200"
-            android:visibility="invisible"
-            app:typeface="Gotham_Rounded_Bold" />
-
-        <LinearLayout
+        <android.support.percent.PercentRelativeLayout
             android:id="@+id/main_btn_container"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"
             android:layout_marginBottom="20dp"
             android:layout_marginTop="20dp"
-            android:orientation="horizontal">
+            app:layout_widthPercent="100%">
 
             <ImageView
                 android:id="@+id/main_btn_swipe_left"
                 style="?android:attr/buttonBarButtonStyle"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:layout_marginEnd="20dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="20dp"
-                android:layout_marginStart="10dp"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
                 android:background="@drawable/selector_btn_no"
                 android:contentDescription="@string/app_name"
                 android:padding="25dp"
                 android:scaleType="centerCrop"
                 android:src="@drawable/ic_btn_no"
-                android:textColor="@color/colorTextContent" />
-
-            <!--<ImageView
-                style="?android:attr/buttonBarButtonStyle"
-                android:id="@+id/main_btn_info"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:padding="10dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="20dp"
-                android:background="@drawable/selector_circle_gray"
-                android:textColor="@color/colorTextContent"
-                android:scaleType="centerInside"
-                android:src="@drawable/ic_btn_no" />-->
+                app:layout_aspectRatio="100%"
+                app:layout_marginLeftPercent="15%"
+                app:layout_widthPercent="30%" />
 
             <ImageView
                 android:id="@+id/main_btn_swipe_right"
                 style="?android:attr/buttonBarButtonStyle"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:layout_marginEnd="10dp"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="10dp"
-                android:layout_marginStart="20dp"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
                 android:background="@drawable/selector_btn_yes"
                 android:contentDescription="@string/app_name"
                 android:padding="25dp"
                 android:scaleType="centerCrop"
                 android:src="@drawable/ic_btn_yes"
-                android:textColor="@color/colorTextContent" />
-        </LinearLayout>
-    </RelativeLayout>
+                app:layout_aspectRatio="100%"
+                app:layout_marginRightPercent="15%"
+                app:layout_widthPercent="30%" />
+        </android.support.percent.PercentRelativeLayout>
+    </android.support.percent.PercentRelativeLayout>
+
+    <mx.com.factico.diputinder.views.CustomTextView
+        android:id="@+id/main_no_items"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:autoLink="web"
+        android:background="@color/colorBackgroundWhite"
+        android:gravity="center"
+        android:linksClickable="true"
+        android:padding="20dp"
+        android:text="@string/no_more_candidates"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="@color/colorBlueGrey200"
+        android:visibility="invisible"
+        app:typeface="Gotham_Rounded_Bold" />
 
     <RelativeLayout
         android:id="@+id/main_btn_refresh"

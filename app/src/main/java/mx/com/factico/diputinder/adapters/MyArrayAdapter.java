@@ -2,8 +2,8 @@ package mx.com.factico.diputinder.adapters;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.graphics.Point;
+import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,7 +14,6 @@ import android.widget.TextView;
 
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 
 import java.util.List;
 import java.util.Locale;
@@ -25,6 +24,7 @@ import mx.com.factico.diputinder.beans.Candidate;
 import mx.com.factico.diputinder.beans.CandidateInfo;
 import mx.com.factico.diputinder.beans.Party;
 import mx.com.factico.diputinder.httpconnection.HttpConnection;
+import mx.com.factico.diputinder.utils.ImageUtils;
 import mx.com.factico.diputinder.utils.ScreenUtils;
 
 /**
@@ -32,45 +32,35 @@ import mx.com.factico.diputinder.utils.ScreenUtils;
  */
 public class MyArrayAdapter extends ArrayAdapter<CandidateInfo> {
     private final Activity activity;
-    private final List<CandidateInfo> values;
+    private final List<CandidateInfo> items;
 
     private final DisplayImageOptions options;
 
-    public MyArrayAdapter(Activity activity, List<CandidateInfo> values) {
-        super(activity, R.layout.item_candidate, values);
+    public MyArrayAdapter(Activity activity, List<CandidateInfo> items) {
+        super(activity, R.layout.item_candidate, items);
         this.activity = activity;
-        this.values = values;
+        this.items = items;
 
-        options = new DisplayImageOptions.Builder()
-                //.showImageOnLoading(R.drawable.drawable_bgr_gray)
-                .showImageForEmptyUri(R.drawable.drawable_bgr_gray)
-                .showImageOnFail(R.drawable.drawable_bgr_gray)
-                .resetViewBeforeLoading(true)
-                //.cacheInMemory(false)
-                .cacheOnDisk(true)
-                .imageScaleType(ImageScaleType.EXACTLY)
-                .bitmapConfig(Bitmap.Config.RGB_565)
-                .considerExifParams(true)
-                //.displayer(new FadeInBitmapDisplayer(100))
-                .build();
+        options = ImageUtils.buildDisplayImageOptions();
     }
 
+    @NonNull
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        View rowView = convertView;
-        ViewHolder holder;
+    public View getView(int position, View convertView, @NonNull ViewGroup parent) {
+        View view = convertView;
+        final ViewHolder holder;
 
         // reuse views
-        if (rowView == null) {
+        if (convertView == null) {
             LayoutInflater inflater = activity.getLayoutInflater();
-            rowView = inflater.inflate(R.layout.item_candidate, parent, false);
+            view = inflater.inflate(R.layout.item_candidate, parent, false);
             holder = new ViewHolder();
 
             // configure view holder
-            holder.name = (TextView) rowView.findViewById(R.id.item_candidate_tv_name);
-            holder.imageProfile = (ImageView) rowView.findViewById(R.id.item_candidate_iv_profile);
-            holder.imagePartido = (ImageView) rowView.findViewById(R.id.item_candidate_iv_partido);
-            holder.imageInfo = (ImageView) rowView.findViewById(R.id.item_candidate_iv_profile_info);
+            holder.name = (TextView) view.findViewById(R.id.item_candidate_tv_name);
+            holder.imageProfile = (ImageView) view.findViewById(R.id.item_candidate_iv_profile);
+            holder.imagePartido = (ImageView) view.findViewById(R.id.item_candidate_iv_partido);
+            holder.imageInfo = (ImageView) view.findViewById(R.id.item_candidate_iv_profile_info);
 
             Point point = ScreenUtils.getScreenSize(getContext());
             int sizeIcon = point.x / 5;
@@ -82,19 +72,25 @@ public class MyArrayAdapter extends ArrayAdapter<CandidateInfo> {
             paramsIcon.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
             holder.imagePartido.setLayoutParams(paramsIcon);
 
-            rowView.setTag(holder);
+            view.setTag(holder);
         } else {
-            holder = (ViewHolder) rowView.getTag();
+            holder = (ViewHolder) view.getTag();
         }
 
-        holder.imageInfo.setTag(getItem(position));
-        holder.imageInfo.setOnClickListener(InfoOnClickListener);
+        fillCandidate(holder, position);
 
+        return view;
+    }
+
+    private void fillCandidate(ViewHolder holder, int position) {
         CandidateInfo candidateInfo = getItem(position);
 
-        Candidate candidate = candidateInfo.getCandidate().getCandidate();
+        Candidate candidate = candidateInfo != null ? candidateInfo.getCandidate().getCandidate() : null;
         if (candidate != null) {
-            String nombres =  candidate.getNombres() != null ? candidate.getNombres() : "";
+            holder.imageInfo.setTag(candidateInfo);
+            holder.imageInfo.setOnClickListener(InfoOnClickListener);
+
+            String nombres = candidate.getNombres() != null ? candidate.getNombres() : "";
             String apellidoPaterno = candidate.getApellidoPaterno() != null ? candidate.getApellidoPaterno() : "";
             String apellidoMaterno = candidate.getApellidoMaterno() != null ? candidate.getApellidoMaterno() : "";
 
@@ -108,27 +104,25 @@ public class MyArrayAdapter extends ArrayAdapter<CandidateInfo> {
             }
         }
 
-        if (candidateInfo.getCandidate() != null) {
+        if (candidateInfo != null && candidateInfo.getCandidate() != null) {
             List<Party> parties = candidateInfo.getCandidate().getParty();
             if (parties != null && parties.size() > 0) {
                 ImageLoader.getInstance().displayImage(parties.get(0).getImage(), holder.imagePartido, options);
             }
         }
-
-        return rowView;
     }
 
     @Override
     public int getCount() {
-        return values.size();
+        return items.size();
     }
 
     @Override
     public CandidateInfo getItem(int position) {
-        return values.get(position);
+        return items.get(position);
     }
 
-    View.OnClickListener InfoOnClickListener = new View.OnClickListener() {
+    private View.OnClickListener InfoOnClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
             CandidateInfo candidate = v.getTag() != null ? (CandidateInfo) v.getTag() : null;
@@ -144,10 +138,10 @@ public class MyArrayAdapter extends ArrayAdapter<CandidateInfo> {
         getContext().startActivity(intent);
     }
 
-    static class ViewHolder {
-        public TextView name;
-        public ImageView imageProfile;
-        public ImageView imagePartido;
-        public ImageView imageInfo;
+    private static class ViewHolder {
+        TextView name;
+        ImageView imageProfile;
+        ImageView imagePartido;
+        ImageView imageInfo;
     }
 }

@@ -1,87 +1,72 @@
 package mx.com.factico.diputinder;
 
-import android.Manifest;
-import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.Dialog;
-import android.app.DialogFragment;
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
+import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.widget.DrawerLayout;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
-import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GoogleApiAvailability;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import mx.com.factico.diputinder.adapters.DrawerAdapter;
-import mx.com.factico.diputinder.beans.DrawerOption;
 import mx.com.factico.diputinder.dialogues.Dialogues;
 import mx.com.factico.diputinder.fragments.MainFragment;
+import mx.com.factico.diputinder.helpers.RequestPermissionsHelper;
+import mx.com.factico.diputinder.location.LocationUtils;
 import mx.com.factico.diputinder.utils.CacheUtils;
-import mx.com.factico.diputinder.views.CustomTextView;
+import mx.com.factico.diputinder.utils.Constants;
 
 /**
  * Created by zace3d on 18/05/15.
  */
-public class MainActivity extends AppCompatActivity {
-    public static final String TAG = MainActivity.class.getSimpleName();
+public class MainActivity extends AppCompatActivity implements RequestPermissionsHelper.PermissionCallback {
+    public static final String TAG = MainActivity.class.getName();
 
-    private DrawerLayout mDrawerLayout;
-    private RecyclerView mDrawerList;
-    private List<DrawerOption> mDrawerOptions;
-    private CustomTextView actionbarTitle;
-    private Toolbar mToolbar;
-    private ActionBarDrawerToggle mDrawerToggle;
+    public static void startActivity(Context context) {
+        Intent intent = new Intent(context, MainActivity.class);
+        context.startActivity(intent);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        setSupportActionBar();
-        initUI();
+        buildActionBar();
+
+        if (savedInstanceState == null)
+            validatePermissions();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
+    }
 
-        CacheUtils.clearMemoryCache();
-        Runtime.getRuntime().gc();
+    @Override
+    protected void onResume() {
+        super.onResume();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
 
-        finish();
-        System.exit(0);
+        CacheUtils.clearMemoryCache();
     }
 
-    protected void setSupportActionBar() {
-        mToolbar = (Toolbar) findViewById(R.id.actionbar);
+    protected void buildActionBar() {
+        Toolbar mToolbar = (Toolbar) findViewById(R.id.actionbar);
         mToolbar.setTitle("");
-        mToolbar.getBackground().setAlpha(255);
-        actionbarTitle = (CustomTextView) mToolbar.findViewById(R.id.actionbar_title);
+        TextView actionbarTitle = (TextView) mToolbar.findViewById(R.id.actionbar_title);
         actionbarTitle.setText(getResources().getString(R.string.app_name));
 
         setSupportActionBar(mToolbar);
@@ -90,97 +75,105 @@ public class MainActivity extends AppCompatActivity {
         mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startAboutIntent();
+                AboutActivity.startActivity(getBaseContext());
             }
         });
     }
 
-    protected void initUI() {
-        /*mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, mToolbar, R.string.drawer_open, R.string.drawer_close) {
-            @Override
-            public void onDrawerOpened(View drawerView) {
-                super.onDrawerOpened(drawerView);
-            }
-
-            @Override
-            public void onDrawerClosed(View drawerView) {
-                super.onDrawerClosed(drawerView);
-            }
-        };
-        mDrawerLayout.setDrawerListener(mDrawerToggle);
-        mDrawerToggle.syncState();
-
-        //
-        mDrawerOptions = new ArrayList<>();
-        //mDrawerOptions.add(new DrawerOption("Ver diputados"));
-        //mDrawerOptions.add(new DrawerOption("Ver gobernadores"));
-        //mDrawerOptions.add(new DrawerOption("Ver alcaldes"));
-        mDrawerList = (RecyclerView) findViewById(R.id.left_drawer_recycler);
-        //mDrawerList.setHasFixedSize(true);
-        mDrawerList.setLayoutManager(new LinearLayoutManager(getBaseContext()));
-        mDrawerList.setItemAnimator(new DefaultItemAnimator());
-
-        DrawerAdapter drawerAdapter = new DrawerAdapter(mDrawerOptions);
-        drawerAdapter.setOnItemClickListener(new DrawerItemClickListener());
-        mDrawerList.setAdapter(drawerAdapter);*/
-
-        selectItem(1);
+    private void validatePermissions() {
+        if (!hasPermissionsGranted())
+            requestLocationPermissions();
+        else
+            validateLocationServices();
     }
 
-    private class DrawerItemClickListener implements DrawerAdapter.OnItemClickListener {
-        @Override
-        public void onItemClick(View view, int position) {
-            // Dialogues.Toast(getBaseContext(), "Position: " + position, Toast.LENGTH_SHORT);
-            selectItem(position);
+    private boolean hasPermissionsGranted() {
+        return RequestPermissionsHelper.hasPermissionsGranted(this, Constants.LOCATION_PERMISSIONS);
+    }
+
+    private void requestLocationPermissions() {
+        if (RequestPermissionsHelper.shouldShowRequestPermissionRationale(this, Constants.LOCATION_PERMISSIONS)) {
+            showConfirmationDialog();
+        } else {
+            RequestPermissionsHelper.attach(getSupportFragmentManager(), Constants.LOCATION_PERMISSIONS);
         }
     }
 
-    private void selectItem(int position) {
-        Fragment fragment = new MainFragment();
-        Bundle args = new Bundle();
-        args.putInt(MainFragment.INDEX, position);
-        args.putSerializable(MainFragment.CANDIDATE_TYPE, position);
-        fragment.setArguments(args);
+    private void validateLocationServices() {
+        if (!LocationUtils.isGpsOrNetworkProviderEnabled(getBaseContext())) {
+            updateNoLocationActivatedFragment();
+        } else {
+            updateFragment();
+        }
+    }
+
+    @Override
+    public void onPermissionResult(boolean successful) {
+        if (successful) {
+            if (hasPermissionsGranted()) {
+                validatePermissions();
+                Snackbar.make(findViewById(R.id.content_frame), "Permisos otorgados", Snackbar.LENGTH_LONG).show();
+            }
+        } else {
+            Snackbar.make(findViewById(R.id.content_frame), "Permisos no otorgados", Snackbar.LENGTH_LONG).show();
+        }
+    }
+
+    private AlertDialog showConfirmationDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Permisos");
+        builder.setMessage("Se necesitan permisos de ubicación para mostrarte los candidatos que te corresponden.");
+        builder.setOnCancelListener(new DialogInterface.OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialogInterface) {
+                onBackPressed();
+            }
+        });
+        builder.setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                RequestPermissionsHelper.attach(getSupportFragmentManager(), Constants.LOCATION_PERMISSIONS);
+            }
+        });
+
+        builder.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                onBackPressed();
+            }
+        });
+
+        AlertDialog dialog = builder.create();
+        dialog.setCancelable(true);
+        dialog.setCanceledOnTouchOutside(true);
+        dialog.show();
+        return dialog;
+    }
+
+    private void updatePermissionsFragment() {
+        Fragment fragment = MainFragment.newInstance();
 
         FragmentManager fragmentManager = getFragmentManager();
         fragmentManager.beginTransaction()
                 .replace(R.id.content_frame, fragment)
                 .commit();
-
-        // Highlight the selected item, update the title, and close the drawer
-        // mDrawerList.setItemChecked(position, true);
-        //mDrawerLayout.closeDrawer(mDrawerList);
     }
 
-    @Override
-    public void setTitle(CharSequence title) {
-        actionbarTitle.setText(title);
+    private void updateNoLocationActivatedFragment() {
+        Fragment fragment = MainFragment.newInstance();
+
+        FragmentManager fragmentManager = getFragmentManager();
+        fragmentManager.beginTransaction()
+                .replace(R.id.content_frame, fragment)
+                .commit();
     }
 
-    protected void startAboutIntent() {
-        Intent intent = new Intent(this, AboutActivity.class);
-        startActivity(intent);
+    private void updateFragment() {
+        Fragment fragment = MainFragment.newInstance();
+
+        FragmentManager fragmentManager = getFragmentManager();
+        fragmentManager.beginTransaction()
+                .replace(R.id.content_frame, fragment)
+                .commit();
     }
-
-    /*@Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        if (id == android.R.id.home) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }*/
 }

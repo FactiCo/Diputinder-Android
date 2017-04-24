@@ -27,27 +27,31 @@
         </activity>
 
         <activity
+            android:name=".MainActivity"
+            android:label="@string/app_name"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoTranslucentStatus" />
+
+        <activity
             android:name=".CandidateActivity"
             android:launchMode="singleTask"
             android:parentActivityName="mx.com.factico.diputinder.MainActivity"
-            android:screenOrientation="portrait" />
-
-        <activity
-            android:name="mx.com.factico.diputinder.WebViewActivity"
-            android:launchMode="singleTask"
             android:screenOrientation="portrait"
-            android:parentActivityName="mx.com.factico.diputinder.MainActivity"/>
+            android:theme="@style/AppTheme.NoTranslucentStatus" />
 
         <activity
-            android:name="mx.com.factico.diputinder.MainActivity"
-            android:label="@string/app_name"
-            android:launchMode="singleTask"
-            android:screenOrientation="portrait" />
-
-        <activity
-            android:name="mx.com.factico.diputinder.AboutActivity"
+            android:name=".WebViewActivity"
             android:launchMode="singleTask"
             android:parentActivityName="mx.com.factico.diputinder.MainActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoTranslucentStatus" />
+
+        <activity
+            android:name=".AboutActivity"
+            android:launchMode="singleTask"
+            android:parentActivityName="mx.com.factico.diputinder.MainActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoTranslucentStatus" />
     </application>
 </manifest>
