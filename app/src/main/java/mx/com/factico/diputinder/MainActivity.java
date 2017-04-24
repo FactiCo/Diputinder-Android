@@ -49,15 +49,11 @@ public class MainActivity extends AppCompatActivity implements RequestPermission
     @Override
     protected void onPause() {
         super.onPause();
-
-        ImageLoader.getInstance().pause();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-
-        ImageLoader.getInstance().resume();
     }
 
     @Override
