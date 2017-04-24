@@ -2,7 +2,6 @@ package mx.com.factico.diputinder.adapters;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
@@ -15,12 +14,7 @@ import android.widget.TextView;
 
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
-import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
-import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 
-import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 
@@ -41,8 +35,6 @@ public class MyArrayAdapter extends ArrayAdapter<CandidateInfo> {
     private final List<CandidateInfo> items;
 
     private final DisplayImageOptions options;
-
-    private ImageLoadingListener animateFirstListener = new AnimateFirstDisplayListener();
 
     public MyArrayAdapter(Activity activity, List<CandidateInfo> items) {
         super(activity, R.layout.item_candidate, items);
@@ -91,13 +83,13 @@ public class MyArrayAdapter extends ArrayAdapter<CandidateInfo> {
     }
 
     private void fillCandidate(ViewHolder holder, int position) {
-        holder.imageInfo.setTag(getItem(position));
-        holder.imageInfo.setOnClickListener(InfoOnClickListener);
-
         CandidateInfo candidateInfo = getItem(position);
 
         Candidate candidate = candidateInfo != null ? candidateInfo.getCandidate().getCandidate() : null;
         if (candidate != null) {
+            holder.imageInfo.setTag(candidateInfo);
+            holder.imageInfo.setOnClickListener(InfoOnClickListener);
+
             String nombres = candidate.getNombres() != null ? candidate.getNombres() : "";
             String apellidoPaterno = candidate.getApellidoPaterno() != null ? candidate.getApellidoPaterno() : "";
             String apellidoMaterno = candidate.getApellidoMaterno() != null ? candidate.getApellidoMaterno() : "";
@@ -106,7 +98,7 @@ public class MyArrayAdapter extends ArrayAdapter<CandidateInfo> {
 
             if (candidate.getTwitter() != null && !candidate.getTwitter().equals("") && !candidate.getTwitter().equals("no se identificó")) {
                 String twitter = candidate.getTwitter().replaceAll("\\s+", "");
-                ImageLoader.getInstance().displayImage(String.format(Locale.getDefault(), HttpConnection.TWITTER_IMAGE_URL, twitter), holder.imageProfile, options, animateFirstListener);
+                ImageLoader.getInstance().displayImage(String.format(Locale.getDefault(), HttpConnection.TWITTER_IMAGE_URL, twitter), holder.imageProfile, options);
             } else {
                 holder.imageProfile.setImageResource(R.drawable.drawable_bgr_gray);
             }
@@ -116,27 +108,6 @@ public class MyArrayAdapter extends ArrayAdapter<CandidateInfo> {
             List<Party> parties = candidateInfo.getCandidate().getParty();
             if (parties != null && parties.size() > 0) {
                 ImageLoader.getInstance().displayImage(parties.get(0).getImage(), holder.imagePartido, options);
-            }
-        }
-    }
-
-    public void clearAnimateFirstDisplayListener() {
-        AnimateFirstDisplayListener.displayedImages.clear();
-    }
-
-    private static class AnimateFirstDisplayListener extends SimpleImageLoadingListener {
-
-        static final List<String> displayedImages = Collections.synchronizedList(new LinkedList<String>());
-
-        @Override
-        public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-            if (loadedImage != null) {
-                ImageView imageView = (ImageView) view;
-                boolean firstDisplay = !displayedImages.contains(imageUri);
-                if (firstDisplay) {
-                    FadeInBitmapDisplayer.animate(imageView, 500);
-                    displayedImages.add(imageUri);
-                }
             }
         }
     }

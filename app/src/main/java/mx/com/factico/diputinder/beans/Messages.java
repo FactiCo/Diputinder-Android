@@ -1,9 +1,11 @@
 package mx.com.factico.diputinder.beans;
 
+import java.io.Serializable;
+
 /**
  * Created by zace3d on 10/12/15.
  */
-public class Messages {
+public class Messages implements Serializable {
     private long id;
     private long country_id;
     private String explanation_checked;

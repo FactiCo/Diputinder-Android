@@ -1,13 +1,12 @@
 package mx.com.factico.diputinder.fragments;
 
 import android.app.Activity;
-import android.app.AlertDialog;
+import android.app.DialogFragment;
 import android.app.Fragment;
+import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -21,13 +20,10 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.lorentzos.flingswipe.SwipeFlingAdapterView;
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -37,11 +33,9 @@ import java.util.Locale;
 import mx.com.factico.diputinder.CandidateActivity;
 import mx.com.factico.diputinder.R;
 import mx.com.factico.diputinder.adapters.MyArrayAdapter;
-import mx.com.factico.diputinder.beans.Candidate;
 import mx.com.factico.diputinder.beans.CandidateInfo;
 import mx.com.factico.diputinder.beans.Candidates;
 import mx.com.factico.diputinder.beans.GeocoderResult;
-import mx.com.factico.diputinder.beans.Indicator;
 import mx.com.factico.diputinder.beans.Messages;
 import mx.com.factico.diputinder.beans.Territory;
 import mx.com.factico.diputinder.dialogues.Dialogues;
@@ -54,7 +48,6 @@ import mx.com.factico.diputinder.preferences.PreferencesManager;
 import mx.com.factico.diputinder.utils.CacheUtils;
 import mx.com.factico.diputinder.utils.Constants;
 import mx.com.factico.diputinder.utils.DateUtils;
-import mx.com.factico.diputinder.utils.ImageUtils;
 import mx.com.factico.diputinder.utils.LinkUtils;
 import mx.com.factico.diputinder.views.CustomTextView;
 
@@ -65,6 +58,8 @@ import mx.com.factico.diputinder.views.CustomTextView;
 public class MainFragment extends Fragment implements View.OnClickListener {
     private static final String TAG = MainFragment.class.getName();
 
+    private static final String TWITTER_DIALOG_TAG = "twitter_dialog_tag";
+
     private List<CandidateInfo> auxCandidates = new ArrayList<>();
     private MyArrayAdapter mAdapter;
 
@@ -74,7 +69,6 @@ public class MainFragment extends Fragment implements View.OnClickListener {
 
     private LocationClientListener clientListener;
     private LatLng userLocation;
-    private DisplayImageOptions options;
 
     private View rootView;
 
@@ -85,6 +79,7 @@ public class MainFragment extends Fragment implements View.OnClickListener {
     private GetMessagesFromCountry messagesTask = null;
 
     private Messages messages = null;
+    private boolean isFirstTime = true;
 
     public static Fragment newInstance() {
         Bundle args = new Bundle();
@@ -98,8 +93,6 @@ public class MainFragment extends Fragment implements View.OnClickListener {
         super.onCreate(savedInstanceState);
 
         setHasOptionsMenu(true);
-
-        options = ImageUtils.buildDisplayImageOptions();
     }
 
     @Override
@@ -132,8 +125,6 @@ public class MainFragment extends Fragment implements View.OnClickListener {
 
         CacheUtils.unbindDrawables(rootView);
         rootView = null;
-
-        if (mAdapter != null) mAdapter.clearAnimateFirstDisplayListener();
     }
 
     @Override
@@ -151,7 +142,13 @@ public class MainFragment extends Fragment implements View.OnClickListener {
 
         //retrieveMessagesCache();
         //retrieveCandidatesCache();
-        checkLocationServices();
+        initViews();
+
+        if (auxCandidates != null && auxCandidates.size() > 0 && !isRefreshing) {
+            mAdapter.notifyDataSetChanged();
+        } else {
+            initLocationClientListener();
+        }
     }
 
     private void retrieveMessagesCache() {
@@ -190,21 +187,7 @@ public class MainFragment extends Fragment implements View.OnClickListener {
         }
     }
 
-    private void checkLocationServices() {
-        if (auxCandidates != null && auxCandidates.size() > 0 && !isRefreshing) {
-            initViews();
-        } else {
-            initLocationClientListener();
-
-            if (NetworkUtils.isNetworkConnectionAvailable(getActivity())) {
-                initViews();
-            } else {
-                setTextMessageError(getResources().getString(R.string.no_internet_connection));
-            }
-        }
-    }
-
-    protected void initLocationClientListener() {
+    private void initLocationClientListener() {
         if (LocationUtils.isGpsOrNetworkProviderEnabled(getActivity())) {
             isRefreshing = true;
             showDialog(getResources().getString(R.string.getting_location));
@@ -279,36 +262,22 @@ public class MainFragment extends Fragment implements View.OnClickListener {
             mAdapter.clear();
             mAdapter.notifyDataSetChanged();
         }
-
-        if (mSwipeFlingView != null) {
-            mSwipeFlingView.requestLayout();
-            mAdapter = null;
-        }
     }
 
     private void initViews() {
-        clearAdapter();
-
         mSwipeLeftButton.setOnClickListener(this);
         mSwipeRightButton.setOnClickListener(this);
 
-        if (auxCandidates != null && auxCandidates.size() > 0) {
-            mAdapter = new MyArrayAdapter(getActivity(), auxCandidates);
+        mAdapter = new MyArrayAdapter(getActivity(), auxCandidates);
 
-            mSwipeFlingView.setAdapter(mAdapter);
-            mAdapter.notifyDataSetChanged();
-
-            mSwipeFlingView.setFlingListener(new MyOnFlingListener());
-
-            mSwipeFlingView.setOnItemClickListener(new SwipeFlingAdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClicked(int itemPosition, Object dataObject) {
-                    CandidateActivity.startActivity(getActivity(), (CandidateInfo) dataObject);
-                }
-            });
-        }
-
-        isRefreshing = false;
+        mSwipeFlingView.setAdapter(mAdapter);
+        mSwipeFlingView.setFlingListener(new MyOnFlingListener());
+        mSwipeFlingView.setOnItemClickListener(new SwipeFlingAdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClicked(int itemPosition, Object dataObject) {
+                CandidateActivity.startActivity(getActivity(), (CandidateInfo) dataObject);
+            }
+        });
     }
 
     @Override
@@ -326,8 +295,9 @@ public class MainFragment extends Fragment implements View.OnClickListener {
     private class MyOnFlingListener implements SwipeFlingAdapterView.onFlingListener {
         @Override
         public void removeFirstObjectInAdapter() {
-            // this is the simplest way to delete an object from the Adapter (/AdapterView)
-            //Log.d("LIST", "removed object!");
+            if (auxCandidates == null || auxCandidates.size() == 0)
+                return;
+
             auxCandidates.remove(0);
             mAdapter.notifyDataSetChanged();
         }
@@ -339,12 +309,26 @@ public class MainFragment extends Fragment implements View.OnClickListener {
         @Override
         public void onRightCardExit(Object dataObject) {
             CandidateInfo candidateInfo = (CandidateInfo) dataObject;
-            if (candidateInfo != null)
-                showDialogSwipe(candidateInfo);
+
+            Dialogues.Log(TAG, "Adapter Count: " + mAdapter.getCount(), Log.ERROR);
+            Dialogues.Log(TAG, "Aux Candidates Count: " + auxCandidates.size(), Log.ERROR);
+
+            Dialogues.Log(TAG, "CandidateInfo TerritoryName: " + candidateInfo.getTerritoryName(), Log.ERROR);
+            Dialogues.Log(TAG, "CandidateInfo Position: " + candidateInfo.getPosition(), Log.ERROR);
+
+            Dialogues.Log(TAG, "CandidateInfo Nombres: " + candidateInfo.getCandidate().getCandidate().getNombres(), Log.ERROR);
+            Dialogues.Log(TAG, "CandidateInfo ApellidoPaterno: " + candidateInfo.getCandidate().getCandidate().getApellidoPaterno(), Log.ERROR);
+            Dialogues.Log(TAG, "CandidateInfo ApellidoMaterno: " + candidateInfo.getCandidate().getCandidate().getApellidoMaterno(), Log.ERROR);
+            Dialogues.Log(TAG, "CandidateInfo Twitter: " + candidateInfo.getCandidate().getCandidate().getTwitter(), Log.ERROR);
+
+            showTwitterDialog(candidateInfo, messages);
         }
 
         @Override
         public void onAdapterAboutToEmpty(int itemsInAdapter) {
+            if (isFirstTime)
+                return;
+
             // Ask for more data here
             if (itemsInAdapter == 0 && !isRefreshing) {
                 CustomTextView noMoreItems = (CustomTextView) rootView.findViewById(R.id.main_no_items);
@@ -371,6 +355,19 @@ public class MainFragment extends Fragment implements View.OnClickListener {
         }
     }
 
+    private void showTwitterDialog(CandidateInfo candidateInfo, Messages messages) {
+        FragmentTransaction ft = getChildFragmentManager().beginTransaction();
+        Fragment prev = getChildFragmentManager().findFragmentByTag(TWITTER_DIALOG_TAG);
+        if (prev != null) {
+            ft.remove(prev);
+        }
+        ft.addToBackStack(null);
+
+        // Create and show the dialog.
+        DialogFragment dialogFragment = TwitterFragmentDialog.newInstance(candidateInfo, messages);
+        dialogFragment.show(ft, TWITTER_DIALOG_TAG);
+    }
+
     private void swipeLeft() {
         /**
          * Trigger the left event manually.
@@ -385,153 +382,6 @@ public class MainFragment extends Fragment implements View.OnClickListener {
          */
         if (mSwipeFlingView != null && mSwipeFlingView.getChildCount() > 0)
             mSwipeFlingView.getTopCardListener().selectRight();
-    }
-
-    private AlertDialog alertDialog;
-
-    private void showDialogSwipe(CandidateInfo candidateInfo) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-
-        View view = getActivity().getLayoutInflater().inflate(R.layout.dialog_tweet, null, false);
-
-        Candidate candidate = candidateInfo.getCandidate().getCandidate();
-
-        if (candidate != null) {
-            CustomTextView tvMessage = (CustomTextView) view.findViewById(R.id.dialog_tweet_tv_message);
-            CustomTextView tvSubMessage = (CustomTextView) view.findViewById(R.id.dialog_tweet_tv_submessage);
-
-            String userName = (candidate.getTwitter() != null && !candidate.getTwitter().equals(""))
-                    ? candidate.getTwitter().startsWith("@") ? candidate.getTwitter() : "@" + candidate.getTwitter()
-                    : "#" + candidate.getNombres().replaceAll("\\s+", "")
-                    + candidate.getApellidoPaterno().replaceAll("\\s+", "")
-                    + candidate.getApellidoMaterno().replaceAll("\\s+", "");
-
-            View btnTweet = view.findViewById(R.id.dialog_tweet_btn_tweet);
-            btnTweet.setOnClickListener(TweetOnClickListener);
-
-            String nombres = candidate.getNombres() != null ? candidate.getNombres() : "";
-            String apellidoPaterno = candidate.getApellidoPaterno() != null ? candidate.getApellidoPaterno() : "";
-            String apellidoMaterno = candidate.getApellidoMaterno() != null ? candidate.getApellidoMaterno() : "";
-
-            CustomTextView tvName = (CustomTextView) view.findViewById(R.id.dialog_tweet_tv_name);
-            tvName.setText(String.format(Locale.getDefault(), "%s %s %s", nombres, apellidoPaterno, apellidoMaterno));
-
-            ImageView ivProfile = (ImageView) view.findViewById(R.id.dialog_tweet_iv_profile);
-            if (candidate.getTwitter() != null && !candidate.getTwitter().equals("")) {
-                String twitter = candidate.getTwitter().replaceAll("\\s+", "");
-                ImageLoader.getInstance().displayImage(String.format(Locale.getDefault(), HttpConnection.TWITTER_IMAGE_URL, twitter), ivProfile, options);
-            } else {
-                ivProfile.setImageResource(R.drawable.drawable_bgr_gray);
-            }
-
-            if (candidateInfo.getCandidate() != null) {
-                boolean hasAllIndicators = false;
-                List<Indicator> indicators = candidateInfo.getCandidate().getIndicators();
-
-                if (indicators != null && indicators.size() > 0) {
-                    for (Indicator indicator : indicators) {
-                        if (indicator.getDocument() != null && !indicator.getDocument().equals("")) {
-                            hasAllIndicators = true;
-                        } else {
-                            hasAllIndicators = false;
-                            break;
-                        }
-                    }
-                }
-
-                if (hasAllIndicators) {
-                    String explanationChecked = (messages != null && messages.getExplanationChecked() != null) ?
-                            messages.getExplanationChecked() : getString(R.string.tweet_message_good);
-                    String congratulation = (messages != null && messages.getCongratulation() != null) ?
-                            messages.getCongratulation() : getString(R.string.tweet_submessage_good);
-                    String tweetChecked = (messages != null && messages.getTweetChecked() != null) ?
-                            ".%s " + messages.getTweetChecked() : getString(R.string.tweet_first_message_good);
-
-                    tvMessage.setText(explanationChecked);
-                    tvSubMessage.setText(congratulation);
-                    btnTweet.setTag(String.format(Locale.getDefault(), tweetChecked, userName));
-                } else {
-                    String explanationMissing = (messages != null && messages.getExplanationMissing() != null) ?
-                            messages.getExplanationMissing() : getString(R.string.tweet_message_bad);
-                    String demand = (messages != null && messages.getDemand() != null) ?
-                            messages.getDemand() : getString(R.string.tweet_submessage_bad);
-                    String tweetMissing = (messages != null && messages.getTweetMissing() != null) ?
-                            ".%s " + messages.getTweetMissing() : getString(R.string.tweet_first_message_bad);
-
-                    tvMessage.setText(explanationMissing);
-                    tvSubMessage.setText(demand);
-                    btnTweet.setTag(String.format(Locale.getDefault(), tweetMissing, userName));
-                }
-            }
-        }
-
-        builder.setView(view);
-
-        alertDialog = builder.create();
-        alertDialog.setCancelable(true);
-        alertDialog.setCanceledOnTouchOutside(true);
-        alertDialog.show();
-    }
-
-    View.OnClickListener TweetOnClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            String messageTweet = v.getTag() != null ? v.getTag().toString() : null;
-
-            if (messageTweet != null && !messageTweet.equals(""))
-                startShareIntent(messageTweet);
-        }
-    };
-
-    private void startShareIntent(String messageTweet) {
-        if (appInstalledOrNot("com.twitter.android")) {
-            /*if (dialog != null && dialog.isShowing())
-                dialog.dismiss();*/
-
-            Intent shareIntent = findTwitterClient();
-            shareIntent.putExtra(Intent.EXTRA_TEXT, messageTweet);
-            startActivity(Intent.createChooser(shareIntent, "Compartir"));
-        } else {
-            Dialogues.Toast(getActivity(), "Necesitas tener instalada la app de Twitter para poder compartir", Toast.LENGTH_LONG);
-        }
-    }
-
-    public Intent findTwitterClient() {
-        final String[] twitterApps = {
-                // package // name - nb installs (thousands)
-                "com.twitter.android", // official - 10 000
-                //"com.twidroid", // twidroid - 5 000
-                //"com.handmark.tweetcaster", // Tweecaster - 5 000
-                //"com.thedeck.android"
-        }; // TweetDeck - 5 000 };
-        Intent tweetIntent = new Intent();
-        tweetIntent.setType("text/plain");
-        final PackageManager packageManager = getActivity().getPackageManager();
-        List<ResolveInfo> list = packageManager.queryIntentActivities(tweetIntent, PackageManager.MATCH_DEFAULT_ONLY);
-
-        for (int i = 0; i < twitterApps.length; i++) {
-            for (ResolveInfo resolveInfo : list) {
-                String p = resolveInfo.activityInfo.packageName;
-                if (p != null && p.startsWith(twitterApps[i])) {
-                    tweetIntent.setPackage(p);
-                    return tweetIntent;
-                }
-            }
-        }
-
-        return null;
-    }
-
-    private boolean appInstalledOrNot(String uri) {
-        PackageManager pm = getActivity().getPackageManager();
-        boolean app_installed;
-        try {
-            pm.getPackageInfo(uri, PackageManager.GET_ACTIVITIES);
-            app_installed = true;
-        } catch (PackageManager.NameNotFoundException e) {
-            app_installed = false;
-        }
-        return app_installed;
     }
 
     private ProgressDialog dialog;
@@ -618,51 +468,9 @@ public class MainFragment extends Fragment implements View.OnClickListener {
         @Override
         protected void onPostExecute(String result) {
             reverseGeocoderTask = null;
-            //showProgress(false);
             dismissDialog();
 
-            // Dialogues.Log(TAG_CLASS, "Result: " + result, Log.ERROR);
-            // Dialogues.Toast(getActivity(), "Result: " + result, Toast.LENGTH_LONG);
-
-            boolean hasError = false;
-            if (result != null) {
-                try {
-                    String urlCandidates = HttpConnection.URL_HOST;
-                    String urlMessages = HttpConnection.URL_HOST;
-
-                    GeocoderResult geocoderResult = GsonParser.getGeocoderResultFromJSON(result);
-
-                    if (geocoderResult != null) {
-                        if (geocoderResult.getCountry() != null) {
-                            urlCandidates += HttpConnection.COUNTRIES + File.separator + geocoderResult.getCountry().getId();
-                            urlMessages += HttpConnection.COUNTRIES + File.separator + geocoderResult.getCountry().getId() + HttpConnection.MESSAGES;
-
-                            if (geocoderResult.getState() != null) {
-                                urlCandidates += HttpConnection.STATES + File.separator + geocoderResult.getState().getId();
-
-                                if (geocoderResult.getCity() != null) {
-                                    urlCandidates += HttpConnection.CITIES + File.separator + geocoderResult.getCity().getId();
-                                }
-                            }
-                        }
-
-                        urlCandidates += ".json";
-                        urlMessages += ".json";
-
-                        getCandidatesFromAddress(urlCandidates);
-
-                        if (messages == null)
-                            getMessagesFromCountry(urlMessages);
-                    }
-                } catch (Exception e) {
-                    hasError = true;
-                }
-            } else {
-                hasError = true;
-            }
-
-            if (hasError)
-                setTextMessageError(getResources().getString(R.string.error_message_default));
+            handleReverseGeocoderResult(result);
         }
 
         @Override
@@ -673,7 +481,49 @@ public class MainFragment extends Fragment implements View.OnClickListener {
         }
     }
 
-    protected void getCandidatesFromAddress(String url) {
+    private void handleReverseGeocoderResult(String result) {
+        boolean hasError = false;
+        if (result != null) {
+            try {
+                String urlCandidates = HttpConnection.URL_HOST;
+                String urlMessages = HttpConnection.URL_HOST;
+
+                GeocoderResult geocoderResult = GsonParser.getGeocoderResultFromJSON(result);
+
+                if (geocoderResult != null) {
+                    if (geocoderResult.getCountry() != null) {
+                        urlCandidates += HttpConnection.COUNTRIES + File.separator + geocoderResult.getCountry().getId();
+                        urlMessages += HttpConnection.COUNTRIES + File.separator + geocoderResult.getCountry().getId() + HttpConnection.MESSAGES;
+
+                        if (geocoderResult.getState() != null) {
+                            urlCandidates += HttpConnection.STATES + File.separator + geocoderResult.getState().getId();
+
+                            if (geocoderResult.getCity() != null) {
+                                urlCandidates += HttpConnection.CITIES + File.separator + geocoderResult.getCity().getId();
+                            }
+                        }
+                    }
+
+                    urlCandidates += ".json";
+                    urlMessages += ".json";
+
+                    getCandidatesFromAddress(urlCandidates);
+
+                    if (messages == null)
+                        getMessagesFromCountry(urlMessages);
+                }
+            } catch (Exception e) {
+                hasError = true;
+            }
+        } else {
+            hasError = true;
+        }
+
+        if (hasError)
+            setTextMessageError(getResources().getString(R.string.error_message_default));
+    }
+
+    private void getCandidatesFromAddress(String url) {
         candidatesTask = new GetCandidatesTask(url);
         candidatesTask.execute((String) null);
     }
@@ -701,7 +551,6 @@ public class MainFragment extends Fragment implements View.OnClickListener {
         @Override
         protected void onCancelled() {
             candidatesTask = null;
-            //showProgress(false);
             dismissDialog();
         }
     }
@@ -742,19 +591,20 @@ public class MainFragment extends Fragment implements View.OnClickListener {
                 Dialogues.Log(TAG, "Candidates count: " + candidateInfoList.size(), Log.ERROR);
 
                 if (candidateInfoList.size() > 0) {
-                    auxCandidates = candidateInfoList;
+                    if (auxCandidates != null) {
+                        auxCandidates.clear();
 
-                    String jsonCandidates = GsonParser.createJsonFromObject(auxCandidates);
-                    PreferencesManager.putStringPreference(getActivity().getApplication(), PreferencesManager.CANDIDATES, jsonCandidates);
+                        auxCandidates.addAll(candidateInfoList);
 
-                    String currentDate = DateUtils.getCurrentDateTime();
-                    PreferencesManager.putStringPreference(getActivity().getApplication(), PreferencesManager.DATE_CANDIDATES, currentDate);
+                        String jsonCandidates = GsonParser.createJsonFromObject(auxCandidates);
+                        PreferencesManager.putStringPreference(getActivity().getApplication(), PreferencesManager.CANDIDATES, jsonCandidates);
 
-                    Dialogues.Log(TAG, "Before initViews", Log.ERROR);
+                        String currentDate = DateUtils.getCurrentDateTime();
+                        PreferencesManager.putStringPreference(getActivity().getApplication(), PreferencesManager.DATE_CANDIDATES, currentDate);
 
-                    initViews();
-
-                    Dialogues.Log(TAG, "After initViews", Log.ERROR);
+                        mAdapter.notifyDataSetChanged();
+                        isRefreshing = false;
+                    }
                 } else {
                     hasNoCandidates = true;
                 }
@@ -766,6 +616,8 @@ public class MainFragment extends Fragment implements View.OnClickListener {
         } else {
             hasNoCandidates = true;
         }
+
+        isFirstTime = false;
 
         if (hasNoCandidates) {
             Dialogues.Toast(getActivity(), "No hay candidatos en tu ubicación", Toast.LENGTH_SHORT);
