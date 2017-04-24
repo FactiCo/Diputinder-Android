@@ -37,18 +37,21 @@
             android:name=".CandidateActivity"
             android:launchMode="singleTask"
             android:parentActivityName="mx.com.factico.diputinder.MainActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoTranslucentStatus" />
 
         <activity
             android:name=".WebViewActivity"
             android:launchMode="singleTask"
             android:parentActivityName="mx.com.factico.diputinder.MainActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoTranslucentStatus" />
 
         <activity
             android:name=".AboutActivity"
             android:launchMode="singleTask"
             android:parentActivityName="mx.com.factico.diputinder.MainActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoTranslucentStatus" />
     </application>
 </manifest>

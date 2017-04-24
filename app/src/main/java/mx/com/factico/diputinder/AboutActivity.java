@@ -6,8 +6,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
-
-import mx.com.factico.diputinder.views.CustomTextView;
+import android.widget.TextView;
 
 /**
  * Created by zace3d on 17/09/15.
@@ -38,12 +37,11 @@ public class AboutActivity extends AppCompatActivity implements View.OnClickList
     protected void setSupportActionBar() {
         Toolbar mToolbar = (Toolbar) findViewById(R.id.actionbar);
         mToolbar.setTitle("");
-        mToolbar.getBackground().setAlpha(255);
-        CustomTextView actionbarTitle = (CustomTextView) mToolbar.findViewById(R.id.actionbar_title);
+        TextView actionbarTitle = (TextView) mToolbar.findViewById(R.id.actionbar_title);
         actionbarTitle.setText(getResources().getString(R.string.about_name));
 
         setSupportActionBar(mToolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        if (getSupportActionBar() != null) getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     protected void initUI() {
@@ -54,15 +52,8 @@ public class AboutActivity extends AppCompatActivity implements View.OnClickList
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.about_tv_link:
-                startWebViewIntent(this, getString(R.string.drawer_header_liguepolitico_website));
+                WebViewActivity.startActivity(this, getString(R.string.drawer_header_liguepolitico_website));
                 break;
-
         }
-    }
-
-    private void startWebViewIntent(Context context, String url) {
-        Intent intent = new Intent(context, WebViewActivity.class);
-        intent.putExtra("url", url);
-        context.startActivity(intent);
     }
 }

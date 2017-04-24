@@ -1,5 +1,7 @@
 package mx.com.factico.diputinder;
 
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -22,7 +24,7 @@ import mx.com.factico.diputinder.utils.CacheUtils;
  * Created by zace3d on 18/05/15.
  */
 public class WebViewActivity extends AppCompatActivity {
-    public static final String TAG_CLASS = WebViewActivity.class.getSimpleName();
+    public static final String TAG = WebViewActivity.class.getName();
 
     private WebView webView;
     private String url;
@@ -30,6 +32,12 @@ public class WebViewActivity extends AppCompatActivity {
     private String title;
     private ProgressBar progressBar;
     private ViewGroup container;
+
+    public static void startActivity(Context context, String url) {
+        Intent intent = new Intent(context, WebViewActivity.class);
+        intent.putExtra("url", url);
+        context.startActivity(intent);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
