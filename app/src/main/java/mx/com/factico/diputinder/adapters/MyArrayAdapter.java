@@ -60,17 +60,6 @@ public class MyArrayAdapter extends ArrayAdapter<CandidateInfo> {
             holder.name = (TextView) view.findViewById(R.id.item_candidate_tv_name);
             holder.imageProfile = (ImageView) view.findViewById(R.id.item_candidate_iv_profile);
             holder.imagePartido = (ImageView) view.findViewById(R.id.item_candidate_iv_partido);
-            holder.imageInfo = (ImageView) view.findViewById(R.id.item_candidate_iv_profile_info);
-
-            Point point = ScreenUtils.getScreenSize(getContext());
-            int sizeIcon = point.x / 5;
-            int margin = (int) ScreenUtils.convertDpToPixel(10, getContext());
-
-            RelativeLayout.LayoutParams paramsIcon = new RelativeLayout.LayoutParams(sizeIcon, sizeIcon);
-            paramsIcon.setMargins(0, 0, margin, margin);
-            paramsIcon.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-            paramsIcon.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-            holder.imagePartido.setLayoutParams(paramsIcon);
 
             view.setTag(holder);
         } else {
@@ -87,9 +76,6 @@ public class MyArrayAdapter extends ArrayAdapter<CandidateInfo> {
 
         Candidate candidate = candidateInfo != null ? candidateInfo.getCandidate().getCandidate() : null;
         if (candidate != null) {
-            holder.imageInfo.setTag(candidateInfo);
-            holder.imageInfo.setOnClickListener(InfoOnClickListener);
-
             String nombres = candidate.getNombres() != null ? candidate.getNombres() : "";
             String apellidoPaterno = candidate.getApellidoPaterno() != null ? candidate.getApellidoPaterno() : "";
             String apellidoMaterno = candidate.getApellidoMaterno() != null ? candidate.getApellidoMaterno() : "";
@@ -142,6 +128,5 @@ public class MyArrayAdapter extends ArrayAdapter<CandidateInfo> {
         TextView name;
         ImageView imageProfile;
         ImageView imagePartido;
-        ImageView imageInfo;
     }
 }
