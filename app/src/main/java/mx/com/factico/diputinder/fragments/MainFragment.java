@@ -20,6 +20,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.model.LatLng;
@@ -66,6 +67,7 @@ public class MainFragment extends Fragment implements View.OnClickListener {
     private SwipeFlingAdapterView mSwipeFlingView;
     private View mSwipeLeftButton;
     private View mSwipeRightButton;
+    private TextView mNoItems;
 
     private LocationClientListener clientListener;
     private LatLng userLocation;
@@ -134,6 +136,7 @@ public class MainFragment extends Fragment implements View.OnClickListener {
         mSwipeFlingView = (SwipeFlingAdapterView) view.findViewById(R.id.main_swipe_tinder);
         mSwipeLeftButton = view.findViewById(R.id.main_btn_swipe_left);
         mSwipeRightButton = view.findViewById(R.id.main_btn_swipe_right);
+        mNoItems = (TextView) view.findViewById(R.id.main_no_items);
     }
 
     @Override
@@ -233,6 +236,7 @@ public class MainFragment extends Fragment implements View.OnClickListener {
             @Override
             public void onClick(View v) {
                 mSwipeFlingView.setVisibility(View.VISIBLE);
+                mNoItems.setVisibility(View.GONE);
                 initLocationClientListener();
                 startLocationListener();
             }
@@ -315,14 +319,13 @@ public class MainFragment extends Fragment implements View.OnClickListener {
 
             // Ask for more data here
             if (itemsInAdapter == 0 && !isRefreshing) {
-                CustomTextView noMoreItems = (CustomTextView) rootView.findViewById(R.id.main_no_items);
-                noMoreItems.setText(messages != null && messages.getNoCandidates() != null && !messages.getNoCandidates().equals("") ?
+                mNoItems.setText(messages != null && messages.getNoCandidates() != null && !messages.getNoCandidates().equals("") ?
                         messages.getNoCandidates() :
                         getString(R.string.no_more_candidates));
-                LinkUtils.fixTextView(noMoreItems);
+                LinkUtils.fixTextView(mNoItems);
 
-                if (rootView.findViewById(R.id.main_no_items).getVisibility() != View.VISIBLE)
-                    rootView.findViewById(R.id.main_no_items).setVisibility(View.VISIBLE);
+                if (mNoItems.getVisibility() != View.VISIBLE)
+                    mNoItems.setVisibility(View.VISIBLE);
 
                 if (mSwipeFlingView.getVisibility() != View.GONE)
                     mSwipeFlingView.setVisibility(View.GONE);
@@ -411,6 +414,7 @@ public class MainFragment extends Fragment implements View.OnClickListener {
         if (id == R.id.action_refresh) {
             if (!isRefreshing) {
                 mSwipeFlingView.setVisibility(View.VISIBLE);
+                mNoItems.setVisibility(View.GONE);
                 initLocationClientListener();
                 startLocationListener();
             }
@@ -577,10 +581,12 @@ public class MainFragment extends Fragment implements View.OnClickListener {
                 if (candidateInfoList.size() > 0) {
                     if (auxCandidates != null) {
                         auxCandidates.clear();
+                        mAdapter.clear();
                         mAdapter.notifyDataSetChanged();
 
                         auxCandidates.addAll(candidateInfoList);
                         mAdapter.notifyDataSetChanged();
+
                         isRefreshing = false;
 
                         String jsonCandidates = GsonParser.createJsonFromObject(auxCandidates);
@@ -674,6 +680,7 @@ public class MainFragment extends Fragment implements View.OnClickListener {
     private void startLocationService() {
         if (!isRefreshing) {
             mSwipeFlingView.setVisibility(View.VISIBLE);
+            mNoItems.setVisibility(View.GONE);
             initLocationClientListener();
             startLocationListener();
         }

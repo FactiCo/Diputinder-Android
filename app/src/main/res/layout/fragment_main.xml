@@ -8,6 +8,14 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <com.lorentzos.flingswipe.SwipeFlingAdapterView
+            android:id="@+id/main_swipe_tinder"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:max_visible="4"
+            app:min_adapter_stack="6"
+            app:rotation_degrees="15.5" />
+
         <android.support.percent.PercentRelativeLayout
             android:id="@+id/main_btn_container"
             android:layout_width="0dp"
@@ -49,14 +57,6 @@
                 app:layout_marginRightPercent="15%"
                 app:layout_widthPercent="30%" />
         </android.support.percent.PercentRelativeLayout>
-
-        <com.lorentzos.flingswipe.SwipeFlingAdapterView
-            android:id="@+id/main_swipe_tinder"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:max_visible="4"
-            app:min_adapter_stack="6"
-            app:rotation_degrees="15.5" />
     </android.support.percent.PercentRelativeLayout>
 
     <mx.com.factico.diputinder.views.CustomTextView
