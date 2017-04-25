@@ -14,6 +14,10 @@
 
     <string name="location_permission_request">Se necesitan permisos de ubicación para mostrate contenido cerca de ti.</string>
 
+    <string name="no_location_services_content">Servicios de ubicación desactivados</string>
+    <string name="no_location_services_sub_content">Debes permitirle a la aplicación acceder\na tu ubicación para funcionar</string>
+    <string name="no_location_services_action">Aceptar</string>
+
     <string name="drawer_open">Open</string>
     <string name="drawer_close">Close</string>
 

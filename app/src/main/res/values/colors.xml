@@ -15,6 +15,7 @@
     <color name="colorGray">#E2E2E2</color>
 
     <color name="colorWhite">#FFFFFF</color>
+    <color name="colorBlack">#000</color>
     <color name="colorGreen100">#C8E6C9</color>
     <color name="colorGreen300">#81C784</color>
     <color name="colorGreen">#4CAF50</color>

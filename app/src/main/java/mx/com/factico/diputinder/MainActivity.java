@@ -1,11 +1,11 @@
 package mx.com.factico.diputinder;
 
-import android.app.Fragment;
-import android.app.FragmentManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
@@ -13,12 +13,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.nostra13.universalimageloader.core.ImageLoader;
-
-import mx.com.factico.diputinder.dialogues.Dialogues;
 import mx.com.factico.diputinder.fragments.MainFragment;
+import mx.com.factico.diputinder.fragments.NoLocationFragment;
 import mx.com.factico.diputinder.helpers.RequestPermissionsHelper;
 import mx.com.factico.diputinder.location.LocationUtils;
 import mx.com.factico.diputinder.utils.CacheUtils;
@@ -151,29 +148,24 @@ public class MainActivity extends AppCompatActivity implements RequestPermission
     }
 
     private void updatePermissionsFragment() {
-        Fragment fragment = MainFragment.newInstance();
 
-        FragmentManager fragmentManager = getFragmentManager();
-        fragmentManager.beginTransaction()
-                .replace(R.id.content_frame, fragment)
-                .commit();
     }
 
     private void updateNoLocationActivatedFragment() {
-        Fragment fragment = MainFragment.newInstance();
+        Fragment fragment = NoLocationFragment.newInstance();
 
-        FragmentManager fragmentManager = getFragmentManager();
+        FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction()
                 .replace(R.id.content_frame, fragment)
-                .commit();
+                .commitAllowingStateLoss();
     }
 
     private void updateFragment() {
         Fragment fragment = MainFragment.newInstance();
 
-        FragmentManager fragmentManager = getFragmentManager();
+        FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction()
                 .replace(R.id.content_frame, fragment)
-                .commit();
+                .commitAllowingStateLoss();
     }
 }
