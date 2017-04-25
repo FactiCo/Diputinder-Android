@@ -448,7 +448,9 @@ public class MainFragment extends Fragment implements View.OnClickListener {
 
         @Override
         protected String doInBackground(String... params) {
-            return HttpConnection.GET(String.format(Locale.getDefault(), HttpConnection.URL_HOST + HttpConnection.GEOCODER, latitude, longitude));
+            String url = String.format(Locale.getDefault(), HttpConnection.URL_HOST + HttpConnection.GEOCODER, latitude, longitude);
+            Dialogues.Log(TAG, "REVERSE GEOCODER URL: " + url, Log.ERROR);
+            return HttpConnection.GET(url);
         }
 
         @Override
@@ -469,6 +471,9 @@ public class MainFragment extends Fragment implements View.OnClickListener {
 
     private void handleReverseGeocoderResult(String result) {
         boolean hasError = false;
+
+        Dialogues.Log(TAG, "REVERSE GEOCODER RESULT: " + result, Log.ERROR);
+
         if (result != null) {
             try {
                 String urlCandidates = HttpConnection.URL_HOST;
@@ -492,6 +497,8 @@ public class MainFragment extends Fragment implements View.OnClickListener {
 
                     urlCandidates += ".json";
                     urlMessages += ".json";
+
+                    Dialogues.Log(TAG, "URL CANDIDATES: " + urlCandidates, Log.ERROR);
 
                     getCandidatesFromAddress(urlCandidates);
 
@@ -544,7 +551,7 @@ public class MainFragment extends Fragment implements View.OnClickListener {
     private void handleCandidatesResult(String result) {
         boolean hasNoCandidates = false;
 
-        //Dialogues.Log(TAG, "CANDIDATE RESULT: " + result, Log.ERROR);
+        Dialogues.Log(TAG, "CANDIDATE RESULT: " + result, Log.ERROR);
 
         if (result != null) {
             try {

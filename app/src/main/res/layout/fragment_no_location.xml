@@ -5,7 +5,20 @@
     android:layout_height="match_parent"
     android:background="@color/colorPurpleLight">
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/no_location.content_container">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:src="@drawable/img_no_location" />
+    </RelativeLayout>
+
     <LinearLayout
+        android:id="@+id/no_location.content_container"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_alignParentBottom="true"
