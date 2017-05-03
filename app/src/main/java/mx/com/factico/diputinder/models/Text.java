@@ -1,4 +1,4 @@
-package mx.com.factico.diputinder.beans;
+package mx.com.factico.diputinder.models;
 
 import java.io.Serializable;
 

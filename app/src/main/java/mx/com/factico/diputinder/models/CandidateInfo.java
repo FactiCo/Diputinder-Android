@@ -1,4 +1,4 @@
-package mx.com.factico.diputinder.beans;
+package mx.com.factico.diputinder.models;
 
 import java.io.Serializable;
 
@@ -8,7 +8,7 @@ import java.io.Serializable;
 public class CandidateInfo implements Serializable {
     private String position;
     private String territoryName;
-    private Candidates candidate;
+    private Candidate candidate;
 
     public String getPosition() {
         return position;
@@ -26,11 +26,11 @@ public class CandidateInfo implements Serializable {
         this.territoryName = territoryName;
     }
 
-    public Candidates getCandidate() {
+    public Candidate getCandidate() {
         return candidate;
     }
 
-    public void setCandidate(Candidates candidate) {
+    public void setCandidate(Candidate candidate) {
         this.candidate = candidate;
     }
 }

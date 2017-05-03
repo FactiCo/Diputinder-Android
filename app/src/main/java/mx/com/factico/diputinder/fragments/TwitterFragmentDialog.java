@@ -23,9 +23,9 @@ import java.util.List;
 import java.util.Locale;
 
 import mx.com.factico.diputinder.R;
-import mx.com.factico.diputinder.beans.Candidate;
-import mx.com.factico.diputinder.beans.CandidateInfo;
-import mx.com.factico.diputinder.beans.Messages;
+import mx.com.factico.diputinder.models.Candidate;
+import mx.com.factico.diputinder.models.CandidateInfo;
+import mx.com.factico.diputinder.models.Messages;
 import mx.com.factico.diputinder.dialogues.Dialogues;
 import mx.com.factico.diputinder.httpconnection.HttpConnection;
 import mx.com.factico.diputinder.utils.CacheUtils;
@@ -115,11 +115,10 @@ public class TwitterFragmentDialog extends DialogFragment {
     }
 
     private void fillCandidateInfo() {
-        if (candidateInfo == null || candidateInfo.getCandidate() == null ||
-                candidateInfo.getCandidate().getCandidate() == null)
+        if (candidateInfo == null || candidateInfo.getCandidate() == null)
             return;
 
-        Candidate candidate = candidateInfo.getCandidate().getCandidate();
+        Candidate candidate = candidateInfo.getCandidate();
 
         if (candidate != null) {
             String userName = (candidate.getTwitter() != null && !candidate.getTwitter().equals(""))

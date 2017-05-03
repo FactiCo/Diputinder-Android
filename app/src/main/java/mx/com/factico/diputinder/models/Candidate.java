@@ -1,6 +1,7 @@
-package mx.com.factico.diputinder.beans;
+package mx.com.factico.diputinder.models;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * Created by zace3d on 4/27/15.
@@ -18,6 +19,9 @@ public class Candidate implements Serializable {
     private String created_at;
     private String updated_at;
     private String territory_id;
+
+    private Party party;
+    private List<Indicator> indicators;
 
     public long getId() {
         return id;
@@ -115,32 +119,20 @@ public class Candidate implements Serializable {
         this.territory_id = territory_id;
     }
 
-    /*@Override
-    public boolean equals(Object o) {
-        boolean isEqual = false;
 
-        if(this == o) return true;
-        if (o == null)  return false;
-        if (o instanceof Candidate) {
-            Candidate diputado = (Candidate) o;
-            isEqual = ((this.nombres != null && this.nombres.equals(diputado.nombres))
-                    && (this.apellidoPaterno != null && this.apellidoPaterno.equals(diputado.apellidoPaterno))
-                    && (this.apellidoMaterno != null && this.apellidoMaterno.equals(diputado.apellidoMaterno))
-                    && (this.entidadFederativa != null && this.entidadFederativa.equals(diputado.entidadFederativa)));
-                    //&& (this.distritoElectoral != null && this.distritoElectoral.equals(diputado.distritoElectoral)));
-        }
-
-        return isEqual;
+    public Party getParty() {
+        return party;
     }
 
-    @Override
-    public int hashCode() {
-        int hash = 7;
-        hash = 31 * hash + (null == nombres ? 0 : nombres.hashCode());
-        hash = 31 * hash + (null == apellidoPaterno ? 0 : apellidoPaterno.hashCode());
-        hash = 31 * hash + (null == apellidoMaterno ? 0 : apellidoMaterno.hashCode());
-        hash = 31 * hash + (null == entidadFederativa ? 0 : entidadFederativa.hashCode());
-        //hash = 31 * hash + (null == distritoElectoral ? 0 : distritoElectoral.hashCode());
-        return hash;
-    }*/
+    public void setParty(Party party) {
+        this.party = party;
+    }
+
+    public List<Indicator> getIndicators() {
+        return indicators;
+    }
+
+    public void setIndicators(List<Indicator> indicators) {
+        this.indicators = indicators;
+    }
 }

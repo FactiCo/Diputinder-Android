@@ -47,8 +47,8 @@ public class MainActivity extends AppCompatActivity implements RequestPermission
     protected void onResume() {
         super.onResume();
 
-        if (hasPermissionsGranted())
-            validateLocationServices();
+        //if (hasPermissionsGranted())
+        //    validateLocationServices();
     }
 
     @Override
@@ -170,6 +170,6 @@ public class MainActivity extends AppCompatActivity implements RequestPermission
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction()
                 .replace(R.id.content_frame, fragment)
-                .commit();
+                .commitAllowingStateLoss();
     }
 }

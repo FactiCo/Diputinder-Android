@@ -1,6 +1,7 @@
-package mx.com.factico.diputinder.beans;
+package mx.com.factico.diputinder.models;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * Created by zace3d on 17/08/15.
@@ -8,7 +9,7 @@ import java.io.Serializable;
 public class Indicator implements Serializable {
     private long id;
     private String name;
-    private String document;
+    private List<Section> sections;
 
     public long getId() {
         return id;
@@ -26,11 +27,11 @@ public class Indicator implements Serializable {
         this.name = name;
     }
 
-    public String getDocument() {
-        return document;
+    public List<Section> getSections() {
+        return sections;
     }
 
-    public void setDocument(String document) {
-        this.document = document;
+    public void setSections(List<Section> sections) {
+        this.sections = sections;
     }
 }

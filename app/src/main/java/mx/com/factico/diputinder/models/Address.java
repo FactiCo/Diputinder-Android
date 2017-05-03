@@ -1,4 +1,4 @@
-package mx.com.factico.diputinder.beans;
+package mx.com.factico.diputinder.models;
 
 /**
  * Created by zace3d on 4/29/15.

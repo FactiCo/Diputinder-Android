@@ -1,4 +1,4 @@
-package mx.com.factico.diputinder.beans;
+package mx.com.factico.diputinder.models;
 
 import java.io.Serializable;
 
@@ -8,7 +8,7 @@ import java.io.Serializable;
 public class Party implements Serializable {
     private long id;
     private String name;
-    private String image;
+    private Image image;
 
     public long getId() {
         return id;
@@ -26,11 +26,11 @@ public class Party implements Serializable {
         this.name = name;
     }
 
-    public String getImage() {
+    public Image getImage() {
         return image;
     }
 
-    public void setImage(String image) {
+    public void setImage(Image image) {
         this.image = image;
     }
 }

@@ -2,14 +2,13 @@ package mx.com.factico.diputinder.adapters;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Point;
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -20,12 +19,11 @@ import java.util.Locale;
 
 import mx.com.factico.diputinder.CandidateActivity;
 import mx.com.factico.diputinder.R;
-import mx.com.factico.diputinder.beans.Candidate;
-import mx.com.factico.diputinder.beans.CandidateInfo;
-import mx.com.factico.diputinder.beans.Party;
+import mx.com.factico.diputinder.models.Candidate;
+import mx.com.factico.diputinder.models.CandidateInfo;
+import mx.com.factico.diputinder.models.Party;
 import mx.com.factico.diputinder.httpconnection.HttpConnection;
 import mx.com.factico.diputinder.utils.ImageUtils;
-import mx.com.factico.diputinder.utils.ScreenUtils;
 
 /**
  * Created by zace3d on 4/27/15.
@@ -74,7 +72,7 @@ public class MyArrayAdapter extends ArrayAdapter<CandidateInfo> {
     private void fillCandidate(ViewHolder holder, int position) {
         CandidateInfo candidateInfo = getItem(position);
 
-        Candidate candidate = candidateInfo != null ? candidateInfo.getCandidate().getCandidate() : null;
+        Candidate candidate = candidateInfo != null ? candidateInfo.getCandidate() : null;
         if (candidate != null) {
             String nombres = candidate.getNombres() != null ? candidate.getNombres() : "";
             String apellidoPaterno = candidate.getApellidoPaterno() != null ? candidate.getApellidoPaterno() : "";
@@ -91,10 +89,10 @@ public class MyArrayAdapter extends ArrayAdapter<CandidateInfo> {
         }
 
         if (candidateInfo != null && candidateInfo.getCandidate() != null) {
-            List<Party> parties = candidateInfo.getCandidate().getParty();
-            if (parties != null && parties.size() > 0) {
-                ImageLoader.getInstance().displayImage(parties.get(0).getImage(), holder.imagePartido, options);
-            }
+            Party party = candidateInfo.getCandidate().getParty();
+            if (party != null && party.getImage() != null && party.getImage().getThumb() != null
+                    && !TextUtils.isEmpty(party.getImage().getThumb().getUrl()))
+            ImageLoader.getInstance().displayImage(party.getImage().getThumb().getUrl(), holder.imagePartido, options);
         }
     }
 

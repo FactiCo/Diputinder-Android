@@ -24,6 +24,8 @@ import android.widget.Toast;
 import com.google.android.gms.maps.model.LatLng;
 import com.lorentzos.flingswipe.SwipeFlingAdapterView;
 
+import org.json.JSONObject;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,20 +34,19 @@ import java.util.Locale;
 import mx.com.factico.diputinder.CandidateActivity;
 import mx.com.factico.diputinder.R;
 import mx.com.factico.diputinder.adapters.MyArrayAdapter;
-import mx.com.factico.diputinder.beans.CandidateInfo;
-import mx.com.factico.diputinder.beans.Candidates;
-import mx.com.factico.diputinder.beans.GeocoderResult;
-import mx.com.factico.diputinder.beans.Messages;
-import mx.com.factico.diputinder.beans.Territory;
 import mx.com.factico.diputinder.dialogues.Dialogues;
 import mx.com.factico.diputinder.httpconnection.HttpConnection;
 import mx.com.factico.diputinder.httpconnection.NetworkUtils;
 import mx.com.factico.diputinder.location.LocationClientListener;
 import mx.com.factico.diputinder.location.LocationUtils;
+import mx.com.factico.diputinder.models.Candidate;
+import mx.com.factico.diputinder.models.CandidateInfo;
+import mx.com.factico.diputinder.models.GeocoderResult;
+import mx.com.factico.diputinder.models.HasTerritory;
+import mx.com.factico.diputinder.models.Messages;
 import mx.com.factico.diputinder.parser.GsonParser;
 import mx.com.factico.diputinder.preferences.PreferencesManager;
 import mx.com.factico.diputinder.utils.CacheUtils;
-import mx.com.factico.diputinder.utils.Constants;
 import mx.com.factico.diputinder.utils.DateUtils;
 import mx.com.factico.diputinder.utils.LinkUtils;
 import mx.com.factico.diputinder.views.CustomTextView;
@@ -295,18 +296,6 @@ public class MainFragment extends Fragment implements View.OnClickListener {
         @Override
         public void onRightCardExit(Object dataObject) {
             CandidateInfo candidateInfo = (CandidateInfo) dataObject;
-
-            Dialogues.Log(TAG, "Adapter Count: " + mAdapter.getCount(), Log.ERROR);
-            Dialogues.Log(TAG, "Aux Candidates Count: " + auxCandidates.size(), Log.ERROR);
-
-            Dialogues.Log(TAG, "CandidateInfo TerritoryName: " + candidateInfo.getTerritoryName(), Log.ERROR);
-            Dialogues.Log(TAG, "CandidateInfo Position: " + candidateInfo.getPosition(), Log.ERROR);
-
-            Dialogues.Log(TAG, "CandidateInfo Nombres: " + candidateInfo.getCandidate().getCandidate().getNombres(), Log.ERROR);
-            Dialogues.Log(TAG, "CandidateInfo ApellidoPaterno: " + candidateInfo.getCandidate().getCandidate().getApellidoPaterno(), Log.ERROR);
-            Dialogues.Log(TAG, "CandidateInfo ApellidoMaterno: " + candidateInfo.getCandidate().getCandidate().getApellidoMaterno(), Log.ERROR);
-            Dialogues.Log(TAG, "CandidateInfo Twitter: " + candidateInfo.getCandidate().getCandidate().getTwitter(), Log.ERROR);
-
             showTwitterDialog(candidateInfo, messages);
         }
 
@@ -448,8 +437,8 @@ public class MainFragment extends Fragment implements View.OnClickListener {
 
         @Override
         protected String doInBackground(String... params) {
-            String url = String.format(Locale.getDefault(), HttpConnection.URL_HOST + HttpConnection.GEOCODER, latitude, longitude);
-            Dialogues.Log(TAG, "REVERSE GEOCODER URL: " + url, Log.ERROR);
+            String url = String.format(Locale.getDefault(), HttpConnection.API_GEOCODER, latitude, longitude);
+            Dialogues.Log(TAG, "REVERSE API_GEOCODER URL: " + url, Log.ERROR);
             return HttpConnection.GET(url);
         }
 
@@ -472,38 +461,52 @@ public class MainFragment extends Fragment implements View.OnClickListener {
     private void handleReverseGeocoderResult(String result) {
         boolean hasError = false;
 
-        Dialogues.Log(TAG, "REVERSE GEOCODER RESULT: " + result, Log.ERROR);
+        Dialogues.Log(TAG, "REVERSE API_GEOCODER RESULT: " + result, Log.ERROR);
 
         if (result != null) {
             try {
-                String urlCandidates = HttpConnection.URL_HOST;
-                String urlMessages = HttpConnection.URL_HOST;
+                JSONObject root = new JSONObject(result);
+                if (root.has("data")) {
+                    JSONObject obj = root.getJSONObject("data");
+                    String geocoder = obj.optJSONObject("geocoder").toString();
 
-                GeocoderResult geocoderResult = GsonParser.getGeocoderResultFromJSON(result);
+                    Dialogues.Log(TAG, "Geocoder: " + geocoder, Log.ERROR);
 
-                if (geocoderResult != null) {
-                    if (geocoderResult.getCountry() != null) {
-                        urlCandidates += HttpConnection.COUNTRIES + File.separator + geocoderResult.getCountry().getId();
-                        urlMessages += HttpConnection.COUNTRIES + File.separator + geocoderResult.getCountry().getId() + HttpConnection.MESSAGES;
+                    String urlCandidates = "";
+                    String urlMessages = "";
 
-                        if (geocoderResult.getState() != null) {
-                            urlCandidates += HttpConnection.STATES + File.separator + geocoderResult.getState().getId();
+                    GeocoderResult geocoderResult = GsonParser.getGeocoderResultFromJSON(geocoder);
 
-                            if (geocoderResult.getCity() != null) {
-                                urlCandidates += HttpConnection.CITIES + File.separator + geocoderResult.getCity().getId();
+                    if (geocoderResult != null) {
+                        if (geocoderResult.getCountry() != null) {
+                            urlCandidates += HttpConnection.API_COUNTRIES + File.separator +
+                                    geocoderResult.getCountry().getId() + File.separator + HttpConnection.CANDIDATES;
+
+                            urlMessages += HttpConnection.API_COUNTRIES + File.separator +
+                                    geocoderResult.getCountry().getId() + HttpConnection.MESSAGES;
+
+                            if (geocoderResult.getState() != null) {
+                                urlCandidates += HttpConnection.API_STATES + File.separator +
+                                        geocoderResult.getState().getId() + File.separator + HttpConnection.CANDIDATES;
+
+                                if (geocoderResult.getCity() != null) {
+                                    urlCandidates += HttpConnection.API_CITIES + File.separator +
+                                            geocoderResult.getCity().getId() + File.separator + HttpConnection.CANDIDATES;
+                                }
                             }
                         }
+
+                        Dialogues.Log(TAG, "URL CANDIDATES: " + urlCandidates, Log.ERROR);
+
+                        getCandidatesFromAddress(urlCandidates);
+
+                        if (messages == null)
+                            getMessagesFromCountry(urlMessages);
+                    } else {
+                        hasError = true;
                     }
-
-                    urlCandidates += ".json";
-                    urlMessages += ".json";
-
-                    Dialogues.Log(TAG, "URL CANDIDATES: " + urlCandidates, Log.ERROR);
-
-                    getCandidatesFromAddress(urlCandidates);
-
-                    if (messages == null)
-                        getMessagesFromCountry(urlMessages);
+                } else {
+                    hasError = true;
                 }
             } catch (Exception e) {
                 hasError = true;
@@ -551,53 +554,71 @@ public class MainFragment extends Fragment implements View.OnClickListener {
     private void handleCandidatesResult(String result) {
         boolean hasNoCandidates = false;
 
-        Dialogues.Log(TAG, "CANDIDATE RESULT: " + result, Log.ERROR);
+        Dialogues.Log(TAG, "CANDIDATES RESULT: " + result, Log.ERROR);
 
         if (result != null) {
             try {
-                Territory territory = GsonParser.getTerritoryJSON(result);
+                JSONObject root = new JSONObject(result);
+                if (root.has("data")) {
+                    JSONObject obj = root.getJSONObject("data");
 
-                if (territory == null) {
-                    return;
-                }
+                    Dialogues.Log(TAG, "DATA: " + obj.toString(), Log.ERROR);
 
-                List<CandidateInfo> candidateInfoList = new ArrayList<>();
+                    JSONObject contentObj = obj.optJSONObject("content");
 
-                if (territory.getPositions() != null && territory.getPositions().size() > 0) {
-                    for (Territory.Positions positions : territory.getPositions()) {
+                    Dialogues.Log(TAG, "CONTENT: " + contentObj.toString(), Log.ERROR);
 
-                        for (Candidates candidates : positions.getCandidates()) {
+                    String has_territories = contentObj.optJSONArray("has_territories").toString();
+
+                    Dialogues.Log(TAG, "HAS_TERRITORIES: " + has_territories, Log.ERROR);
+
+                    List<HasTerritory> hasTerritories = GsonParser.getListHasTerritoriesFromJSON(has_territories);
+
+                    if (hasTerritories == null) {
+                        Dialogues.Log(TAG, "HAS_TERRITORIES NULL!!", Log.ERROR);
+                        return;
+                    }
+
+                    Dialogues.Log(TAG, "HAS_TERRITORIES COUNT: " + hasTerritories.size(), Log.ERROR);
+
+                    List<CandidateInfo> candidateInfoList = new ArrayList<>();
+
+                    for (HasTerritory hasTerritory : hasTerritories) {
+
+                        for (Candidate candidate : hasTerritory.getCandidates()) {
                             CandidateInfo candidateInfo = new CandidateInfo();
-                            candidateInfo.setTerritoryName(positions.getTerritory());
-                            candidateInfo.setPosition(positions.getTitle());
-                            candidateInfo.setCandidate(candidates);
+                            if (hasTerritory.getTerritory() != null)
+                                candidateInfo.setTerritoryName(hasTerritory.getTerritory().getName());
+                            if (hasTerritory.getPosition() != null)
+                                candidateInfo.setPosition(hasTerritory.getPosition().getTitle());
+                            candidateInfo.setCandidate(candidate);
 
                             candidateInfoList.add(candidateInfo);
                         }
                     }
-                }
 
-                if (candidateInfoList.size() > 0) {
-                    if (auxCandidates != null) {
-                        auxCandidates.clear();
-                        mAdapter.clear();
-                        mAdapter.notifyDataSetChanged();
+                    if (candidateInfoList.size() > 0) {
+                        if (auxCandidates != null) {
+                            auxCandidates.clear();
+                            mAdapter.clear();
+                            mAdapter.notifyDataSetChanged();
 
-                        auxCandidates.addAll(candidateInfoList);
-                        mAdapter.notifyDataSetChanged();
+                            auxCandidates.addAll(candidateInfoList);
+                            mAdapter.notifyDataSetChanged();
 
-                        isRefreshing = false;
+                            isRefreshing = false;
 
-                        String jsonCandidates = GsonParser.createJsonFromObject(auxCandidates);
-                        PreferencesManager.putStringPreference(getActivity().getApplication(), PreferencesManager.CANDIDATES, jsonCandidates);
+                            String jsonCandidates = GsonParser.createJsonFromObject(auxCandidates);
+                            PreferencesManager.putStringPreference(getActivity().getApplication(), PreferencesManager.CANDIDATES, jsonCandidates);
 
-                        String currentDate = DateUtils.getCurrentDateTime();
-                        PreferencesManager.putStringPreference(getActivity().getApplication(), PreferencesManager.DATE_CANDIDATES, currentDate);
+                            String currentDate = DateUtils.getCurrentDateTime();
+                            PreferencesManager.putStringPreference(getActivity().getApplication(), PreferencesManager.DATE_CANDIDATES, currentDate);
+                        } else {
+                            hasNoCandidates = true;
+                        }
                     } else {
                         hasNoCandidates = true;
                     }
-                } else {
-                    hasNoCandidates = true;
                 }
             } catch (Exception e) {
                 hasNoCandidates = true;

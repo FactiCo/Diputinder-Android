@@ -2,16 +2,11 @@ package mx.com.factico.diputinder;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.os.Bundle;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.ActivityOptionsCompat;
-import android.support.v4.util.Pair;
-import android.support.v4.view.ViewCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.Gravity;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -21,15 +16,14 @@ import android.widget.Toast;
 
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 
 import java.util.List;
 import java.util.Locale;
 
-import mx.com.factico.diputinder.beans.Candidate;
-import mx.com.factico.diputinder.beans.CandidateInfo;
-import mx.com.factico.diputinder.beans.Indicator;
-import mx.com.factico.diputinder.beans.Party;
+import mx.com.factico.diputinder.models.Candidate;
+import mx.com.factico.diputinder.models.CandidateInfo;
+import mx.com.factico.diputinder.models.Indicator;
+import mx.com.factico.diputinder.models.Party;
 import mx.com.factico.diputinder.dialogues.Dialogues;
 import mx.com.factico.diputinder.httpconnection.HttpConnection;
 import mx.com.factico.diputinder.utils.CacheUtils;
@@ -90,7 +84,7 @@ public class CandidateActivity extends AppCompatActivity {
     }
 
     protected void fillCandidateInfo() {
-        Candidate candidate = candidateInfo.getCandidate().getCandidate();
+        Candidate candidate = candidateInfo.getCandidate();
         if (candidate != null) {
             String nombres = candidate.getNombres() != null ? candidate.getNombres() : "";
             String apellidoPaterno = candidate.getApellidoPaterno() != null ? candidate.getApellidoPaterno() : "";
@@ -125,11 +119,14 @@ public class CandidateActivity extends AppCompatActivity {
                 // Partido
                 ImageView ivIcon = (ImageView) findViewById(R.id.candidate_iv_partido);
 
-                List<Party> parties = candidateInfo.getCandidate().getParty();
-                if (parties != null && parties.size() > 0) {
-                    tvParty.setText(parties.get(0).getName());
+                if (candidateInfo != null && candidateInfo.getCandidate() != null) {
+                    Party party = candidateInfo.getCandidate().getParty();
+                    if (party != null && party.getImage() != null && party.getImage().getThumb() != null
+                            && !TextUtils.isEmpty(party.getImage().getThumb().getUrl())) {
+                        tvParty.setText(party.getName());
 
-                    ImageLoader.getInstance().displayImage(parties.get(0).getImage(), ivIcon, options);
+                        ImageLoader.getInstance().displayImage(party.getImage().getThumb().getUrl(), ivIcon, options);
+                    }
                 }
 
                 List<Indicator> indicators = candidateInfo.getCandidate().getIndicators();
@@ -201,7 +198,7 @@ public class CandidateActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    protected View createImageParty(Party party, int width) {
+    /*protected View createImageParty(Party party, int width) {
         ImageView ivIcon = new ImageView(getBaseContext());
         ivIcon.setScaleType(ImageView.ScaleType.CENTER_CROP);
         LinearLayout.LayoutParams paramsParty = new LinearLayout.LayoutParams(width / 4, width / 4);
@@ -210,5 +207,5 @@ public class CandidateActivity extends AppCompatActivity {
         ImageLoader.getInstance().displayImage(party.getImage(), ivIcon, options);
 
         return ivIcon;
-    }
+    }*/
 }

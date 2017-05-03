@@ -1,7 +1,5 @@
 package mx.com.factico.diputinder.httpconnection;
 
-import android.util.Log;
-
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -10,21 +8,21 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-import mx.com.factico.diputinder.dialogues.Dialogues;
-
 public class HttpConnection {
-    public static final String TAG_CLASS = HttpConnection.class.getName();
+    public static final String TAG = HttpConnection.class.getName();
 
-    //public static final String URL_HOST = "https://liguepolitico-2016.herokuapp.com";
-    public static final String URL_HOST = "http://13.82.98.12/";
+    //private static final String BASE_URL = "http://13.82.98.12";
+    private static final String BASE_URL = "http://10.0.2.2:3000";
 
-    public static final String GEOCODER = "/geocoder.json?latitude=%s&longitude=%s";
+    public static final String API_GEOCODER = "/api/geocoder?latitude=%s&longitude=%s";
 
-    public static final String COUNTRIES = "/countries";
-    public static final String STATES = "/states";
-    public static final String CITIES = "/cities";
+    public static final String API_COUNTRIES = "/api/countries";
+    public static final String API_STATES = "/api/states";
+    public static final String API_CITIES = "/api/cities";
 
-    public static final String MESSAGES = "/messages";
+    public static final String CANDIDATES = "candidates";
+
+    public static final String MESSAGES = "/api/messages";
 
     public static final String TWITTER_IMAGE_URL = "https://twitter.com/%s/profile_image?size=original";
 
@@ -32,7 +30,7 @@ public class HttpConnection {
         String result = null;
         HttpURLConnection urlConnection = null;
         try {
-            URL u = new URL(url);
+            URL u = new URL(getBaseUrl(url));
             urlConnection = (HttpURLConnection) u.openConnection();
             urlConnection.setRequestMethod("GET");
             urlConnection.setConnectTimeout(40000);
@@ -59,6 +57,10 @@ public class HttpConnection {
         }
 
         return result;
+    }
+
+    private static String getBaseUrl(String url) {
+        return HttpConnection.BASE_URL + url;
     }
 
     private static String convertInputStreamToString(InputStream inputStream) throws IOException {
