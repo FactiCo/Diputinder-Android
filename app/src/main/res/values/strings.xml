@@ -18,6 +18,10 @@
     <string name="no_location_services_sub_content">Debes permitirle a la aplicación acceder\na tu ubicación para funcionar</string>
     <string name="no_location_services_action">Aceptar</string>
 
+    <string name="no_permissions_services_content">Permisos de ubicación no otorgados</string>
+    <string name="no_permissions_services_sub_content">Utilizamos la ubicación geográfica de tu dispositivo móvil para obtener los candidatos que te corresponden de acuerdo a tu entidad.</string>
+    <string name="no_permissions_services_action">Otorgar permisos</string>
+
     <string name="drawer_open">Open</string>
     <string name="drawer_close">Close</string>
 

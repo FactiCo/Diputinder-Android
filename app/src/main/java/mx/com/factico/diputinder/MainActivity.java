@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 import mx.com.factico.diputinder.fragments.MainFragment;
 import mx.com.factico.diputinder.fragments.NoLocationFragment;
+import mx.com.factico.diputinder.fragments.NoPermissionsFragment;
 import mx.com.factico.diputinder.helpers.RequestPermissionsHelper;
 import mx.com.factico.diputinder.location.LocationUtils;
 import mx.com.factico.diputinder.utils.CacheUtils;
@@ -46,8 +47,8 @@ public class MainActivity extends AppCompatActivity implements RequestPermission
     protected void onResume() {
         super.onResume();
 
-        //if (hasPermissionsGranted())
-        //    validateLocationServices();
+        if (hasPermissionsGranted())
+            validateLocationServices();
     }
 
     @Override
@@ -85,7 +86,7 @@ public class MainActivity extends AppCompatActivity implements RequestPermission
         return RequestPermissionsHelper.hasPermissionsGranted(this, Constants.LOCATION_PERMISSIONS);
     }
 
-    private void requestLocationPermissions() {
+    public void requestLocationPermissions() {
         if (RequestPermissionsHelper.shouldShowRequestPermissionRationale(this, Constants.LOCATION_PERMISSIONS)) {
             showConfirmationDialog();
         } else {
@@ -109,6 +110,7 @@ public class MainActivity extends AppCompatActivity implements RequestPermission
                 Snackbar.make(findViewById(R.id.content_frame), "Permisos otorgados", Snackbar.LENGTH_LONG).show();
             }
         } else {
+            updatePermissionsFragment();
             Snackbar.make(findViewById(R.id.content_frame), "Permisos no otorgados", Snackbar.LENGTH_LONG).show();
         }
     }
@@ -145,7 +147,12 @@ public class MainActivity extends AppCompatActivity implements RequestPermission
     }
 
     private void updatePermissionsFragment() {
+        Fragment fragment = NoPermissionsFragment.newInstance();
 
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        fragmentManager.beginTransaction()
+                .replace(R.id.content_frame, fragment)
+                .commitAllowingStateLoss();
     }
 
     private void updateNoLocationActivatedFragment() {
