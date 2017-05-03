@@ -38,14 +38,14 @@
     <string name="no_gps_enabled">Servicios de ubicación apagados. Inténtalo de nuevo.</string>
 
     <!-- Twitter -->
-    <string name="tweet_message_good">A este candidato sí le interesas porque ya presentó sus indicadores.</string>
-    <string name="tweet_message_bad">Lo sentimos, a este candidato no le interesas porque no ha presentado sus indicadores.</string>
+    <string name="tweet_message_good">¿Te atrajo este candidat@? Mándale un mensaje en Twitter preguntándole cuál sería su propuesta para acabar con la corrupción en México.</string>
+    <string name="tweet_message_bad">¿Te atrajo este candidat@? Mándale un mensaje en Twitter preguntándole cuál sería su propuesta para acabar con la corrupción en México.</string>
 
-    <string name="tweet_submessage_good">¡Mándale un mensaje de felicitación!</string>
-    <string name="tweet_submessage_bad">¡Mándale un mensaje para que presente sus indicadores!</string>
+    <string name="tweet_submessage_good">¡Mándale un mensaje!</string>
+    <string name="tweet_submessage_bad">¡Mándale un mensaje!</string>
 
-    <string name="tweet_first_message_good">Oye %1$s, te encontré en @LiguePolitico y vi que ya presentaste tus indicadores. ¡Bien hecho!</string>
-    <string name="tweet_first_message_bad">Oye %1$s, te encontré en @LiguePolitico y no has presentado tus indicadores, ¿qué esperas? http://liguepolitico.com</string>
+    <string name="tweet_first_message_good">.%1$s, te encontré en Ligue Político, y quiero saber qué propones para acabar con la corrupción en nuestro país. ¿Qué dices?</string>
+    <string name="tweet_first_message_bad">.%1$s, te encontré en Ligue Político, y quiero saber qué propones para acabar con la corrupción en nuestro país. ¿Qué dices?</string>
 
     <string name="no_internet_connection">Sin conexión a Internet.\nInténtalo de nuevo.</string>
 

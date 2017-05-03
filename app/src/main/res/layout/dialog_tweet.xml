@@ -6,48 +6,42 @@
     android:background="@color/colorLine"
     android:orientation="vertical">
 
-    <LinearLayout
+    <android.support.percent.PercentRelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginTop="10dp">
-
-        <!--<com.makeramen.roundedimageview.RoundedImageView
-            android:id="@+id/dialog_tweet_iv_profile"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:layout_gravity="center_horizontal"
-            android:padding="0dp"
-            android:src="@null"
-            android:background="@drawable/drawable_bgr_circle"
-            android:scaleType="centerCrop"
-            app:riv_mutate_background="true"
-            app:riv_oval="true"/>-->
+        android:layout_marginEnd="15dp"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="15dp">
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/dialog_tweet_iv_profile"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
             android:layout_gravity="center_horizontal"
             android:padding="0dp"
             android:scaleType="centerCrop"
             android:src="@android:color/black"
             app:civ_border_color="@android:color/black"
-            app:civ_border_width="4dp" />
+            app:civ_border_width="4dp"
+            app:layout_aspectRatio="100%"
+            app:layout_widthPercent="40%" />
 
         <mx.com.factico.diputinder.views.CustomTextView
             android:id="@+id/dialog_tweet_tv_name"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center_vertical"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/dialog_tweet_iv_profile"
+            android:layout_alignParentEnd="true"
+            android:layout_alignTop="@+id/dialog_tweet_iv_profile"
+            android:layout_toEndOf="@+id/dialog_tweet_iv_profile"
+            android:gravity="center"
+            android:paddingEnd="15dp"
+            android:paddingStart="15dp"
             android:text=""
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:textColor="@color/colorBackgroundWhite"
             app:typeface="Gotham_Rounded_Bold" />
-    </LinearLayout>
+    </android.support.percent.PercentRelativeLayout>
 
     <mx.com.factico.diputinder.views.CustomTextView
         android:id="@+id/dialog_tweet_tv_message"
@@ -61,7 +55,7 @@
         android:textColor="@color/colorBackgroundWhite"
         app:typeface="Gotham_Rounded_Book" />
 
-    <RelativeLayout
+    <android.support.percent.PercentRelativeLayout
         android:id="@+id/dialog_tweet_btn_tweet"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -69,12 +63,17 @@
 
         <ImageView
             android:id="@+id/dialog_tweet_iv_tweet"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
             android:layout_gravity="center_horizontal"
-            android:padding="10dp"
+            android:layout_marginBottom="15dp"
+            android:layout_marginEnd="15dp"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="15dp"
             android:scaleType="centerCrop"
-            android:src="@drawable/ic_twitter" />
+            android:src="@drawable/ic_twitter"
+            app:layout_aspectRatio="100%"
+            app:layout_widthPercent="15%" />
 
         <mx.com.factico.diputinder.views.CustomTextView
             android:id="@+id/dialog_tweet_tv_submessage"
@@ -82,11 +81,11 @@
             android:layout_height="wrap_content"
             android:layout_alignBottom="@+id/dialog_tweet_iv_tweet"
             android:layout_alignTop="@+id/dialog_tweet_iv_tweet"
-            android:layout_toRightOf="@+id/dialog_tweet_iv_tweet"
+            android:layout_toEndOf="@+id/dialog_tweet_iv_tweet"
             android:gravity="center_vertical"
             android:padding="10dp"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:textColor="@color/colorBackgroundWhite"
             app:typeface="Gotham_Rounded_Book" />
-    </RelativeLayout>
+    </android.support.percent.PercentRelativeLayout>
 </LinearLayout>
