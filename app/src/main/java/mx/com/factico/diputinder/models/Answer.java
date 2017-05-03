@@ -12,7 +12,7 @@ public class Answer implements Serializable {
     private String document;
     private List<Input> inputs;
 
-    private class Input {
+    private class Input implements Serializable {
         private String content;
 
         public String getContent() {

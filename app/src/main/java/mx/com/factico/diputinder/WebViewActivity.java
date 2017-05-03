@@ -161,6 +161,9 @@ public class WebViewActivity extends AppCompatActivity {
     private class MyWebChromeClient extends WebChromeClient {
         @Override
         public void onProgressChanged(WebView view, int progress) {
+            if (progressBar == null)
+                return;
+
             progressBar.setProgress(progress);
             if(progress == 100) {
                 progressBar.setVisibility(View.GONE);

@@ -166,11 +166,11 @@ public class CandidateActivity extends AppCompatActivity {
         ImageView ivIndicatorStatus = (ImageView) view.findViewById(R.id.indicator_iv_status);
         ivIndicatorStatus.setLayoutParams(paramsIconsStatus);
 
-        if (indicator.getDocument() != null && !indicator.getDocument().equals("")) {
+        /*if (indicator.getDocument() != null && !indicator.getDocument().equals("")) {
             view.setTag(indicator.getDocument());
 
             ivIndicatorStatus.setImageResource(R.drawable.ic_btn_declaro);
-        }
+        }*/
 
         return view;
     }

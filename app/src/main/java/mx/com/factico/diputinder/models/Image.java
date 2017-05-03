@@ -10,7 +10,7 @@ public class Image implements Serializable {
     private String url;
     private Thumb thumb;
 
-    public class Thumb {
+    public class Thumb implements Serializable {
         private String url;
 
         public String getUrl() {

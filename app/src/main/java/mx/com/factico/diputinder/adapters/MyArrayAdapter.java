@@ -56,6 +56,7 @@ public class MyArrayAdapter extends ArrayAdapter<CandidateInfo> {
 
             // configure view holder
             holder.name = (TextView) view.findViewById(R.id.item_candidate_tv_name);
+            holder.position = (TextView) view.findViewById(R.id.item_candidate_tv_position);
             holder.imageProfile = (ImageView) view.findViewById(R.id.item_candidate_iv_profile);
             holder.imagePartido = (ImageView) view.findViewById(R.id.item_candidate_iv_partido);
 
@@ -74,10 +75,12 @@ public class MyArrayAdapter extends ArrayAdapter<CandidateInfo> {
 
         Candidate candidate = candidateInfo != null ? candidateInfo.getCandidate() : null;
         if (candidate != null) {
+            String candidatePosition = !TextUtils.isEmpty(candidateInfo.getPosition()) ? candidateInfo.getPosition() : "";
+            holder.position.setText(candidatePosition);
+
             String nombres = candidate.getNombres() != null ? candidate.getNombres() : "";
             String apellidoPaterno = candidate.getApellidoPaterno() != null ? candidate.getApellidoPaterno() : "";
             String apellidoMaterno = candidate.getApellidoMaterno() != null ? candidate.getApellidoMaterno() : "";
-
             holder.name.setText(String.format(Locale.getDefault(), "%s %s %s", nombres, apellidoPaterno, apellidoMaterno));
 
             if (candidate.getTwitter() != null && !candidate.getTwitter().equals("") && !candidate.getTwitter().equals("no se identificó")) {
@@ -86,13 +89,11 @@ public class MyArrayAdapter extends ArrayAdapter<CandidateInfo> {
             } else {
                 holder.imageProfile.setImageResource(R.drawable.drawable_bgr_gray);
             }
-        }
 
-        if (candidateInfo != null && candidateInfo.getCandidate() != null) {
-            Party party = candidateInfo.getCandidate().getParty();
+            Party party = candidate.getParty();
             if (party != null && party.getImage() != null && party.getImage().getThumb() != null
                     && !TextUtils.isEmpty(party.getImage().getThumb().getUrl()))
-            ImageLoader.getInstance().displayImage(party.getImage().getThumb().getUrl(), holder.imagePartido, options);
+                ImageLoader.getInstance().displayImage(party.getImage().getThumb().getUrl(), holder.imagePartido, options);
         }
     }
 
@@ -124,6 +125,7 @@ public class MyArrayAdapter extends ArrayAdapter<CandidateInfo> {
 
     private static class ViewHolder {
         TextView name;
+        public TextView position;
         ImageView imageProfile;
         ImageView imagePartido;
     }
