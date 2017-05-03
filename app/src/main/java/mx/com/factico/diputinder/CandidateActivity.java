@@ -2,33 +2,26 @@ package mx.com.factico.diputinder;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Point;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
-import android.view.View;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
-import java.util.List;
 import java.util.Locale;
 
+import mx.com.factico.diputinder.fragments.CandidateFragment;
+import mx.com.factico.diputinder.httpconnection.HttpConnection;
 import mx.com.factico.diputinder.models.Candidate;
 import mx.com.factico.diputinder.models.CandidateInfo;
-import mx.com.factico.diputinder.models.Indicator;
-import mx.com.factico.diputinder.models.Party;
-import mx.com.factico.diputinder.dialogues.Dialogues;
-import mx.com.factico.diputinder.httpconnection.HttpConnection;
 import mx.com.factico.diputinder.utils.CacheUtils;
 import mx.com.factico.diputinder.utils.ImageUtils;
-import mx.com.factico.diputinder.utils.ScreenUtils;
 import mx.com.factico.diputinder.views.CustomTextView;
 
 /**
@@ -60,6 +53,9 @@ public class CandidateActivity extends AppCompatActivity {
         candidateInfo = (CandidateInfo) getIntent().getSerializableExtra(TAG_CANDIDATE);
         if (candidateInfo != null) {
             fillCandidateInfo();
+
+            if (savedInstanceState == null)
+                updateFragment();
         }
     }
 
@@ -83,20 +79,27 @@ public class CandidateActivity extends AppCompatActivity {
         if (getSupportActionBar() != null) getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
-    protected void fillCandidateInfo() {
+    private void updateFragment() {
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        Fragment fragment = CandidateFragment.newInstance(candidateInfo);
+        transaction.replace(R.id.candidate_container, fragment);
+        transaction.commit();
+    }
+
+    private void fillCandidateInfo() {
+        if (candidateInfo == null)
+            return;
+
         Candidate candidate = candidateInfo.getCandidate();
         if (candidate != null) {
             String nombres = candidate.getNombres() != null ? candidate.getNombres() : "";
             String apellidoPaterno = candidate.getApellidoPaterno() != null ? candidate.getApellidoPaterno() : "";
             String apellidoMaterno = candidate.getApellidoMaterno() != null ? candidate.getApellidoMaterno() : "";
 
-            CustomTextView tvName = (CustomTextView) findViewById(R.id.candidate_tv_name);
+            CustomTextView tvName = (CustomTextView) findViewById(R.id.candidate_name_label);
             tvName.setText(String.format(Locale.getDefault(), "%s %s %s", nombres, apellidoPaterno, apellidoMaterno));
 
-            Point point = ScreenUtils.getScreenSize(getBaseContext());
-            int sizeIcons = point.x / 5;
-
-            ImageView ivProfile = (ImageView) findViewById(R.id.candidate_iv_profile);
+            ImageView ivProfile = (ImageView) findViewById(R.id.candidate_image);
             if (candidate.getTwitter() != null && !candidate.getTwitter().equals("") && !candidate.getTwitter().equals("no se identificó")) {
                 String twitter = candidate.getTwitter().replaceAll("\\s+", "");
                 ImageLoader.getInstance().displayImage(String.format(Locale.getDefault(), HttpConnection.TWITTER_IMAGE_URL, twitter), ivProfile, options);
@@ -104,108 +107,37 @@ public class CandidateActivity extends AppCompatActivity {
                 ivProfile.setImageResource(R.drawable.drawable_bgr_gray);
             }
 
-            // Cargo
-            CustomTextView tvCargo = (CustomTextView) findViewById(R.id.candidate_tv_cargo);
-            tvCargo.setText(candidateInfo.getPosition());
+            String partyImage = candidate.getParty() != null && candidate.getParty().getImage() != null &&
+                    candidate.getParty().getImage().getThumb() != null &&
+                    !TextUtils.isEmpty(candidate.getParty().getImage().getThumb().getUrl()) ?
+                    candidate.getParty().getImage().getThumb().getUrl() : null;
 
-            // Entidad
-            CustomTextView tvEntidad = (CustomTextView) findViewById(R.id.candidate_tv_entidad);
-            tvEntidad.setText(candidateInfo.getTerritoryName());
+            // Party Image
+            ImageView mPartyImage = (ImageView) findViewById(R.id.candidate_party_image);
+            if (!TextUtils.isEmpty(partyImage))
+                ImageLoader.getInstance().displayImage(partyImage, mPartyImage, options);
 
-            if (candidateInfo.getCandidate() != null) {
-                // Party Name
-                CustomTextView tvParty = (CustomTextView) findViewById(R.id.candidate_tv_party);
+            String partyName = candidate.getParty() != null && candidate.getParty().getName() != null &&
+                    !TextUtils.isEmpty(candidate.getParty().getName()) ?
+                    candidate.getParty().getName() : "";
 
-                // Partido
-                ImageView ivIcon = (ImageView) findViewById(R.id.candidate_iv_partido);
+            // Party Name
+            TextView mPartyLabel = (TextView) findViewById(R.id.candidate_party_label);
+            mPartyLabel.setText(partyName);
 
-                if (candidateInfo != null && candidateInfo.getCandidate() != null) {
-                    Party party = candidateInfo.getCandidate().getParty();
-                    if (party != null && party.getImage() != null && party.getImage().getThumb() != null
-                            && !TextUtils.isEmpty(party.getImage().getThumb().getUrl())) {
-                        tvParty.setText(party.getName());
+            String positionName = !TextUtils.isEmpty(candidateInfo.getPosition()) ?
+                    candidateInfo.getPosition() : "";
 
-                        ImageLoader.getInstance().displayImage(party.getImage().getThumb().getUrl(), ivIcon, options);
-                    }
-                }
+            // Position Name
+            TextView mPositionLabel = (TextView) findViewById(R.id.candidate_position_label);
+            mPositionLabel.setText(positionName);
 
-                List<Indicator> indicators = candidateInfo.getCandidate().getIndicators();
-                if (indicators != null && indicators.size() > 0) {
-                    LinearLayout vgIndicators = (LinearLayout) findViewById(R.id.candidate_vg_indicators);
+            String territoryName = !TextUtils.isEmpty(candidateInfo.getTerritoryName()) ?
+                    candidateInfo.getTerritoryName() : "";
 
-                    for (Indicator indicator : indicators) {
-                        View indicatorView = createIndicatorView(indicator, sizeIcons);
-
-                        if (indicatorView != null)
-                            vgIndicators.addView(indicatorView);
-
-                    }
-                }
-            }
+            // Territory Name
+            TextView mTerritoryLabel = (TextView) findViewById(R.id.candidate_territory_label);
+            mTerritoryLabel.setText(territoryName);
         }
     }
-
-    protected View createIndicatorView(Indicator indicator, int sizeIcons) {
-        RelativeLayout view = (RelativeLayout) getLayoutInflater().inflate(R.layout.item_indicator, null, false);
-        view.setOnClickListener(WebViewOnClickListener);
-
-        RelativeLayout.LayoutParams paramsIconsStatus = new RelativeLayout.LayoutParams(sizeIcons / 2, sizeIcons / 2);
-        paramsIconsStatus.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-        paramsIconsStatus.addRule(RelativeLayout.CENTER_VERTICAL);
-
-        RelativeLayout.LayoutParams paramsIcons = new RelativeLayout.LayoutParams((int) (sizeIcons / 1.3), (int) (sizeIcons / 1.3));
-        paramsIcons.setMargins(5, 10, 5, 10);
-        paramsIcons.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
-
-        CustomTextView tvName = (CustomTextView) view.findViewById(R.id.indicator_tv_name);
-        tvName.setText(indicator.getName());
-
-        ImageView ivIndicator = (ImageView) view.findViewById(R.id.indicator_iv_icon);
-        ivIndicator.setLayoutParams(paramsIcons);
-
-        ImageView ivIndicatorStatus = (ImageView) view.findViewById(R.id.indicator_iv_status);
-        ivIndicatorStatus.setLayoutParams(paramsIconsStatus);
-
-        /*if (indicator.getDocument() != null && !indicator.getDocument().equals("")) {
-            view.setTag(indicator.getDocument());
-
-            ivIndicatorStatus.setImageResource(R.drawable.ic_btn_declaro);
-        }*/
-
-        return view;
-    }
-
-    private View.OnClickListener WebViewOnClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            if (v.getTag() != null) {
-                String url = v.getTag().toString();
-
-                if (url != null && !url.equals(""))
-                    startWebViewIntent(url);
-                else
-                    Dialogues.Toast(getBaseContext(), "No ha presentado documento.", Toast.LENGTH_SHORT);
-            } else {
-                Dialogues.Toast(getBaseContext(), "No ha presentado documento.", Toast.LENGTH_SHORT);
-            }
-        }
-    };
-
-    private void startWebViewIntent(String url) {
-        Intent intent = new Intent(getBaseContext(), WebViewActivity.class);
-        intent.putExtra("url", url);
-        intent.putExtra("actionbarTitle", getString(R.string.lbl_document));
-        startActivity(intent);
-    }
-
-    /*protected View createImageParty(Party party, int width) {
-        ImageView ivIcon = new ImageView(getBaseContext());
-        ivIcon.setScaleType(ImageView.ScaleType.CENTER_CROP);
-        LinearLayout.LayoutParams paramsParty = new LinearLayout.LayoutParams(width / 4, width / 4);
-        paramsParty.setMargins(5, 0, 5, 0);
-        ivIcon.setLayoutParams(paramsParty);
-        ImageLoader.getInstance().displayImage(party.getImage(), ivIcon, options);
-
-        return ivIcon;
-    }*/
 }

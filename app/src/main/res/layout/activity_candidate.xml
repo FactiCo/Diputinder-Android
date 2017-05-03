@@ -1,46 +1,70 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorBackgroundWhite"
-    android:orientation="vertical">
+    android:layout_above="@+id/show.mission.bottom_navigation"
+    tools:context=".CandidateActivity">
 
-    <include
-        android:id="@+id/actionbar"
-        layout="@layout/actionbar"
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/candidate.appbar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        app:elevation="5dp">
 
-    <ScrollView
-        android:id="@+id/container"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:fillViewport="true">
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/actionbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:minHeight="?attr/actionBarSize"
+            app:layout_collapseMode="pin"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
 
-        <LinearLayout
+            <mx.com.factico.diputinder.views.CustomTextView
+                android:id="@+id/actionbar_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:textAllCaps="true"
+                android:textColor="@color/colorWhite"
+                android:textSize="17sp"
+                app:typeface="Gotham_Rounded_Bold" />
+        </android.support.v7.widget.Toolbar>
+
+        <android.support.design.widget.CollapsingToolbarLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:paddingBottom="10dp"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
-            android:paddingTop="20dp">
+            android:background="@color/colorPurpleLight"
+            app:contentScrim="@android:color/transparent"
+            app:expandedTitleMarginBottom="46dp"
+            app:expandedTitleMarginEnd="64dp"
+            app:expandedTitleMarginStart="48dp"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed"
+            app:title=""
+            app:titleEnabled="false">
 
-            <LinearLayout
+            <android.support.percent.PercentRelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:layout_height="match_parent"
+                android:layout_marginBottom="15dp"
+                android:layout_marginEnd="15dp"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="15dp"
+                android:fitsSystemWindows="true"
+                app:layout_collapseMode="parallax">
 
-                <RelativeLayout
-                    android:id="@+id/candidate_vg_profile"
-                    android:layout_width="120dp"
-                    android:layout_height="120dp"
-                    android:layout_gravity="center_horizontal">
+                <android.support.percent.PercentRelativeLayout
+                    android:id="@+id/candidate.image_container"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_gravity="center_horizontal"
+                    app:layout_aspectRatio="100%"
+                    app:layout_widthPercent="45%">
 
                     <de.hdodenhof.circleimageview.CircleImageView
-                        android:id="@+id/candidate_iv_profile"
+                        android:id="@+id/candidate.image"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_centerInParent="true"
@@ -50,12 +74,13 @@
                         android:src="@android:color/black"
                         app:civ_border_color="@android:color/black"
                         app:civ_border_width="4dp"
+                        app:layout_marginEndPercent="10%"
                         tools:ignore="RtlHardcoded" />
 
                     <de.hdodenhof.circleimageview.CircleImageView
-                        android:id="@+id/candidate_iv_partido"
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
+                        android:id="@+id/candidate.party_image"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
                         android:layout_alignParentBottom="true"
                         android:layout_alignParentRight="true"
                         android:padding="2dp"
@@ -63,70 +88,114 @@
                         android:src="@android:color/white"
                         app:civ_border_color="@android:color/white"
                         app:civ_border_width="2dp"
+                        app:layout_aspectRatio="100%"
+                        app:layout_widthPercent="40%"
                         tools:ignore="RtlHardcoded" />
-                </RelativeLayout>
+                </android.support.percent.PercentRelativeLayout>
 
                 <mx.com.factico.diputinder.views.CustomTextView
-                    android:id="@+id/candidate_tv_name"
+                    android:id="@+id/candidate.name_label"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_above="@+id/candidate.socail_container"
+                    android:layout_alignTop="@+id/candidate.image_container"
+                    android:layout_marginTop="20dp"
+                    android:layout_toEndOf="@+id/candidate.image_container"
                     android:gravity="center_horizontal"
                     android:paddingEnd="15dp"
-                    android:paddingLeft="15dp"
-                    android:paddingRight="15dp"
+                    android:paddingStart="15dp"
                     android:paddingTop="5dp"
                     android:text=""
-                    android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:textColor="@color/colorTextContent"
-                    android:textStyle="bold"
+                    android:textColor="@color/colorWhite"
+                    android:textSize="16sp"
                     app:typeface="Gotham_Rounded_Bold" />
 
-                <mx.com.factico.diputinder.views.CustomTextView
-                    android:id="@+id/candidate_tv_party"
+                <LinearLayout
+                    android:id="@+id/candidate.socail_container"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="center_horizontal"
-                    android:paddingLeft="15dp"
-                    android:paddingRight="15dp"
-                    android:text=""
-                    android:textAppearance="?android:attr/textAppearanceSmall"
-                    android:textColor="@color/colorTextContent"
-                    app:typeface="Gotham_Rounded_Book" />
+                    android:layout_alignBottom="@+id/candidate.image_container"
+                    android:layout_marginBottom="20dp"
+                    android:layout_marginEnd="15dp"
+                    android:layout_marginStart="15dp"
+                    android:layout_toEndOf="@+id/candidate.image_container"
+                    android:orientation="horizontal">
 
-                <mx.com.factico.diputinder.views.CustomTextView
-                    android:id="@+id/candidate_tv_cargo"
+                    <ImageView
+                        android:id="@+id/candidate.email_image"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:src="@drawable/ic_email_green" />
+
+                    <ImageView
+                        android:id="@+id/candidate.facebook_image"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:src="@drawable/ic_facebook_green" />
+
+                    <ImageView
+                        android:id="@+id/candidate.twitter_image"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:src="@drawable/ic_twitter_green" />
+                </LinearLayout>
+
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="center_horizontal"
-                    android:paddingLeft="15dp"
-                    android:paddingRight="15dp"
-                    android:text=""
-                    android:textAppearance="?android:attr/textAppearanceSmall"
-                    android:textColor="@color/colorTextContent"
-                    app:typeface="Gotham_Rounded_Bold" />
+                    android:layout_below="@+id/candidate.image_container"
+                    android:layout_marginTop="10dp"
+                    android:orientation="vertical">
 
-                <mx.com.factico.diputinder.views.CustomTextView
-                    android:id="@+id/candidate_tv_entidad"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center_horizontal"
-                    android:paddingLeft="15dp"
-                    android:paddingRight="15dp"
-                    android:text=""
-                    android:textAppearance="?android:attr/textAppearanceSmall"
-                    android:textColor="@color/colorTextContent"
-                    app:typeface="Gotham_Rounded_Book" />
-            </LinearLayout>
+                    <mx.com.factico.diputinder.views.CustomTextView
+                        android:id="@+id/candidate.party_label"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingEnd="15dp"
+                        android:paddingStart="15dp"
+                        android:text=""
+                        android:textColor="@color/colorWhite"
+                        android:textSize="14sp"
+                        app:typeface="Gotham_Rounded_Book" />
 
-            <LinearLayout
-                android:id="@+id/candidate_vg_indicators"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="15dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:layout_marginTop="25dp"
-                android:orientation="vertical" />
-        </LinearLayout>
-    </ScrollView>
-</LinearLayout>
+                    <mx.com.factico.diputinder.views.CustomTextView
+                        android:id="@+id/candidate.position_label"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingEnd="15dp"
+                        android:paddingStart="15dp"
+                        android:text=""
+                        android:textColor="@color/colorWhite"
+                        android:textSize="14sp"
+                        app:typeface="Gotham_Rounded_Book" />
+
+                    <mx.com.factico.diputinder.views.CustomTextView
+                        android:id="@+id/candidate.territory_label"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingEnd="15dp"
+                        android:paddingStart="15dp"
+                        android:text=""
+                        android:textColor="@color/colorWhite"
+                        android:textSize="14sp"
+                        app:typeface="Gotham_Rounded_Book" />
+                </LinearLayout>
+            </android.support.percent.PercentRelativeLayout>
+        </android.support.design.widget.CollapsingToolbarLayout>
+    </android.support.design.widget.AppBarLayout>
+
+    <android.support.v4.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/colorWhite"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <FrameLayout
+            android:id="@+id/candidate.container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </android.support.v4.widget.NestedScrollView>
+</android.support.design.widget.CoordinatorLayout>
