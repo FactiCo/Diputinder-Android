@@ -36,7 +36,7 @@
         <android.support.design.widget.CollapsingToolbarLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/colorPurpleLight"
+            android:background="@color/colorDeepLavender"
             app:contentScrim="@android:color/transparent"
             app:expandedTitleMarginBottom="46dp"
             app:expandedTitleMarginEnd="64dp"

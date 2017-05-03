@@ -1,14 +1,26 @@
 package mx.com.factico.diputinder.fragments;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+
+import java.util.List;
 
 import mx.com.factico.diputinder.R;
+import mx.com.factico.diputinder.WebViewActivity;
+import mx.com.factico.diputinder.models.Answer;
 import mx.com.factico.diputinder.models.CandidateInfo;
+import mx.com.factico.diputinder.models.Indicator;
+import mx.com.factico.diputinder.models.Question;
+import mx.com.factico.diputinder.models.Section;
 
 /**
  * Created by Edgar Z. on 5/3/17.
@@ -18,6 +30,8 @@ public class CandidateFragment extends Fragment {
 
     public static final String CANDIDATE_INFO = "candidate_info";
     private CandidateInfo candidateInfo;
+
+    private LinearLayout mIndicatorsContainer;
 
     public static Fragment newInstance(CandidateInfo candidateInfo) {
         Bundle args = new Bundle();
@@ -43,74 +57,129 @@ public class CandidateFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        mIndicatorsContainer = (LinearLayout) view.findViewById(R.id.candidate_indicators_container);
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        fillCandidate();
+        fillIndicators();
     }
 
-    private void fillCandidate() {
-        /*List<Indicator> indicators = candidateInfo.getCandidate().getIndicators();
+    private void fillIndicators() {
+        List<Indicator> indicators = candidateInfo.getCandidate().getIndicators();
         if (indicators != null && indicators.size() > 0) {
-            LinearLayout vgIndicators = (LinearLayout) findViewById(R.id.candidate_vg_indicators);
 
             for (Indicator indicator : indicators) {
-                View indicatorView = createIndicatorView(indicator, sizeIcons);
+                for (Section section : indicator.getSections()) {
+                    View view = createSection(mIndicatorsContainer, section);
 
-                if (indicatorView != null)
-                    vgIndicators.addView(indicatorView);
-
+                    if (view != null)
+                        mIndicatorsContainer.addView(view);
+                }
             }
-        }*/
+        }
     }
 
-    /*private View createIndicatorView(Indicator indicator, int sizeIcons) {
-        RelativeLayout view = (RelativeLayout) getLayoutInflater().inflate(R.layout.item_indicator, null, false);
-        view.setOnClickListener(WebViewOnClickListener);
+    private View createSection(ViewGroup root, Section section) {
+        Activity activity = getActivity();
+        if (activity == null)
+            return null;
 
-        RelativeLayout.LayoutParams paramsIconsStatus = new RelativeLayout.LayoutParams(sizeIcons / 2, sizeIcons / 2);
-        paramsIconsStatus.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-        paramsIconsStatus.addRule(RelativeLayout.CENTER_VERTICAL);
+        View view = activity.getLayoutInflater().inflate(R.layout.item_section, root, false);
 
-        RelativeLayout.LayoutParams paramsIcons = new RelativeLayout.LayoutParams((int) (sizeIcons / 1.3), (int) (sizeIcons / 1.3));
-        paramsIcons.setMargins(5, 10, 5, 10);
-        paramsIcons.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+        TextView mSectionNameLabel = (TextView) view.findViewById(R.id.item_section_name_label);
+        mSectionNameLabel.setText(section.getName());
 
-        CustomTextView tvName = (CustomTextView) view.findViewById(R.id.indicator_tv_name);
-        tvName.setText(indicator.getName());
+        LinearLayout mAnswersLayout = (LinearLayout) view.findViewById(R.id.item_section_answers);
 
-        ImageView ivIndicator = (ImageView) view.findViewById(R.id.indicator_iv_icon);
-        ivIndicator.setLayoutParams(paramsIcons);
+        View mDocumentView = view.findViewById(R.id.item_section_document);
 
-        ImageView ivIndicatorStatus = (ImageView) view.findViewById(R.id.indicator_iv_status);
-        ivIndicatorStatus.setLayoutParams(paramsIconsStatus);
+        for (Question question : section.getQuestions()) {
+            View sectionView = null;
+            switch (question.getElementType()) {
+                case "MultipleOption":
+                    sectionView = createMultipleOptionView(mAnswersLayout, question);
+                    break;
+                case "OpenAnswer":
+                    sectionView = createOpenAnswerView(mAnswersLayout, question);
+                    break;
+                case "Document":
+                    createDocumentView(mDocumentView, question);
+                    break;
+            }
+
+            if (sectionView != null)
+                mAnswersLayout.addView(sectionView);
+        }
 
         return view;
     }
 
-    private View.OnClickListener WebViewOnClickListener = new View.OnClickListener() {
+    private View createMultipleOptionView(ViewGroup root, Question question) {
+        View view = getActivity().getLayoutInflater().inflate(R.layout.item_question_multiple_option, root, false);
+
+        String answer = question.getAnswer() != null && !TextUtils.isEmpty(question.getAnswer().getOption()) ?
+                question.getAnswer().getOption() : "";
+
+        TextView answerLabel = (TextView) view.findViewById(R.id.item_question_option_label);
+        answerLabel.setText(answer);
+
+        return view;
+    }
+
+    private View createOpenAnswerView(ViewGroup root, Question question) {
+        View view = getActivity().getLayoutInflater().inflate(R.layout.item_question_open_answer, root, false);
+
+        Answer answer = question.getAnswer();
+
+        String ans = answer != null && answer.getInputs() != null &&
+                answer.getInputs().size() > 0 && !TextUtils.isEmpty(answer.getInputs().get(0).getContent()) ?
+                answer.getInputs().get(0).getContent() : "";
+
+        TextView answerLabel = (TextView) view.findViewById(R.id.item_question_input_label);
+        answerLabel.setText(ans);
+
+        return view;
+    }
+
+    private void createDocumentView(View root, Question question) {
+        //View view = getActivity().getLayoutInflater().inflate(R.layout.item_question_document, root, false);
+        //return view;
+
+        String answer = question.getAnswer() != null && !TextUtils.isEmpty(question.getAnswer().getDocument()) ?
+                question.getAnswer().getDocument() : "";
+
+        if (!TextUtils.isEmpty(answer)) {
+            root.setVisibility(View.VISIBLE);
+            root.setTag(answer);
+            root.setOnClickListener(DocumentPdfOnClickListener);
+        }
+    }
+
+    private View.OnClickListener DocumentPdfOnClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            if (v.getTag() != null) {
-                String url = v.getTag().toString();
+            if (v.getTag() == null)
+                return;
 
-                if (url != null && !url.equals(""))
-                    startWebViewIntent(url);
-                else
-                    Dialogues.Toast(getBaseContext(), "No ha presentado documento.", Toast.LENGTH_SHORT);
-            } else {
-                Dialogues.Toast(getBaseContext(), "No ha presentado documento.", Toast.LENGTH_SHORT);
-            }
+            String url = v.getTag().toString();
+
+            if (url != null && !url.equals(""))
+                startWebViewIntent(url);
         }
     };
 
     private void startWebViewIntent(String url) {
-        Intent intent = new Intent(getBaseContext(), WebViewActivity.class);
+        Activity activity = getActivity();
+        if (activity == null)
+            return;
+
+        Intent intent = new Intent(activity, WebViewActivity.class);
         intent.putExtra("url", url);
         intent.putExtra("actionbarTitle", getString(R.string.lbl_document));
         startActivity(intent);
-    }*/
+    }
 }
