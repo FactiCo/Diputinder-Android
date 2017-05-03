@@ -92,8 +92,10 @@ public class MyArrayAdapter extends ArrayAdapter<CandidateInfo> {
 
             Party party = candidate.getParty();
             if (party != null && party.getImage() != null && party.getImage().getThumb() != null
-                    && !TextUtils.isEmpty(party.getImage().getThumb().getUrl()))
-                ImageLoader.getInstance().displayImage(party.getImage().getThumb().getUrl(), holder.imagePartido, options);
+                    && !TextUtils.isEmpty(party.getImage().getThumb().getUrl())) {
+                String url = party.getImage().getThumb().getUrl();
+                ImageLoader.getInstance().displayImage(url, holder.imagePartido, options);
+            }
         }
     }
 

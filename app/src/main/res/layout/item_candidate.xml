@@ -23,7 +23,7 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@color/colorPurpleLight">
+                android:background="@color/colorDeepLavender">
 
                 <mx.com.factico.diputinder.views.CustomTextView
                     android:id="@+id/item_candidate_tv_position"
@@ -74,7 +74,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_alignParentBottom="true"
-                        android:background="@color/colorPurpleLight"
+                        android:background="@color/colorDeepLavender"
                         android:gravity="center_vertical"
                         android:minLines="2"
                         android:paddingBottom="10dp"
