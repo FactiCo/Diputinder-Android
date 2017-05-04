@@ -9,6 +9,7 @@ import java.util.List;
 
 public class Section implements Serializable {
     private String name;
+    private Image image;
     private List<Question> questions;
 
     public String getName() {
@@ -17,6 +18,14 @@ public class Section implements Serializable {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Image getImage() {
+        return image;
+    }
+
+    public void setImage(Image image) {
+        this.image = image;
     }
 
     public List<Question> getQuestions() {

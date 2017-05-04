@@ -6,21 +6,28 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.List;
 
 import mx.com.factico.diputinder.R;
 import mx.com.factico.diputinder.WebViewActivity;
+import mx.com.factico.diputinder.dialogues.Dialogues;
 import mx.com.factico.diputinder.models.Answer;
 import mx.com.factico.diputinder.models.CandidateInfo;
 import mx.com.factico.diputinder.models.Indicator;
 import mx.com.factico.diputinder.models.Question;
 import mx.com.factico.diputinder.models.Section;
+import mx.com.factico.diputinder.utils.ImageUtils;
 
 /**
  * Created by Edgar Z. on 5/3/17.
@@ -28,8 +35,13 @@ import mx.com.factico.diputinder.models.Section;
 
 public class CandidateFragment extends Fragment {
 
+    private static final String TAG = CandidateFragment.class.getName();
+
     public static final String CANDIDATE_INFO = "candidate_info";
+
     private CandidateInfo candidateInfo;
+
+    private DisplayImageOptions options;
 
     private LinearLayout mIndicatorsContainer;
 
@@ -46,6 +58,8 @@ public class CandidateFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         candidateInfo = getArguments() != null ? (CandidateInfo) getArguments().getSerializable(CANDIDATE_INFO) : null;
+
+        options = ImageUtils.buildDisplayImageOptions();
     }
 
     @Nullable
@@ -92,6 +106,13 @@ public class CandidateFragment extends Fragment {
 
         TextView mSectionNameLabel = (TextView) view.findViewById(R.id.item_section_name_label);
         mSectionNameLabel.setText(section.getName());
+
+        ImageView mSectionImage = (ImageView) view.findViewById(R.id.item_section_image);
+        String sectionImage = section.getImage() != null && !TextUtils.isEmpty(section.getImage().getUrl()) ?
+                section.getImage().getUrl() : "";
+        if (!TextUtils.isEmpty(sectionImage)) {
+            ImageLoader.getInstance().displayImage(sectionImage, mSectionImage, options);
+        }
 
         LinearLayout mAnswersLayout = (LinearLayout) view.findViewById(R.id.item_section_answers);
 
