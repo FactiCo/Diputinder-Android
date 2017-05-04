@@ -11,8 +11,7 @@ import java.net.URL;
 public class HttpConnection {
     public static final String TAG = HttpConnection.class.getName();
 
-    //private static final String BASE_URL = "http://13.82.98.12";
-    private static final String BASE_URL = "http://10.0.2.2:3000";
+    private static final String BASE_URL = "http://13.82.98.12";
 
     public static final String API_GEOCODER = "/api/geocoder?latitude=%s&longitude=%s";
 

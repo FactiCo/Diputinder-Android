@@ -566,23 +566,21 @@ public class MainFragment extends Fragment implements View.OnClickListener {
 
                     List<HasTerritory> hasTerritories = GsonParser.getListHasTerritoriesFromJSON(has_territories);
 
-                    if (hasTerritories == null) {
-                        return;
-                    }
-
                     List<CandidateInfo> candidateInfoList = new ArrayList<>();
 
                     for (HasTerritory hasTerritory : hasTerritories) {
 
-                        for (Candidate candidate : hasTerritory.getCandidates()) {
-                            CandidateInfo candidateInfo = new CandidateInfo();
-                            if (hasTerritory.getTerritory() != null)
-                                candidateInfo.setTerritoryName(hasTerritory.getTerritory().getName());
-                            if (hasTerritory.getPosition() != null)
-                                candidateInfo.setPosition(hasTerritory.getPosition().getTitle());
-                            candidateInfo.setCandidate(candidate);
+                        if (hasTerritory.getCandidates() != null) {
+                            for (Candidate candidate : hasTerritory.getCandidates()) {
+                                CandidateInfo candidateInfo = new CandidateInfo();
+                                if (hasTerritory.getTerritory() != null)
+                                    candidateInfo.setTerritoryName(hasTerritory.getTerritory().getName());
+                                if (hasTerritory.getPosition() != null)
+                                    candidateInfo.setPosition(hasTerritory.getPosition().getTitle());
+                                candidateInfo.setCandidate(candidate);
 
-                            candidateInfoList.add(candidateInfo);
+                                candidateInfoList.add(candidateInfo);
+                            }
                         }
                     }
 
