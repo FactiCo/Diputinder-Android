@@ -252,7 +252,7 @@ public class MainFragment extends Fragment implements View.OnClickListener {
         }
 
         View view = rootView.findViewById(R.id.main_btn_refresh);
-        view.setOnClickListener(new View.OnClickListener() {
+        /*view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mSwipeFlingView.setVisibility(View.VISIBLE);
@@ -260,7 +260,7 @@ public class MainFragment extends Fragment implements View.OnClickListener {
                 initLocationClientListener();
                 startLocationListener();
             }
-        });
+        });*/
         view.setVisibility(View.VISIBLE);
         ((CustomTextView) rootView.findViewById(R.id.main_tv_error_message)).setText(messageError);
     }
