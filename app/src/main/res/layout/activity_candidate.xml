@@ -32,28 +32,29 @@
                 android:textSize="17sp"
                 app:typeface="Gotham_Rounded_Bold" />
         </android.support.v7.widget.Toolbar>
+    </android.support.design.widget.AppBarLayout>
 
-        <android.support.design.widget.CollapsingToolbarLayout
+    <android.support.v4.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/colorWhite"
+        android:clipToPadding="false"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/colorDeepLavender"
-            app:contentScrim="@android:color/transparent"
-            app:expandedTitleMarginBottom="46dp"
-            app:expandedTitleMarginEnd="64dp"
-            app:expandedTitleMarginStart="48dp"
-            app:layout_scrollFlags="scroll|exitUntilCollapsed"
-            app:title=""
-            app:titleEnabled="false">
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
             <android.support.percent.PercentRelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginBottom="15dp"
-                android:layout_marginEnd="15dp"
-                android:layout_marginStart="15dp"
-                android:layout_marginTop="15dp"
+                android:background="@color/colorDeepLavender"
                 android:fitsSystemWindows="true"
-                app:layout_collapseMode="parallax">
+                android:paddingBottom="15dp"
+                android:paddingEnd="15dp"
+                android:paddingStart="15dp"
+                android:paddingTop="15dp">
 
                 <android.support.percent.PercentRelativeLayout
                     android:id="@+id/candidate.image_container"
@@ -71,9 +72,9 @@
                         android:layout_gravity="center_horizontal"
                         android:padding="3dp"
                         android:scaleType="centerCrop"
-                        android:src="@android:color/black"
-                        app:civ_border_color="@android:color/black"
-                        app:civ_border_width="4dp"
+                        android:src="@color/colorGrayRounded"
+                        app:civ_border_color="@color/colorGrayRounded"
+                        app:civ_border_width="2dp"
                         app:layout_marginEndPercent="10%"
                         tools:ignore="RtlHardcoded" />
 
@@ -100,11 +101,11 @@
                     android:layout_above="@+id/candidate.socail_container"
                     android:layout_alignTop="@+id/candidate.image_container"
                     android:layout_marginTop="20dp"
+                    android:layout_marginStart="15dp"
                     android:layout_toEndOf="@+id/candidate.image_container"
-                    android:gravity="center_horizontal"
+                    android:gravity="top"
                     android:paddingEnd="15dp"
-                    android:paddingStart="15dp"
-                    android:paddingTop="5dp"
+                    android:paddingStart="5dp"
                     android:text=""
                     android:textColor="@color/colorWhite"
                     android:textSize="16sp"
@@ -184,18 +185,11 @@
                         app:typeface="Gotham_Rounded_Book" />
                 </LinearLayout>
             </android.support.percent.PercentRelativeLayout>
-        </android.support.design.widget.CollapsingToolbarLayout>
-    </android.support.design.widget.AppBarLayout>
 
-    <android.support.v4.widget.NestedScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/colorWhite"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
-
-        <FrameLayout
-            android:id="@+id/candidate.container"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            <FrameLayout
+                android:id="@+id/candidate.container"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </LinearLayout>
     </android.support.v4.widget.NestedScrollView>
 </android.support.design.widget.CoordinatorLayout>
