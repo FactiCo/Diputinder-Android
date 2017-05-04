@@ -48,8 +48,8 @@
                     android:layout_height="match_parent"
                     android:layout_below="@+id/item_candidate_tv_position"
                     android:layout_marginBottom="30dp"
-                    android:layout_marginEnd="5dp"
-                    android:layout_marginStart="5dp"
+                    android:layout_marginEnd="7dp"
+                    android:layout_marginStart="7dp"
                     android:background="@drawable/drawable_bgr_gray"
                     android:scaleType="centerCrop" />
 
@@ -81,8 +81,8 @@
                         android:paddingStart="14dp"
                         android:paddingTop="5dp"
                         android:text=""
-                        android:textAppearance="?android:attr/textAppearanceMedium"
                         android:textColor="@color/colorBackgroundWhite"
+                        android:textSize="16sp"
                         app:typeface="Gotham_Rounded_Bold" />
 
                     <de.hdodenhof.circleimageview.CircleImageView
@@ -96,9 +96,9 @@
                         android:layout_marginEnd="13dp"
                         android:padding="2dp"
                         android:scaleType="centerCrop"
-                        android:src="@color/colorDeepLavender"
-                        app:civ_border_color="@color/colorDeepLavender"
-                        app:civ_border_width="4dp" />
+                        android:src="@color/colorPrimary"
+                        app:civ_border_color="@color/colorPrimary"
+                        app:civ_border_width="2dp" />
                 </RelativeLayout>
             </RelativeLayout>
 

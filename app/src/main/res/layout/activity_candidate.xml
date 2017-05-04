@@ -127,21 +127,21 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:src="@drawable/ic_email_green" />
+                        android:src="@drawable/ic_email_gray" />
 
                     <ImageView
                         android:id="@+id/candidate.facebook_image"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:src="@drawable/ic_facebook_green" />
+                        android:src="@drawable/ic_facebook_gray" />
 
                     <ImageView
                         android:id="@+id/candidate.twitter_image"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:src="@drawable/ic_twitter_green" />
+                        android:src="@drawable/ic_twitter_gray" />
                 </LinearLayout>
 
                 <LinearLayout

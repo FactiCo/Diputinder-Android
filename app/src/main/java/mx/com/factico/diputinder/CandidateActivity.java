@@ -13,6 +13,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.View;
+import android.webkit.URLUtil;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -165,14 +166,17 @@ public class CandidateActivity extends AppCompatActivity implements View.OnClick
             if (!TextUtils.isEmpty(email)) {
                 mEmailImage.setTag(email);
                 mEmailImage.setOnClickListener(this);
+                mEmailImage.setImageResource(R.drawable.ic_email_green);
             }
             if (!TextUtils.isEmpty(facebook)) {
                 mFacebookImage.setTag(facebook);
                 mFacebookImage.setOnClickListener(this);
+                mFacebookImage.setImageResource(R.drawable.ic_facebook_green);
             }
             if (!TextUtils.isEmpty(twitter)) {
                 mTwitterImage.setTag(twitter);
                 mTwitterImage.setOnClickListener(this);
+                mTwitterImage.setImageResource(R.drawable.ic_twitter_green);
             }
 
         }
@@ -208,6 +212,9 @@ public class CandidateActivity extends AppCompatActivity implements View.OnClick
 
 
     private void openChromeCustomTab(String url) {
+        if (!URLUtil.isValidUrl(url))
+            return;
+
         Context context = getApplicationContext();
         CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder();
         builder.setToolbarColor(ContextCompat.getColor(context, R.color.colorWhite));
