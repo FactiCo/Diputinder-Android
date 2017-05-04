@@ -126,6 +126,25 @@ public class MainFragment extends Fragment implements View.OnClickListener {
 
         CacheUtils.unbindDrawables(rootView);
         rootView = null;
+
+        cancelTasks();
+    }
+
+    private void cancelTasks() {
+        if (reverseGeocoderTask != null) {
+            reverseGeocoderTask.cancel(true);
+            reverseGeocoderTask = null;
+        }
+
+        if (candidatesTask != null) {
+            candidatesTask.cancel(true);
+            candidatesTask = null;
+        }
+
+        if (messagesTask != null) {
+            messagesTask.cancel(true);
+            messagesTask = null;
+        }
     }
 
     @Override
@@ -191,6 +210,8 @@ public class MainFragment extends Fragment implements View.OnClickListener {
 
     private void initLocationClientListener() {
         if (LocationUtils.isGpsOrNetworkProviderEnabled(getActivity())) {
+            cancelTasks();
+
             isRefreshing = true;
             showDialog(getResources().getString(R.string.getting_location));
 
@@ -371,12 +392,9 @@ public class MainFragment extends Fragment implements View.OnClickListener {
         dialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
             @Override
             public void onCancel(DialogInterface dialog) {
-                dialog.dismiss();
-                isRefreshing = false;
+                cancelTasks();
 
-                if (reverseGeocoderTask != null) reverseGeocoderTask.cancel(true);
-                if (candidatesTask != null) candidatesTask.cancel(true);
-                if (messagesTask != null) messagesTask.cancel(true);
+                isRefreshing = false;
             }
         });
         dialog.show();
@@ -438,30 +456,21 @@ public class MainFragment extends Fragment implements View.OnClickListener {
         @Override
         protected String doInBackground(String... params) {
             String url = String.format(Locale.getDefault(), HttpConnection.API_GEOCODER, latitude, longitude);
-            Dialogues.Log(TAG, "REVERSE API_GEOCODER URL: " + url, Log.ERROR);
             return HttpConnection.GET(url);
         }
 
         @Override
         protected void onPostExecute(String result) {
-            reverseGeocoderTask = null;
             dismissDialog();
 
             handleReverseGeocoderResult(result);
-        }
-
-        @Override
-        protected void onCancelled() {
-            reverseGeocoderTask = null;
-            //showProgress(false);
-            dismissDialog();
         }
     }
 
     private void handleReverseGeocoderResult(String result) {
         boolean hasError = false;
 
-        Dialogues.Log(TAG, "REVERSE API_GEOCODER RESULT: " + result, Log.ERROR);
+        //Dialogues.Log(TAG, "REVERSE API_GEOCODER RESULT: " + result, Log.ERROR);
 
         if (result != null) {
             try {
@@ -469,8 +478,6 @@ public class MainFragment extends Fragment implements View.OnClickListener {
                 if (root.has("data")) {
                     JSONObject obj = root.getJSONObject("data");
                     String geocoder = obj.optJSONObject("geocoder").toString();
-
-                    Dialogues.Log(TAG, "Geocoder: " + geocoder, Log.ERROR);
 
                     String urlCandidates = "";
                     String urlMessages = "";
@@ -483,7 +490,7 @@ public class MainFragment extends Fragment implements View.OnClickListener {
                                     geocoderResult.getCountry().getId() + File.separator + HttpConnection.CANDIDATES;
 
                             urlMessages += HttpConnection.API_COUNTRIES + File.separator +
-                                    geocoderResult.getCountry().getId() + HttpConnection.MESSAGES;
+                                    geocoderResult.getCountry().getId() + File.separator + HttpConnection.MESSAGES;
 
                             if (geocoderResult.getState() != null) {
                                 urlCandidates += HttpConnection.API_STATES + File.separator +
@@ -495,8 +502,6 @@ public class MainFragment extends Fragment implements View.OnClickListener {
                                 }
                             }
                         }
-
-                        Dialogues.Log(TAG, "URL CANDIDATES: " + urlCandidates, Log.ERROR);
 
                         getCandidatesFromAddress(urlCandidates);
 
@@ -538,16 +543,9 @@ public class MainFragment extends Fragment implements View.OnClickListener {
 
         @Override
         protected void onPostExecute(String result) {
-            candidatesTask = null;
             dismissDialog();
 
             handleCandidatesResult(result);
-        }
-
-        @Override
-        protected void onCancelled() {
-            candidatesTask = null;
-            dismissDialog();
         }
     }
 
@@ -562,24 +560,15 @@ public class MainFragment extends Fragment implements View.OnClickListener {
                 if (root.has("data")) {
                     JSONObject obj = root.getJSONObject("data");
 
-                    Dialogues.Log(TAG, "DATA: " + obj.toString(), Log.ERROR);
-
                     JSONObject contentObj = obj.optJSONObject("content");
 
-                    Dialogues.Log(TAG, "CONTENT: " + contentObj.toString(), Log.ERROR);
-
                     String has_territories = contentObj.optJSONArray("has_territories").toString();
-
-                    Dialogues.Log(TAG, "HAS_TERRITORIES: " + has_territories, Log.ERROR);
 
                     List<HasTerritory> hasTerritories = GsonParser.getListHasTerritoriesFromJSON(has_territories);
 
                     if (hasTerritories == null) {
-                        Dialogues.Log(TAG, "HAS_TERRITORIES NULL!!", Log.ERROR);
                         return;
                     }
-
-                    Dialogues.Log(TAG, "HAS_TERRITORIES COUNT: " + hasTerritories.size(), Log.ERROR);
 
                     List<CandidateInfo> candidateInfoList = new ArrayList<>();
 
@@ -660,33 +649,17 @@ public class MainFragment extends Fragment implements View.OnClickListener {
 
         @Override
         protected void onPostExecute(String result) {
-            messagesTask = null;
-            //showProgress(false);
-            dismissDialog();
-
             handleMessagesResult(result);
-        }
-
-        @Override
-        protected void onCancelled() {
-            messagesTask = null;
-            //showProgress(false);
-            dismissDialog();
         }
     }
 
     private void handleMessagesResult(String result) {
-        if (!TextUtils.isEmpty(result))
+        if (TextUtils.isEmpty(result))
             return;
 
         try {
-            List<Messages> list = GsonParser.getListMessagesFromJSON(result);
+            messages = GsonParser.getMessagesFromJSON(result);
 
-            if (list == null || list.size() == 0) {
-                return;
-            }
-
-            messages = list.get(0);
             String messageJson = GsonParser.createJsonFromObject(messages);
             PreferencesManager.putStringPreference(getActivity().getApplication(), PreferencesManager.MESSAGES, messageJson);
 

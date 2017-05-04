@@ -22,7 +22,7 @@ public class HttpConnection {
 
     public static final String CANDIDATES = "candidates";
 
-    public static final String MESSAGES = "/api/messages";
+    public static final String MESSAGES = "messages";
 
     public static final String TWITTER_IMAGE_URL = "https://twitter.com/%s/profile_image?size=original";
 
