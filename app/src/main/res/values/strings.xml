@@ -51,7 +51,7 @@
 
     <string name="error_message_default">Algo salió mal. Inténtalo de nuevo.</string>
 
-    <string name="about_text">Con Ligue Político podrás conocer quiénes son tus candidatos a puestos de elección popular, de acuerdo a tu ubicación geográfica, para exigirles que se comprometan con la transparencia y la rendición de cuentas.\n\nEs una iniciativa ciudadana, abierta y colaborativa, desarrollada por Fáctico y apoyada por Opciona.\n\nSi un candidato te atrae, desliza a la derecha. ¡Pero cuidado! Si no ha presentado su declaración patrimonial o jurada ¡exígela!</string>
+    <string name="about_text">Con Ligue Político podrás conocer quiénes son tus candidatos a puestos de elección popular, de acuerdo a tu ubicación geográfica, para exigirles que se comprometan con la transparencia y la rendición de cuentas.\n\nSi un candidato te atrae, desliza a la derecha.\n\nEs una iniciativa ciudadana, abierta y colaborativa, desarrollada por Fáctico y apoyada por Opciona.</string>
     <string name="about_link">Para más información visita el sitio web aquí</string>
 
     <string name="no_more_candidates">Ya no hay más candidatos que mostrar. Presiona el botón \"actualizar\" en la esquina superior derecha para volver a jugar.</string>

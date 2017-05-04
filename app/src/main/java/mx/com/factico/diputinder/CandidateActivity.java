@@ -75,7 +75,6 @@ public class CandidateActivity extends AppCompatActivity {
         actionbarTitle.setText(getResources().getString(R.string.app_name));
 
         setSupportActionBar(mToolbar);
-
         if (getSupportActionBar() != null) getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
