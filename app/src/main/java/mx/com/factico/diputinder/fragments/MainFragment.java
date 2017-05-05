@@ -165,8 +165,8 @@ public class MainFragment extends Fragment implements View.OnClickListener {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        //retrieveMessagesCache();
-        //retrieveCandidatesCache();
+        retrieveMessagesCache();
+        retrieveCandidatesCache();
         initViews();
 
         if (auxCandidates != null && auxCandidates.size() > 0 && !isRefreshing) {
@@ -187,7 +187,9 @@ public class MainFragment extends Fragment implements View.OnClickListener {
             String currentDate = DateUtils.getCurrentDateTime();
             long difference = DateUtils.getDifferencesInHoursBetweenDates(oldDate, currentDate);
             if (difference < 3) { // 3 horas
-                messages = GsonParser.getMessagesFromJSON(messagesJson);
+                Messages messages = GsonParser.getMessagesFromJSON(messagesJson);
+                if (messages != null && !TextUtils.isEmpty(messages.getCongratulation()))
+                    this.messages = messages;
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -205,7 +207,9 @@ public class MainFragment extends Fragment implements View.OnClickListener {
             String currentDate = DateUtils.getCurrentDateTime();
             long difference = DateUtils.getDifferencesInHoursBetweenDates(oldDate, currentDate);
             if (difference < 3) { // 3 horas
-                auxCandidates = GsonParser.getListCandidatesInfoFromJSON(candidatesJson);
+                List<CandidateInfo> candidates = GsonParser.getListCandidatesInfoFromJSON(candidatesJson);
+                if (candidates != null && candidates.size() > 0)
+                    this.auxCandidates = candidates;
             }
         } catch (Exception e) {
             e.printStackTrace();
