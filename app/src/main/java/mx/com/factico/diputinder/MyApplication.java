@@ -1,8 +1,7 @@
 package mx.com.factico.diputinder;
 
+import android.app.Application;
 import android.content.Context;
-import android.support.multidex.MultiDex;
-import android.support.multidex.MultiDexApplication;
 
 import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -12,14 +11,11 @@ import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
 /**
  * Created by zace3d on 4/29/15.
  */
-public class MyApplication extends MultiDexApplication {
+public class MyApplication extends Application {
 
     @Override
     public void onCreate() {
         super.onCreate();
-
-        //TwitterAuthConfig authConfig = new TwitterAuthConfig("38anELUfaCfMipkBUfa3FrQR1", "us0bWPst1Y4KelBCzpKwOsGo2K0ybCLkeHdjHGv1I2LtvA4S0b");
-        //Fabric.with(this, new Twitter(authConfig));
 
         initImageLoader(getApplicationContext());
     }
@@ -47,9 +43,9 @@ public class MyApplication extends MultiDexApplication {
         ImageLoader.getInstance().clearMemoryCache();
     }
 
-    @Override
+    /*@Override
     protected void attachBaseContext(Context newBase) {
         super.attachBaseContext(newBase);
         MultiDex.install(this);
-    }
+    }*/
 }
