@@ -208,8 +208,11 @@ public class MainFragment extends Fragment implements View.OnClickListener {
             long difference = DateUtils.getDifferencesInHoursBetweenDates(oldDate, currentDate);
             if (difference < 3) { // 3 horas
                 List<CandidateInfo> candidates = GsonParser.getListCandidatesInfoFromJSON(candidatesJson);
-                if (candidates != null && candidates.size() > 0)
+                if (candidates != null && candidates.size() > 0) {
                     this.auxCandidates = candidates;
+
+                    isFirstTime = false;
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
