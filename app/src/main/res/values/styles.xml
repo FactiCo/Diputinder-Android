@@ -15,11 +15,11 @@
 
         <item name="android:windowDisablePreview">true</item>
 
-        <item name="colorControlNormal">@color/colorWhite</item>
+        <!--<item name="colorControlNormal">@color/colorWhite</item>
         <item name="colorControlActivated">@color/colorWhite</item>
         <item name="colorControlHighlight">@color/colorWhite</item>
         <item name="colorSwitchThumbNormal">@color/colorWhite</item>
-        <item name="actionMenuTextColor">@color/colorWhite</item>
+        <item name="actionMenuTextColor">@color/colorWhite</item>-->
 
         <item name="SwipeFlingStyle">@style/SwipeFling</item>
 

@@ -12,8 +12,8 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 
-import mx.com.factico.diputinder.beans.Address;
-import mx.com.factico.diputinder.beans.StateType;
+import mx.com.factico.diputinder.models.Address;
+import mx.com.factico.diputinder.models.StateType;
 import mx.com.factico.diputinder.dialogues.Dialogues;
 
 /**

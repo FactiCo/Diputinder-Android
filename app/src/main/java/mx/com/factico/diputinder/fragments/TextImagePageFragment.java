@@ -13,7 +13,7 @@ import android.widget.LinearLayout;
 import java.util.Locale;
 
 import mx.com.factico.diputinder.R;
-import mx.com.factico.diputinder.beans.Text;
+import mx.com.factico.diputinder.models.Text;
 import mx.com.factico.diputinder.utils.ScreenUtils;
 import mx.com.factico.diputinder.views.CustomTextView;
 

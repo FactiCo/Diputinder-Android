@@ -1,17 +1,24 @@
 package mx.com.factico.diputinder.fragments;
 
+import android.app.Activity;
 import android.app.Dialog;
-import android.app.DialogFragment;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.customtabs.CustomTabsIntent;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.content.ContextCompat;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.webkit.URLUtil;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -23,9 +30,9 @@ import java.util.List;
 import java.util.Locale;
 
 import mx.com.factico.diputinder.R;
-import mx.com.factico.diputinder.beans.Candidate;
-import mx.com.factico.diputinder.beans.CandidateInfo;
-import mx.com.factico.diputinder.beans.Messages;
+import mx.com.factico.diputinder.models.Candidate;
+import mx.com.factico.diputinder.models.CandidateInfo;
+import mx.com.factico.diputinder.models.Messages;
 import mx.com.factico.diputinder.dialogues.Dialogues;
 import mx.com.factico.diputinder.httpconnection.HttpConnection;
 import mx.com.factico.diputinder.utils.CacheUtils;
@@ -115,11 +122,10 @@ public class TwitterFragmentDialog extends DialogFragment {
     }
 
     private void fillCandidateInfo() {
-        if (candidateInfo == null || candidateInfo.getCandidate() == null ||
-                candidateInfo.getCandidate().getCandidate() == null)
+        if (candidateInfo == null || candidateInfo.getCandidate() == null)
             return;
 
-        Candidate candidate = candidateInfo.getCandidate().getCandidate();
+        Candidate candidate = candidateInfo.getCandidate();
 
         if (candidate != null) {
             String userName = (candidate.getTwitter() != null && !candidate.getTwitter().equals(""))
@@ -174,7 +180,10 @@ public class TwitterFragmentDialog extends DialogFragment {
             shareIntent.putExtra(Intent.EXTRA_TEXT, messageTweet);
             startActivity(Intent.createChooser(shareIntent, "Compartir"));
         } else {
-            Dialogues.Toast(getActivity(), "Necesitas tener instalada la app de Twitter para poder compartir", Toast.LENGTH_LONG);
+            String twitter = candidateInfo.getCandidate() != null ? candidateInfo.getCandidate().getTwitter() : "";
+            String url = !TextUtils.isEmpty(twitter) ? "https://twitter.com/" + twitter : "";
+            openChromeCustomTab(url);
+            //Dialogues.Toast(getActivity(), "Necesitas tener instalada la app de Twitter para poder compartir", Toast.LENGTH_LONG);
         }
     }
 
@@ -214,5 +223,19 @@ public class TwitterFragmentDialog extends DialogFragment {
             app_installed = false;
         }
         return app_installed;
+    }
+
+    private void openChromeCustomTab(String url) {
+        Activity activity = getActivity();
+        if (!URLUtil.isValidUrl(url) || activity == null)
+            return;
+
+        CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder();
+        builder.setToolbarColor(ContextCompat.getColor(activity, R.color.colorWhite));
+        //builder.setStartAnimations(activity, R.anim.slide_up, R.anim.no_anim);
+        //builder.setExitAnimations(activity, R.anim.no_anim, R.anim.slide_bottom);
+        CustomTabsIntent customTabsIntent = builder.build();
+        customTabsIntent.intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        customTabsIntent.launchUrl(activity, Uri.parse(url));
     }
 }

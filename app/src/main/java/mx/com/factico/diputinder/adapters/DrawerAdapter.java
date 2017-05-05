@@ -11,7 +11,7 @@ import java.util.List;
 
 import mx.com.factico.diputinder.R;
 import mx.com.factico.diputinder.WebViewActivity;
-import mx.com.factico.diputinder.beans.DrawerOption;
+import mx.com.factico.diputinder.models.DrawerOption;
 import mx.com.factico.diputinder.views.CustomTextView;
 
 /**

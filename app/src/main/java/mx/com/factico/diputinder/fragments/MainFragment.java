@@ -1,17 +1,15 @@
 package mx.com.factico.diputinder.fragments;
 
 import android.app.Activity;
-import android.app.DialogFragment;
-import android.app.Fragment;
-import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
-import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -26,6 +24,8 @@ import android.widget.Toast;
 import com.google.android.gms.maps.model.LatLng;
 import com.lorentzos.flingswipe.SwipeFlingAdapterView;
 
+import org.json.JSONObject;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -34,20 +34,19 @@ import java.util.Locale;
 import mx.com.factico.diputinder.CandidateActivity;
 import mx.com.factico.diputinder.R;
 import mx.com.factico.diputinder.adapters.MyArrayAdapter;
-import mx.com.factico.diputinder.beans.CandidateInfo;
-import mx.com.factico.diputinder.beans.Candidates;
-import mx.com.factico.diputinder.beans.GeocoderResult;
-import mx.com.factico.diputinder.beans.Messages;
-import mx.com.factico.diputinder.beans.Territory;
 import mx.com.factico.diputinder.dialogues.Dialogues;
 import mx.com.factico.diputinder.httpconnection.HttpConnection;
 import mx.com.factico.diputinder.httpconnection.NetworkUtils;
 import mx.com.factico.diputinder.location.LocationClientListener;
 import mx.com.factico.diputinder.location.LocationUtils;
+import mx.com.factico.diputinder.models.Candidate;
+import mx.com.factico.diputinder.models.CandidateInfo;
+import mx.com.factico.diputinder.models.GeocoderResult;
+import mx.com.factico.diputinder.models.HasTerritory;
+import mx.com.factico.diputinder.models.Messages;
 import mx.com.factico.diputinder.parser.GsonParser;
 import mx.com.factico.diputinder.preferences.PreferencesManager;
 import mx.com.factico.diputinder.utils.CacheUtils;
-import mx.com.factico.diputinder.utils.Constants;
 import mx.com.factico.diputinder.utils.DateUtils;
 import mx.com.factico.diputinder.utils.LinkUtils;
 import mx.com.factico.diputinder.views.CustomTextView;
@@ -68,6 +67,8 @@ public class MainFragment extends Fragment implements View.OnClickListener {
     private View mSwipeLeftButton;
     private View mSwipeRightButton;
     private TextView mNoItems;
+    private View mSwipeContainer;
+    private View mErrorMessage;
 
     private LocationClientListener clientListener;
     private LatLng userLocation;
@@ -127,6 +128,25 @@ public class MainFragment extends Fragment implements View.OnClickListener {
 
         CacheUtils.unbindDrawables(rootView);
         rootView = null;
+
+        cancelTasks();
+    }
+
+    private void cancelTasks() {
+        if (reverseGeocoderTask != null) {
+            reverseGeocoderTask.cancel(true);
+            reverseGeocoderTask = null;
+        }
+
+        if (candidatesTask != null) {
+            candidatesTask.cancel(true);
+            candidatesTask = null;
+        }
+
+        if (messagesTask != null) {
+            messagesTask.cancel(true);
+            messagesTask = null;
+        }
     }
 
     @Override
@@ -137,14 +157,16 @@ public class MainFragment extends Fragment implements View.OnClickListener {
         mSwipeLeftButton = view.findViewById(R.id.main_btn_swipe_left);
         mSwipeRightButton = view.findViewById(R.id.main_btn_swipe_right);
         mNoItems = (TextView) view.findViewById(R.id.main_no_items);
+        mSwipeContainer = view.findViewById(R.id.main_swipe_container);
+        mErrorMessage = view.findViewById(R.id.main_btn_refresh);
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        //retrieveMessagesCache();
-        //retrieveCandidatesCache();
+        retrieveMessagesCache();
+        retrieveCandidatesCache();
         initViews();
 
         if (auxCandidates != null && auxCandidates.size() > 0 && !isRefreshing) {
@@ -165,7 +187,9 @@ public class MainFragment extends Fragment implements View.OnClickListener {
             String currentDate = DateUtils.getCurrentDateTime();
             long difference = DateUtils.getDifferencesInHoursBetweenDates(oldDate, currentDate);
             if (difference < 3) { // 3 horas
-                messages = GsonParser.getMessagesFromJSON(messagesJson);
+                Messages messages = GsonParser.getMessagesFromJSON(messagesJson);
+                if (messages != null && !TextUtils.isEmpty(messages.getCongratulation()))
+                    this.messages = messages;
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -183,7 +207,9 @@ public class MainFragment extends Fragment implements View.OnClickListener {
             String currentDate = DateUtils.getCurrentDateTime();
             long difference = DateUtils.getDifferencesInHoursBetweenDates(oldDate, currentDate);
             if (difference < 3) { // 3 horas
-                auxCandidates = GsonParser.getListCandidatesInfoFromJSON(candidatesJson);
+                List<CandidateInfo> candidates = GsonParser.getListCandidatesInfoFromJSON(candidatesJson);
+                if (candidates != null && candidates.size() > 0)
+                    this.auxCandidates = candidates;
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -192,6 +218,8 @@ public class MainFragment extends Fragment implements View.OnClickListener {
 
     private void initLocationClientListener() {
         if (LocationUtils.isGpsOrNetworkProviderEnabled(getActivity())) {
+            cancelTasks();
+
             isRefreshing = true;
             showDialog(getResources().getString(R.string.getting_location));
 
@@ -230,18 +258,9 @@ public class MainFragment extends Fragment implements View.OnClickListener {
         if (dialog != null && dialog.isShowing()) {
             dialog.dismiss();
         }
-
-        View view = rootView.findViewById(R.id.main_btn_refresh);
-        view.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mSwipeFlingView.setVisibility(View.VISIBLE);
-                mNoItems.setVisibility(View.GONE);
-                initLocationClientListener();
-                startLocationListener();
-            }
-        });
-        view.setVisibility(View.VISIBLE);
+        mErrorMessage.setVisibility(View.VISIBLE);
+        mSwipeContainer.setVisibility(View.GONE);
+        mNoItems.setVisibility(View.GONE);
         ((CustomTextView) rootView.findViewById(R.id.main_tv_error_message)).setText(messageError);
     }
 
@@ -297,18 +316,6 @@ public class MainFragment extends Fragment implements View.OnClickListener {
         @Override
         public void onRightCardExit(Object dataObject) {
             CandidateInfo candidateInfo = (CandidateInfo) dataObject;
-
-            Dialogues.Log(TAG, "Adapter Count: " + mAdapter.getCount(), Log.ERROR);
-            Dialogues.Log(TAG, "Aux Candidates Count: " + auxCandidates.size(), Log.ERROR);
-
-            Dialogues.Log(TAG, "CandidateInfo TerritoryName: " + candidateInfo.getTerritoryName(), Log.ERROR);
-            Dialogues.Log(TAG, "CandidateInfo Position: " + candidateInfo.getPosition(), Log.ERROR);
-
-            Dialogues.Log(TAG, "CandidateInfo Nombres: " + candidateInfo.getCandidate().getCandidate().getNombres(), Log.ERROR);
-            Dialogues.Log(TAG, "CandidateInfo ApellidoPaterno: " + candidateInfo.getCandidate().getCandidate().getApellidoPaterno(), Log.ERROR);
-            Dialogues.Log(TAG, "CandidateInfo ApellidoMaterno: " + candidateInfo.getCandidate().getCandidate().getApellidoMaterno(), Log.ERROR);
-            Dialogues.Log(TAG, "CandidateInfo Twitter: " + candidateInfo.getCandidate().getCandidate().getTwitter(), Log.ERROR);
-
             showTwitterDialog(candidateInfo, messages);
         }
 
@@ -324,11 +331,9 @@ public class MainFragment extends Fragment implements View.OnClickListener {
                         getString(R.string.no_more_candidates));
                 LinkUtils.fixTextView(mNoItems);
 
-                if (mNoItems.getVisibility() != View.VISIBLE)
-                    mNoItems.setVisibility(View.VISIBLE);
-
-                if (mSwipeFlingView.getVisibility() != View.GONE)
-                    mSwipeFlingView.setVisibility(View.GONE);
+                mNoItems.setVisibility(View.VISIBLE);
+                mSwipeContainer.setVisibility(View.GONE);
+                mErrorMessage.setVisibility(View.GONE);
             }
         }
 
@@ -384,12 +389,9 @@ public class MainFragment extends Fragment implements View.OnClickListener {
         dialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
             @Override
             public void onCancel(DialogInterface dialog) {
-                dialog.dismiss();
-                isRefreshing = false;
+                cancelTasks();
 
-                if (reverseGeocoderTask != null) reverseGeocoderTask.cancel(true);
-                if (candidatesTask != null) candidatesTask.cancel(true);
-                if (messagesTask != null) messagesTask.cancel(true);
+                isRefreshing = false;
             }
         });
         dialog.show();
@@ -413,7 +415,8 @@ public class MainFragment extends Fragment implements View.OnClickListener {
 
         if (id == R.id.action_refresh) {
             if (!isRefreshing) {
-                mSwipeFlingView.setVisibility(View.VISIBLE);
+                mSwipeContainer.setVisibility(View.VISIBLE);
+                mErrorMessage.setVisibility(View.GONE);
                 mNoItems.setVisibility(View.GONE);
                 initLocationClientListener();
                 startLocationListener();
@@ -430,6 +433,8 @@ public class MainFragment extends Fragment implements View.OnClickListener {
                 reverseGeocoderTask = new ReverseGeocoderTask(location.latitude, location.longitude);
                 reverseGeocoderTask.execute((String) null);
             } else {
+                isRefreshing = false;
+
                 setTextMessageError(getResources().getString(R.string.no_internet_connection));
             }
         }
@@ -450,55 +455,63 @@ public class MainFragment extends Fragment implements View.OnClickListener {
 
         @Override
         protected String doInBackground(String... params) {
-            return HttpConnection.GET(String.format(Locale.getDefault(), HttpConnection.URL_HOST + HttpConnection.GEOCODER, latitude, longitude));
+            String url = String.format(Locale.getDefault(), HttpConnection.API_GEOCODER, latitude, longitude);
+            return HttpConnection.GET(url);
         }
 
         @Override
         protected void onPostExecute(String result) {
-            reverseGeocoderTask = null;
             dismissDialog();
 
             handleReverseGeocoderResult(result);
-        }
-
-        @Override
-        protected void onCancelled() {
-            reverseGeocoderTask = null;
-            //showProgress(false);
-            dismissDialog();
         }
     }
 
     private void handleReverseGeocoderResult(String result) {
         boolean hasError = false;
+
+        //Dialogues.Log(TAG, "REVERSE API_GEOCODER RESULT: " + result, Log.ERROR);
+
         if (result != null) {
             try {
-                String urlCandidates = HttpConnection.URL_HOST;
-                String urlMessages = HttpConnection.URL_HOST;
+                JSONObject root = new JSONObject(result);
+                if (root.has("data")) {
+                    JSONObject obj = root.getJSONObject("data");
+                    String geocoder = obj.optJSONObject("geocoder").toString();
 
-                GeocoderResult geocoderResult = GsonParser.getGeocoderResultFromJSON(result);
+                    String urlCandidates = "";
+                    String urlMessages = "";
 
-                if (geocoderResult != null) {
-                    if (geocoderResult.getCountry() != null) {
-                        urlCandidates += HttpConnection.COUNTRIES + File.separator + geocoderResult.getCountry().getId();
-                        urlMessages += HttpConnection.COUNTRIES + File.separator + geocoderResult.getCountry().getId() + HttpConnection.MESSAGES;
+                    GeocoderResult geocoderResult = GsonParser.getGeocoderResultFromJSON(geocoder);
 
-                        if (geocoderResult.getState() != null) {
-                            urlCandidates += HttpConnection.STATES + File.separator + geocoderResult.getState().getId();
+                    if (geocoderResult != null) {
+                        if (geocoderResult.getCountry() != null) {
+                            urlCandidates += HttpConnection.API_COUNTRIES + File.separator +
+                                    geocoderResult.getCountry().getId() + File.separator + HttpConnection.CANDIDATES;
 
-                            if (geocoderResult.getCity() != null) {
-                                urlCandidates += HttpConnection.CITIES + File.separator + geocoderResult.getCity().getId();
+                            urlMessages += HttpConnection.API_COUNTRIES + File.separator +
+                                    geocoderResult.getCountry().getId() + File.separator + HttpConnection.MESSAGES;
+
+                            if (geocoderResult.getState() != null) {
+                                urlCandidates += HttpConnection.API_STATES + File.separator +
+                                        geocoderResult.getState().getId() + File.separator + HttpConnection.CANDIDATES;
+
+                                if (geocoderResult.getCity() != null) {
+                                    urlCandidates += HttpConnection.API_CITIES + File.separator +
+                                            geocoderResult.getCity().getId() + File.separator + HttpConnection.CANDIDATES;
+                                }
                             }
                         }
+
+                        getCandidatesFromAddress(urlCandidates);
+
+                        if (messages == null)
+                            getMessagesFromCountry(urlMessages);
+                    } else {
+                        hasError = true;
                     }
-
-                    urlCandidates += ".json";
-                    urlMessages += ".json";
-
-                    getCandidatesFromAddress(urlCandidates);
-
-                    if (messages == null)
-                        getMessagesFromCountry(urlMessages);
+                } else {
+                    hasError = true;
                 }
             } catch (Exception e) {
                 hasError = true;
@@ -530,69 +543,73 @@ public class MainFragment extends Fragment implements View.OnClickListener {
 
         @Override
         protected void onPostExecute(String result) {
-            candidatesTask = null;
             dismissDialog();
 
             handleCandidatesResult(result);
-        }
-
-        @Override
-        protected void onCancelled() {
-            candidatesTask = null;
-            dismissDialog();
         }
     }
 
     private void handleCandidatesResult(String result) {
         boolean hasNoCandidates = false;
 
-        //Dialogues.Log(TAG, "CANDIDATE RESULT: " + result, Log.ERROR);
+        //Dialogues.Log(TAG, "CANDIDATES RESULT: " + result, Log.ERROR);
 
         if (result != null) {
             try {
-                Territory territory = GsonParser.getTerritoryJSON(result);
+                JSONObject root = new JSONObject(result);
+                if (root.has("data")) {
+                    JSONObject obj = root.getJSONObject("data");
 
-                if (territory == null) {
-                    return;
-                }
+                    JSONObject contentObj = obj.optJSONObject("content");
 
-                List<CandidateInfo> candidateInfoList = new ArrayList<>();
+                    String has_territories = contentObj.optJSONArray("has_territories").toString();
 
-                if (territory.getPositions() != null && territory.getPositions().size() > 0) {
-                    for (Territory.Positions positions : territory.getPositions()) {
+                    List<HasTerritory> hasTerritories = GsonParser.getListHasTerritoriesFromJSON(has_territories);
 
-                        for (Candidates candidates : positions.getCandidates()) {
-                            CandidateInfo candidateInfo = new CandidateInfo();
-                            candidateInfo.setTerritoryName(positions.getTerritory());
-                            candidateInfo.setPosition(positions.getTitle());
-                            candidateInfo.setCandidate(candidates);
+                    List<CandidateInfo> candidateInfoList = new ArrayList<>();
 
-                            candidateInfoList.add(candidateInfo);
+                    for (HasTerritory hasTerritory : hasTerritories) {
+
+                        if (hasTerritory.getCandidates() != null) {
+                            for (Candidate candidate : hasTerritory.getCandidates()) {
+                                CandidateInfo candidateInfo = new CandidateInfo();
+                                if (hasTerritory.getTerritory() != null)
+                                    candidateInfo.setTerritoryName(hasTerritory.getTerritory().getName());
+                                if (hasTerritory.getPosition() != null)
+                                    candidateInfo.setPosition(hasTerritory.getPosition().getTitle());
+                                candidateInfo.setCandidate(candidate);
+
+                                candidateInfoList.add(candidateInfo);
+                            }
                         }
                     }
-                }
 
-                if (candidateInfoList.size() > 0) {
-                    if (auxCandidates != null) {
-                        auxCandidates.clear();
-                        mAdapter.clear();
-                        mAdapter.notifyDataSetChanged();
+                    if (candidateInfoList.size() > 0) {
+                        if (auxCandidates != null) {
+                            auxCandidates.clear();
+                            mAdapter.clear();
+                            mAdapter.notifyDataSetChanged();
 
-                        auxCandidates.addAll(candidateInfoList);
-                        mAdapter.notifyDataSetChanged();
+                            auxCandidates.addAll(candidateInfoList);
+                            mAdapter.notifyDataSetChanged();
 
-                        isRefreshing = false;
+                            isRefreshing = false;
 
-                        String jsonCandidates = GsonParser.createJsonFromObject(auxCandidates);
-                        PreferencesManager.putStringPreference(getActivity().getApplication(), PreferencesManager.CANDIDATES, jsonCandidates);
+                            String jsonCandidates = GsonParser.createJsonFromObject(auxCandidates);
+                            PreferencesManager.putStringPreference(getActivity().getApplication(), PreferencesManager.CANDIDATES, jsonCandidates);
 
-                        String currentDate = DateUtils.getCurrentDateTime();
-                        PreferencesManager.putStringPreference(getActivity().getApplication(), PreferencesManager.DATE_CANDIDATES, currentDate);
+                            String currentDate = DateUtils.getCurrentDateTime();
+                            PreferencesManager.putStringPreference(getActivity().getApplication(), PreferencesManager.DATE_CANDIDATES, currentDate);
+
+                            mSwipeContainer.setVisibility(View.VISIBLE);
+                            mErrorMessage.setVisibility(View.GONE);
+                            mNoItems.setVisibility(View.GONE);
+                        } else {
+                            hasNoCandidates = true;
+                        }
                     } else {
                         hasNoCandidates = true;
                     }
-                } else {
-                    hasNoCandidates = true;
                 }
             } catch (Exception e) {
                 hasNoCandidates = true;
@@ -634,33 +651,17 @@ public class MainFragment extends Fragment implements View.OnClickListener {
 
         @Override
         protected void onPostExecute(String result) {
-            messagesTask = null;
-            //showProgress(false);
-            dismissDialog();
-
             handleMessagesResult(result);
-        }
-
-        @Override
-        protected void onCancelled() {
-            messagesTask = null;
-            //showProgress(false);
-            dismissDialog();
         }
     }
 
     private void handleMessagesResult(String result) {
-        if (!TextUtils.isEmpty(result))
+        if (TextUtils.isEmpty(result))
             return;
 
         try {
-            List<Messages> list = GsonParser.getListMessagesFromJSON(result);
+            messages = GsonParser.getMessagesFromJSON(result);
 
-            if (list == null || list.size() == 0) {
-                return;
-            }
-
-            messages = list.get(0);
             String messageJson = GsonParser.createJsonFromObject(messages);
             PreferencesManager.putStringPreference(getActivity().getApplication(), PreferencesManager.MESSAGES, messageJson);
 

@@ -14,6 +14,14 @@
 
     <string name="location_permission_request">Se necesitan permisos de ubicación para mostrate contenido cerca de ti.</string>
 
+    <string name="no_location_services_content">Servicios de ubicación desactivados</string>
+    <string name="no_location_services_sub_content">Debes permitirle a la aplicación acceder\na tu ubicación para funcionar</string>
+    <string name="no_location_services_action">Aceptar</string>
+
+    <string name="no_permissions_services_content">Permisos de ubicación no otorgados</string>
+    <string name="no_permissions_services_sub_content">Utilizamos la ubicación geográfica de tu dispositivo móvil para obtener los candidatos que te corresponden de acuerdo a tu entidad.</string>
+    <string name="no_permissions_services_action">Otorgar permisos</string>
+
     <string name="drawer_open">Open</string>
     <string name="drawer_close">Close</string>
 
@@ -30,20 +38,20 @@
     <string name="no_gps_enabled">Servicios de ubicación apagados. Inténtalo de nuevo.</string>
 
     <!-- Twitter -->
-    <string name="tweet_message_good">A este candidato sí le interesas porque ya presentó sus indicadores.</string>
-    <string name="tweet_message_bad">Lo sentimos, a este candidato no le interesas porque no ha presentado sus indicadores.</string>
+    <string name="tweet_message_good">¿Te atrajo este candidat@? Mándale un mensaje en Twitter preguntándole cuál sería su propuesta para acabar con la corrupción en México.</string>
+    <string name="tweet_message_bad">¿Te atrajo este candidat@? Mándale un mensaje en Twitter preguntándole cuál sería su propuesta para acabar con la corrupción en México.</string>
 
-    <string name="tweet_submessage_good">¡Mándale un mensaje de felicitación!</string>
-    <string name="tweet_submessage_bad">¡Mándale un mensaje para que presente sus indicadores!</string>
+    <string name="tweet_submessage_good">¡Mándale un mensaje!</string>
+    <string name="tweet_submessage_bad">¡Mándale un mensaje!</string>
 
-    <string name="tweet_first_message_good">Oye %1$s, te encontré en @LiguePolitico y vi que ya presentaste tus indicadores. ¡Bien hecho!</string>
-    <string name="tweet_first_message_bad">Oye %1$s, te encontré en @LiguePolitico y no has presentado tus indicadores, ¿qué esperas? http://liguepolitico.com</string>
+    <string name="tweet_first_message_good">.%1$s, te encontré en Ligue Político, y quiero saber qué propones para acabar con la corrupción en nuestro país. ¿Qué dices?</string>
+    <string name="tweet_first_message_bad">.%1$s, te encontré en Ligue Político, y quiero saber qué propones para acabar con la corrupción en nuestro país. ¿Qué dices?</string>
 
     <string name="no_internet_connection">Sin conexión a Internet.\nInténtalo de nuevo.</string>
 
-    <string name="error_message_default">Algo salió mal. Inténtalo de nuevo.</string>
+    <string name="error_message_default">Algo salió mal.\nInténtalo de nuevo.</string>
 
-    <string name="about_text">Con Ligue Político podrás conocer quiénes son tus candidatos a puestos de elección popular, de acuerdo a tu ubicación geográfica, para exigirles que se comprometan con la transparencia y la rendición de cuentas.\n\nEs una iniciativa ciudadana, abierta y colaborativa, desarrollada por Fáctico y apoyada por Opciona.\n\nSi un candidato te atrae, desliza a la derecha. ¡Pero cuidado! Si no ha presentado su declaración patrimonial o jurada ¡exígela!</string>
+    <string name="about_text">Con Ligue Político podrás conocer quiénes son tus candidatos a puestos de elección popular, de acuerdo a tu ubicación geográfica, para exigirles que se comprometan con la transparencia y la rendición de cuentas.\n\nSi un candidato te atrae, desliza a la derecha.\n\nEs una iniciativa ciudadana, abierta y colaborativa, desarrollada por Fáctico y apoyada por Opciona.</string>
     <string name="about_link">Para más información visita el sitio web aquí</string>
 
     <string name="no_more_candidates">Ya no hay más candidatos que mostrar. Presiona el botón \"actualizar\" en la esquina superior derecha para volver a jugar.</string>

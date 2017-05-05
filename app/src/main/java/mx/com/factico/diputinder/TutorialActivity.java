@@ -6,12 +6,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.animation.AnimationUtils;
-import android.widget.Button;
 
 import com.viewpagerindicator.CirclePageIndicator;
 
 import mx.com.factico.diputinder.adapters.FragmentPagerAdapter;
-import mx.com.factico.diputinder.beans.Text;
+import mx.com.factico.diputinder.models.Text;
 import mx.com.factico.diputinder.fragments.TextImagePageFragment;
 import mx.com.factico.diputinder.fragments.TextPageFragment;
 import mx.com.factico.diputinder.transformers.ParallaxTutorialPagerTransformer;

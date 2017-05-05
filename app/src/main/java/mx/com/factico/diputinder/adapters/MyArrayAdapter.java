@@ -2,14 +2,13 @@ package mx.com.factico.diputinder.adapters;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Point;
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -20,12 +19,11 @@ import java.util.Locale;
 
 import mx.com.factico.diputinder.CandidateActivity;
 import mx.com.factico.diputinder.R;
-import mx.com.factico.diputinder.beans.Candidate;
-import mx.com.factico.diputinder.beans.CandidateInfo;
-import mx.com.factico.diputinder.beans.Party;
+import mx.com.factico.diputinder.models.Candidate;
+import mx.com.factico.diputinder.models.CandidateInfo;
+import mx.com.factico.diputinder.models.Party;
 import mx.com.factico.diputinder.httpconnection.HttpConnection;
 import mx.com.factico.diputinder.utils.ImageUtils;
-import mx.com.factico.diputinder.utils.ScreenUtils;
 
 /**
  * Created by zace3d on 4/27/15.
@@ -58,19 +56,9 @@ public class MyArrayAdapter extends ArrayAdapter<CandidateInfo> {
 
             // configure view holder
             holder.name = (TextView) view.findViewById(R.id.item_candidate_tv_name);
+            holder.position = (TextView) view.findViewById(R.id.item_candidate_tv_position);
             holder.imageProfile = (ImageView) view.findViewById(R.id.item_candidate_iv_profile);
             holder.imagePartido = (ImageView) view.findViewById(R.id.item_candidate_iv_partido);
-            holder.imageInfo = (ImageView) view.findViewById(R.id.item_candidate_iv_profile_info);
-
-            Point point = ScreenUtils.getScreenSize(getContext());
-            int sizeIcon = point.x / 5;
-            int margin = (int) ScreenUtils.convertDpToPixel(10, getContext());
-
-            RelativeLayout.LayoutParams paramsIcon = new RelativeLayout.LayoutParams(sizeIcon, sizeIcon);
-            paramsIcon.setMargins(0, 0, margin, margin);
-            paramsIcon.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-            paramsIcon.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-            holder.imagePartido.setLayoutParams(paramsIcon);
 
             view.setTag(holder);
         } else {
@@ -85,15 +73,14 @@ public class MyArrayAdapter extends ArrayAdapter<CandidateInfo> {
     private void fillCandidate(ViewHolder holder, int position) {
         CandidateInfo candidateInfo = getItem(position);
 
-        Candidate candidate = candidateInfo != null ? candidateInfo.getCandidate().getCandidate() : null;
+        Candidate candidate = candidateInfo != null ? candidateInfo.getCandidate() : null;
         if (candidate != null) {
-            holder.imageInfo.setTag(candidateInfo);
-            holder.imageInfo.setOnClickListener(InfoOnClickListener);
+            String candidatePosition = !TextUtils.isEmpty(candidateInfo.getPosition()) ? candidateInfo.getPosition() : "";
+            holder.position.setText(candidatePosition);
 
             String nombres = candidate.getNombres() != null ? candidate.getNombres() : "";
             String apellidoPaterno = candidate.getApellidoPaterno() != null ? candidate.getApellidoPaterno() : "";
             String apellidoMaterno = candidate.getApellidoMaterno() != null ? candidate.getApellidoMaterno() : "";
-
             holder.name.setText(String.format(Locale.getDefault(), "%s %s %s", nombres, apellidoPaterno, apellidoMaterno));
 
             if (candidate.getTwitter() != null && !candidate.getTwitter().equals("") && !candidate.getTwitter().equals("no se identificó")) {
@@ -102,12 +89,12 @@ public class MyArrayAdapter extends ArrayAdapter<CandidateInfo> {
             } else {
                 holder.imageProfile.setImageResource(R.drawable.drawable_bgr_gray);
             }
-        }
 
-        if (candidateInfo != null && candidateInfo.getCandidate() != null) {
-            List<Party> parties = candidateInfo.getCandidate().getParty();
-            if (parties != null && parties.size() > 0) {
-                ImageLoader.getInstance().displayImage(parties.get(0).getImage(), holder.imagePartido, options);
+            Party party = candidate.getParty();
+            if (party != null && party.getImage() != null && party.getImage().getThumb() != null
+                    && !TextUtils.isEmpty(party.getImage().getThumb().getUrl())) {
+                String url = party.getImage().getThumb().getUrl();
+                ImageLoader.getInstance().displayImage(url, holder.imagePartido, options);
             }
         }
     }
@@ -140,8 +127,8 @@ public class MyArrayAdapter extends ArrayAdapter<CandidateInfo> {
 
     private static class ViewHolder {
         TextView name;
+        public TextView position;
         ImageView imageProfile;
         ImageView imagePartido;
-        ImageView imageInfo;
     }
 }
