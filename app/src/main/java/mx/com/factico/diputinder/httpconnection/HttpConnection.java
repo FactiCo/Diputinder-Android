@@ -13,7 +13,7 @@ public class HttpConnection {
 
     private static final String BASE_URL = "http://13.82.98.12";
 
-    private static final String API_VERSION = "api/v1";
+    private static final String API_VERSION = "/api/v1";
 
     public static final String API_GEOCODER = API_VERSION + "/geocoder?latitude=%s&longitude=%s";
 
