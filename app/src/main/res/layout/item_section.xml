@@ -11,10 +11,10 @@
         android:layout_height="0dp"
         android:layout_marginEnd="10dp"
         android:layout_marginStart="10dp"
-        android:scaleType="centerInside"
+        android:scaleType="fitStart"
         android:src="@null"
         app:layout_aspectRatio="100%"
-        app:layout_widthPercent="18%" />
+        app:layout_widthPercent="13%" />
 
     <mx.com.factico.diputinder.views.CustomTextView
         android:id="@+id/item.section.name_label"
