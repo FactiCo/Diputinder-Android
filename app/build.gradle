@@ -8,8 +8,8 @@ android {
         applicationId "mx.com.factico.diputinder"
         minSdkVersion 17
         targetSdkVersion 25
-        versionCode 13
-        versionName "1.1.6"
+        versionCode 15
+        versionName "1.2.0"
     }
     buildTypes {
         release {
