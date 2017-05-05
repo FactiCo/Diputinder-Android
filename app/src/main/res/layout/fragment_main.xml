@@ -5,6 +5,7 @@
     android:background="@color/colorWhite">
 
     <android.support.percent.PercentRelativeLayout
+        android:id="@+id/main_swipe_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 

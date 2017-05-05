@@ -67,6 +67,8 @@ public class MainFragment extends Fragment implements View.OnClickListener {
     private View mSwipeLeftButton;
     private View mSwipeRightButton;
     private TextView mNoItems;
+    private View mSwipeContainer;
+    private View mErrorMessage;
 
     private LocationClientListener clientListener;
     private LatLng userLocation;
@@ -155,6 +157,8 @@ public class MainFragment extends Fragment implements View.OnClickListener {
         mSwipeLeftButton = view.findViewById(R.id.main_btn_swipe_left);
         mSwipeRightButton = view.findViewById(R.id.main_btn_swipe_right);
         mNoItems = (TextView) view.findViewById(R.id.main_no_items);
+        mSwipeContainer = view.findViewById(R.id.main_swipe_container);
+        mErrorMessage = view.findViewById(R.id.main_btn_refresh);
     }
 
     @Override
@@ -250,18 +254,9 @@ public class MainFragment extends Fragment implements View.OnClickListener {
         if (dialog != null && dialog.isShowing()) {
             dialog.dismiss();
         }
-
-        View view = rootView.findViewById(R.id.main_btn_refresh);
-        /*view.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mSwipeFlingView.setVisibility(View.VISIBLE);
-                mNoItems.setVisibility(View.GONE);
-                initLocationClientListener();
-                startLocationListener();
-            }
-        });*/
-        view.setVisibility(View.VISIBLE);
+        mErrorMessage.setVisibility(View.VISIBLE);
+        mSwipeContainer.setVisibility(View.GONE);
+        mNoItems.setVisibility(View.GONE);
         ((CustomTextView) rootView.findViewById(R.id.main_tv_error_message)).setText(messageError);
     }
 
@@ -332,11 +327,9 @@ public class MainFragment extends Fragment implements View.OnClickListener {
                         getString(R.string.no_more_candidates));
                 LinkUtils.fixTextView(mNoItems);
 
-                if (mNoItems.getVisibility() != View.VISIBLE)
-                    mNoItems.setVisibility(View.VISIBLE);
-
-                if (mSwipeFlingView.getVisibility() != View.GONE)
-                    mSwipeFlingView.setVisibility(View.GONE);
+                mNoItems.setVisibility(View.VISIBLE);
+                mSwipeContainer.setVisibility(View.GONE);
+                mErrorMessage.setVisibility(View.GONE);
             }
         }
 
@@ -418,7 +411,8 @@ public class MainFragment extends Fragment implements View.OnClickListener {
 
         if (id == R.id.action_refresh) {
             if (!isRefreshing) {
-                mSwipeFlingView.setVisibility(View.VISIBLE);
+                mSwipeContainer.setVisibility(View.VISIBLE);
+                mErrorMessage.setVisibility(View.GONE);
                 mNoItems.setVisibility(View.GONE);
                 initLocationClientListener();
                 startLocationListener();
@@ -435,6 +429,8 @@ public class MainFragment extends Fragment implements View.OnClickListener {
                 reverseGeocoderTask = new ReverseGeocoderTask(location.latitude, location.longitude);
                 reverseGeocoderTask.execute((String) null);
             } else {
+                isRefreshing = false;
+
                 setTextMessageError(getResources().getString(R.string.no_internet_connection));
             }
         }
@@ -552,7 +548,7 @@ public class MainFragment extends Fragment implements View.OnClickListener {
     private void handleCandidatesResult(String result) {
         boolean hasNoCandidates = false;
 
-        Dialogues.Log(TAG, "CANDIDATES RESULT: " + result, Log.ERROR);
+        //Dialogues.Log(TAG, "CANDIDATES RESULT: " + result, Log.ERROR);
 
         if (result != null) {
             try {
@@ -600,6 +596,10 @@ public class MainFragment extends Fragment implements View.OnClickListener {
 
                             String currentDate = DateUtils.getCurrentDateTime();
                             PreferencesManager.putStringPreference(getActivity().getApplication(), PreferencesManager.DATE_CANDIDATES, currentDate);
+
+                            mSwipeContainer.setVisibility(View.VISIBLE);
+                            mErrorMessage.setVisibility(View.GONE);
+                            mNoItems.setVisibility(View.GONE);
                         } else {
                             hasNoCandidates = true;
                         }
