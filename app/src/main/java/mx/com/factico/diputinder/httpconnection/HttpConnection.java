@@ -13,11 +13,13 @@ public class HttpConnection {
 
     private static final String BASE_URL = "http://13.82.98.12";
 
-    public static final String API_GEOCODER = "/api/geocoder?latitude=%s&longitude=%s";
+    private static final String API_VERSION = "api/v1";
 
-    public static final String API_COUNTRIES = "/api/countries";
-    public static final String API_STATES = "/api/states";
-    public static final String API_CITIES = "/api/cities";
+    public static final String API_GEOCODER = API_VERSION + "/geocoder?latitude=%s&longitude=%s";
+
+    public static final String API_COUNTRIES = API_VERSION + "/countries";
+    public static final String API_STATES = API_VERSION + "/states";
+    public static final String API_CITIES = API_VERSION + "/cities";
 
     public static final String CANDIDATES = "candidates";
 
