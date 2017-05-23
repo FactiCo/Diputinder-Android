@@ -490,20 +490,22 @@ public class MainFragment extends Fragment implements View.OnClickListener {
                     if (geocoderResult != null) {
                         if (geocoderResult.getCountry() != null) {
                             urlCandidates += HttpConnection.API_COUNTRIES + File.separator +
-                                    geocoderResult.getCountry().getId() + File.separator + HttpConnection.CANDIDATES;
+                                    geocoderResult.getCountry().getId();
 
                             urlMessages += HttpConnection.API_COUNTRIES + File.separator +
                                     geocoderResult.getCountry().getId() + File.separator + HttpConnection.MESSAGES;
 
                             if (geocoderResult.getState() != null) {
-                                urlCandidates += HttpConnection.API_STATES + File.separator +
-                                        geocoderResult.getState().getId() + File.separator + HttpConnection.CANDIDATES;
+                                urlCandidates += HttpConnection.STATES + File.separator +
+                                        geocoderResult.getState().getId();
 
                                 if (geocoderResult.getCity() != null) {
-                                    urlCandidates += HttpConnection.API_CITIES + File.separator +
-                                            geocoderResult.getCity().getId() + File.separator + HttpConnection.CANDIDATES;
+                                    urlCandidates += HttpConnection.CITIES + File.separator +
+                                            geocoderResult.getCity().getId();
                                 }
                             }
+
+                            urlCandidates += File.separator + HttpConnection.CANDIDATES;
                         }
 
                         getCandidatesFromAddress(urlCandidates);
@@ -528,6 +530,8 @@ public class MainFragment extends Fragment implements View.OnClickListener {
     }
 
     private void getCandidatesFromAddress(String url) {
+        Dialogues.Log(TAG, "URL CANDIDATES: " + url, Log.ERROR);
+
         candidatesTask = new GetCandidatesTask(url);
         candidatesTask.execute((String) null);
     }
@@ -555,7 +559,7 @@ public class MainFragment extends Fragment implements View.OnClickListener {
     private void handleCandidatesResult(String result) {
         boolean hasNoCandidates = false;
 
-        //Dialogues.Log(TAG, "CANDIDATES RESULT: " + result, Log.ERROR);
+        Dialogues.Log(TAG, "CANDIDATES RESULT: " + result, Log.ERROR);
 
         if (result != null) {
             try {

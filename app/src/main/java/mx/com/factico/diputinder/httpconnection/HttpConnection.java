@@ -18,8 +18,8 @@ public class HttpConnection {
     public static final String API_GEOCODER = API_VERSION + "/geocoder?latitude=%s&longitude=%s";
 
     public static final String API_COUNTRIES = API_VERSION + "/countries";
-    public static final String API_STATES = API_VERSION + "/states";
-    public static final String API_CITIES = API_VERSION + "/cities";
+    public static final String STATES = "/states";
+    public static final String CITIES = "/cities";
 
     public static final String CANDIDATES = "candidates";
 
