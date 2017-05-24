@@ -530,8 +530,6 @@ public class MainFragment extends Fragment implements View.OnClickListener {
     }
 
     private void getCandidatesFromAddress(String url) {
-        Dialogues.Log(TAG, "URL CANDIDATES: " + url, Log.ERROR);
-
         candidatesTask = new GetCandidatesTask(url);
         candidatesTask.execute((String) null);
     }
@@ -559,7 +557,7 @@ public class MainFragment extends Fragment implements View.OnClickListener {
     private void handleCandidatesResult(String result) {
         boolean hasNoCandidates = false;
 
-        Dialogues.Log(TAG, "CANDIDATES RESULT: " + result, Log.ERROR);
+        //Dialogues.Log(TAG, "CANDIDATES RESULT: " + result, Log.ERROR);
 
         if (result != null) {
             try {
