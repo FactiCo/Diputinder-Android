@@ -8,12 +8,12 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginBottom="@dimen/activity_vertical_margin"
-        android:layout_marginEnd="@dimen/activity_horizontal_margin"
-        android:layout_marginStart="@dimen/activity_horizontal_margin"
         android:layout_marginTop="@dimen/activity_vertical_margin"
         app:cardCornerRadius="15dp"
         app:cardElevation="2dp"
-        app:layout_heightPercent="70%">
+        app:layout_heightPercent="73%"
+        app:layout_marginEndPercent="7%"
+        app:layout_marginStartPercent="7%">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -48,8 +48,8 @@
                     android:layout_height="match_parent"
                     android:layout_below="@+id/item_candidate_tv_position"
                     android:layout_marginBottom="30dp"
-                    android:layout_marginEnd="7dp"
-                    android:layout_marginStart="7dp"
+                    android:layout_marginEnd="5dp"
+                    android:layout_marginStart="5dp"
                     android:background="@drawable/drawable_bgr_gray"
                     android:scaleType="centerCrop" />
 

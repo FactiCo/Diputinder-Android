@@ -22,7 +22,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:layout_marginBottom="20dp"
+            android:layout_marginBottom="15dp"
             android:layout_marginTop="20dp"
             app:layout_widthPercent="100%">
 
@@ -39,7 +39,7 @@
                 android:scaleType="centerCrop"
                 android:src="@drawable/ic_no"
                 app:layout_aspectRatio="100%"
-                app:layout_marginLeftPercent="18%"
+                app:layout_marginLeftPercent="20%"
                 app:layout_widthPercent="25%" />
 
             <ImageView
@@ -55,7 +55,7 @@
                 android:scaleType="centerCrop"
                 android:src="@drawable/ic_yes"
                 app:layout_aspectRatio="100%"
-                app:layout_marginRightPercent="18%"
+                app:layout_marginRightPercent="20%"
                 app:layout_widthPercent="25%" />
         </android.support.percent.PercentRelativeLayout>
     </android.support.percent.PercentRelativeLayout>
