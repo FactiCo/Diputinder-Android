@@ -92,28 +92,10 @@ public class TextPageFragment extends Fragment {
     }
 
     private void createView() {
-        Point point = ScreenUtils.getScreenSize(getActivity());
-        int width = point.x / 8 * 6;
-        int height = point.y / 10 * 3;
-
-        int marginTop = (int) ScreenUtils.convertDpToPixel(50, getActivity());
-
-        LinearLayout.LayoutParams paramsLogo = new LinearLayout.LayoutParams(width, height);
-        paramsLogo.setMargins(0, marginTop, 0, 0);
-        paramsLogo.gravity = Gravity.CENTER_HORIZONTAL;
-        mLogoImage.setLayoutParams(paramsLogo);
-
-        if (index == 0)
-            mLogoImage.setImageResource(R.drawable.ic_tutorial_1);
-        else if (index == 1)
-            mLogoImage.setImageResource(R.drawable.ic_tutorial_2);
-        else if (index == 2)
-            mLogoImage.setImageResource(R.drawable.ic_tutorial_3);
+        mLogoImage.setImageResource(text.getResImage());
 
         if (!TextUtils.isEmpty(text.getTitle()))
-            mTitleLabel.setText(text.getTitle().toUpperCase(Locale.getDefault()));
-        else
-            mTitleLabel.setVisibility(View.GONE);
+            mTitleLabel.setText(text.getTitle());
 
         if (!TextUtils.isEmpty(text.getContent()))
             mContentLabel.setText(text.getContent());

@@ -8,9 +8,11 @@ import java.io.Serializable;
 public class Text implements Serializable {
     private String title;
     private String content;
+    private int resImage;
 
-    public Text(String title, String content) {
+    public Text(String title, int resImage, String content) {
         this.title = title;
+        this.resImage = resImage;
         this.content = content;
     }
 
@@ -20,6 +22,14 @@ public class Text implements Serializable {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public int getResImage() {
+        return resImage;
+    }
+
+    public void setResImage(int resImage) {
+        this.resImage = resImage;
     }
 
     public String getContent() {

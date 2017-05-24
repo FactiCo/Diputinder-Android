@@ -63,11 +63,11 @@ public class TutorialActivity extends AppCompatActivity implements OnClickListen
         FragmentPagerAdapter mPagerAdapter = new FragmentPagerAdapter(getSupportFragmentManager());
 
         mPagerAdapter.addFragment(TextPageFragment.newInstance(0,
-                new Text(getString(R.string.tutorial_title_1), getString(R.string.tutorial_message_1))));
-        mPagerAdapter.addFragment(TextImagePageFragment.newInstance(1,
-                new Text("", getString(R.string.tutorial_message_2))));
+                new Text(getString(R.string.tutorial_title_1), R.drawable.ic_tutorial_1, getString(R.string.tutorial_message_1))));
+        mPagerAdapter.addFragment(TextPageFragment.newInstance(1,
+                new Text(getString(R.string.tutorial_title_2), R.drawable.ic_tutorial_2, getString(R.string.tutorial_message_2))));
         mPagerAdapter.addFragment(TextPageFragment.newInstance(2,
-                new Text("", getString(R.string.tutorial_message_3))));
+                new Text(getString(R.string.tutorial_title_3), R.drawable.ic_tutorial_3, getString(R.string.tutorial_message_3))));
 
         mViewPager.setAdapter(mPagerAdapter);
         mViewPager.setPageTransformer(false, new ParallaxTutorialPagerTransformer(R.id.text_iv_bgr));

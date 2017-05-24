@@ -56,8 +56,12 @@
 
     <string name="no_more_candidates">Ya no hay más candidatos que mostrar. Presiona el botón \"actualizar\" en la esquina superior derecha para volver a jugar.</string>
 
+    <string name="button_start_label">Iniciar</string>
+
     <!-- Tutorial -->
     <string name="tutorial_title_1">¡Conoce a tus candidatos!</string>
+    <string name="tutorial_title_2">Aliados</string>
+    <string name="tutorial_title_3">Comienza</string>
     <string name="tutorial_message_1">Con Ligue Político podrás conocer quiénes son tus candidatos a puestos de elección popular, de acuerdo a tu ubicación geográfica, para exigirles que se comprometan con la transparencia y la rendición de cuentas.</string>
     <string name="tutorial_message_2">Es una iniciativa ciudadana, abierta, colaborativa y regional</string>
     <string name="tutorial_message_3">Si un candidato te atrae, desliza a la derecha. ¡Pero ojo! Antes de darle tu voto, pregúntale cómo piensa combatir la corrupción</string>
